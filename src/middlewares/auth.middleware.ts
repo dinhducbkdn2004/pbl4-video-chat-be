@@ -22,7 +22,7 @@ export const authenticate = async (
     try {
         const decode = verifyToken(token);
         const user = await User.findById(decode);
-        (req as any).user = user;
+        req.body.user = user;
         next();
     } catch (error: any) {
         responseHandler.error(res, error);
