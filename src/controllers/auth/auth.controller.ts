@@ -21,14 +21,14 @@ export const login = async (req: Request, res: Response) => {
         if (account === null)
             return responseHandler.badRequest(res, "Not found your account!");
 
-        if (account.isVerified === false)
-            return responseHandler.badRequest(
-                res,
-                "Please verify your account!"
-            );
+        // if (account.isVerified === false)
+        //     return responseHandler.badRequest(
+        //         res,
+        //         "Please verify your account!"
+        //     );
 
-        if ((await comparePassword(password, account.password)) === false)
-            return responseHandler.notFound(res, "Wrong password!");
+        // if ((await comparePassword(password, account.password)) === false)
+        //     return responseHandler.notFound(res, "Wrong password!");
 
         responseHandler.ok(
             res,

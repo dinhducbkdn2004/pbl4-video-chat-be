@@ -4,8 +4,10 @@ import routes from "./routes";
 import bodyParser from "body-parser";
 import connectDb from "./configs/database.config";
 import { createServer, Server } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { Socket, Server as SocketIOServer } from "socket.io";
 import env from "./env";
+import corsOptions from "./configs/cors.config";
+import cors from "cors";
 
 const app: Express = express();
 
@@ -15,6 +17,8 @@ const PORT: string | number = env.PORT || 3000;
 connectDb();
 
 // Middleware setup
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -27,7 +31,7 @@ const httpServer: Server = createServer(app);
 // Set up Socket.IO
 const io: SocketIOServer = new SocketIOServer(httpServer);
 
-io.on("connection", (socket) => {
+io.on("connection", (socket: Socket) => {
     console.log("A user connected: ", socket);
 
     // Handle socket events
