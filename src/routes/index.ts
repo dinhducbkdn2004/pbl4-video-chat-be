@@ -5,7 +5,7 @@ import userRoute from "./user.route";
 const routes: Router = Router();
 
 routes.get("/hello-world", (req: Request, res: Response) => {
-    res.send("Hello world from the API!");
+    res.send("Hello world from the API alo alo!");
 });
 routes.use("/auth", authRoute);
 routes.use("/users", userRoute);
