@@ -3,7 +3,7 @@ import { Response } from "express";
 const responseWithData = (
     res: Response,
     statusCode: number,
-    data: object,
+    data: any,
     message: string,
     isOk: boolean
 ) => res.status(statusCode).json({ isOk, data, message, statusCode });
@@ -32,10 +32,17 @@ export const notFound = (res: Response, message: string) =>
 export const badRequest = (res: Response, message: string) =>
     responseWithData(res, 400, {}, message, false);
 
-export const error = (res: Response, error: Error) =>
+export const badRequestWithData = (
+    res: Response,
+    message: string,
+    data: object | Array<object>
+) => responseWithData(res, 402, data, message, false);
+
+export const error = (res: Response, error: any) =>
     responseWithData(res, 500, error, "Error in server!", false);
 
 const responseHandler = {
+    badRequestWithData,
     ok,
     created,
     unauthenticate,

@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
 
-import Account from "../../models/account.model";
-import User from "../../models/user.model";
-import sendMail from "../../helpers/sendMail";
-import { generateToken } from "../../helpers/jwtToken";
-import { comparePassword, hashPassword } from "../../helpers/hashPassword";
-import generateRandomNumberString from "../../helpers/generateRandomNumberString";
 import responseHandler from "../../handlers/response.handler";
+import generateRandomNumberString from "../../helpers/generateRandomNumberString";
+import { hashPassword } from "../../helpers/hashPassword";
+import {
+    generateAccessToken,
+    generateRefreshToken,
+} from "../../helpers/jwtToken";
+import sendMail from "../../helpers/sendMail";
+import User from "../../models/user.model";
 
 export const login = async (req: Request, res: Response) => {
     try {
@@ -14,26 +16,26 @@ export const login = async (req: Request, res: Response) => {
             email: string;
             password: string;
         };
-        const account = await Account.findOne({
+        const user = await User.findOne({
             email: email,
         });
 
-        if (account === null)
+        if (user === null)
             return responseHandler.badRequest(res, "Not found your account!");
 
-        // if (account.isVerified === false)
+        // if (user.account.isVerified === false)
         //     return responseHandler.badRequest(
         //         res,
         //         "Please verify your account!"
         //     );
 
-        // if ((await comparePassword(password, account.password)) === false)
+        // if ((await comparePassword(password, user.account.password)) === false)
         //     return responseHandler.notFound(res, "Wrong password!");
 
         responseHandler.ok(
             res,
             {
-                accessToken: generateToken(account.userId),
+                accessToken: generateAccessToken(user._id),
             },
             "Đăng nhập thành công"
         );
@@ -50,22 +52,26 @@ export const register = async (req: Request, res: Response) => {
             name: string;
         };
 
-        const user = await User.create({ email, name });
         const otp = generateRandomNumberString(6);
-        const account = await Account.create({
+
+        const user = await User.create({
+            name,
             email,
-            password: hashPassword(password),
-            isVerified: false,
-            userId: user.id,
-            otp: otp,
-            otpExp: new Date(Date.now() + 5 * 60 * 1000),
+            account: {
+                password: hashPassword(password),
+                isVerified: false,
+                otp: otp,
+                otpExp: new Date(Date.now() + 5 * 60 * 1000),
+            },
         });
 
-        await sendMail([email], "Mã xác thực tài khoản", otp);
+        sendMail([email], "Mã xác thực tài khoản", otp);
+
         responseHandler.created(
             res,
             {
-                accessToken: generateToken(user.id),
+                accessToken: generateAccessToken(user._id),
+                refreshToken: generateRefreshToken(user._id),
             },
             "Đăng ký thành công, hãy xác thực tài khoản"
         );

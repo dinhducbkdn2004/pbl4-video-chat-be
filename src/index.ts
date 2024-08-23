@@ -18,7 +18,7 @@ connectDb();
 
 // Middleware setup
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -32,7 +32,7 @@ const httpServer: Server = createServer(app);
 const io: SocketIOServer = new SocketIOServer(httpServer);
 
 io.on("connection", (socket: Socket) => {
-    console.log("A user connected: ", socket);
+    console.log("A user connected: ", socket.id);
 
     // Handle socket events
     socket.on("disconnect", () => {
