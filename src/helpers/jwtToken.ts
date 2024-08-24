@@ -5,7 +5,7 @@ import envServer from "../env";
 const JWT_SECRET_ACCESS_TOKEN = envServer.JWT_SECRET_ACCESS_TOKEN || "";
 const JWT_SECRET_REFRESH_TOKEN = envServer.JWT_SECRET_REFRESH_TOKEN || "";
 const generateToken = (
-    data: string | object,
+    data: object,
     secretKey: Secret,
     timeExp: string | number
 ): string => {
@@ -15,25 +15,22 @@ const generateToken = (
             algorithm: "HS256", // Thay thế "SHA256" bằng "HS256" hoặc thuật toán hợp lệ khác
         });
     } catch (error: any) {
-        throw new Error(error.message || error);
+        throw error;
     }
 };
 
-const verifyToken = (
-    token: string,
-    secretKey: Secret
-): string | jwt.JwtPayload => {
+const verifyToken = (token: string, secretKey: Secret) => {
     try {
         return jwt.verify(token, secretKey);
     } catch (error: any) {
-        throw new Error(error.message || error);
+        throw error;
     }
 };
 
-export const generateAccessToken = (data: object | string) =>
-    generateToken(data, JWT_SECRET_ACCESS_TOKEN, "30 minutes");
+export const generateAccessToken = (data: object) =>
+    generateToken(data, JWT_SECRET_ACCESS_TOKEN, "1h");
 
-export const generateRefreshToken = (data: object | string) =>
+export const generateRefreshToken = (data: object) =>
     generateToken(data, JWT_SECRET_REFRESH_TOKEN, "14 days");
 
 export const verifyAccessToken = (token: string) =>

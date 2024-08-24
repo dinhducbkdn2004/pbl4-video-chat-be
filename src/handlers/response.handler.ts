@@ -8,40 +8,40 @@ const responseWithData = (
     isOk: boolean
 ) => res.status(statusCode).json({ isOk, data, message, statusCode });
 
-export const ok = (
-    res: Response,
-    data: object | Array<object>,
-    message: string
-) => responseWithData(res, 200, data, message, true);
+const ok = (res: Response, data: object | Array<object>, message: string) =>
+    responseWithData(res, 200, data, message, true);
 
-export const created = (
+const created = (
     res: Response,
     data: object | Array<object>,
     message: string
 ) => responseWithData(res, 201, data, message, true);
 
-export const unauthenticate = (res: Response) =>
+const unauthenticate = (res: Response) =>
     responseWithData(res, 401, {}, "You have to login!", false);
 
-export const unauthorize = (res: Response) =>
+const unauthorize = (res: Response) =>
     responseWithData(res, 403, {}, "You can't do that!", false);
 
-export const notFound = (res: Response, message: string) =>
+const notFound = (res: Response, message: string) =>
     responseWithData(res, 404, [], message, false);
 
-export const badRequest = (res: Response, message: string) =>
+const badRequest = (res: Response, message: string) =>
     responseWithData(res, 400, {}, message, false);
 
-export const badRequestWithData = (
+const badRequestWithData = (
     res: Response,
     message: string,
     data: object | Array<object>
 ) => responseWithData(res, 402, data, message, false);
 
-export const error = (res: Response, error: any) =>
+const error = (res: Response, error: any) =>
     responseWithData(res, 500, error, "Error in server!", false);
 
+const accessTokenExpired = (res: Response) =>
+    responseWithData(res, 410, {}, "Need to refresh token", false);
 const responseHandler = {
+    accessTokenExpired,
     badRequestWithData,
     ok,
     created,
