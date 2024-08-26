@@ -6,7 +6,10 @@ const responseWithData = (
     data: any,
     message: string,
     isOk: boolean
-) => res.status(statusCode).json({ isOk, data, message, statusCode });
+) => {
+    console.log(data);
+    return res.status(statusCode).json({ isOk, data, message, statusCode });
+};
 
 const ok = (res: Response, data: object | Array<object>, message: string) =>
     responseWithData(res, 200, data, message, true);
@@ -39,7 +42,8 @@ const error = (res: Response, error: any) =>
     responseWithData(res, 500, error, "Error in server!", false);
 
 const accessTokenExpired = (res: Response) =>
-    responseWithData(res, 410, {}, "Need to refresh token", false);
+    responseWithData(res, 409, {}, "Need to refresh token!!!!", false);
+
 const responseHandler = {
     accessTokenExpired,
     badRequestWithData,

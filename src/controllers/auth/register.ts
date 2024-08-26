@@ -8,7 +8,7 @@ import {
     generateRefreshToken,
 } from "../../helpers/jwtToken";
 import sendMail from "../../helpers/sendMail";
-import User from "../../models/user.model";
+import userModel from "../../models/user.model";
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -20,7 +20,7 @@ export const register = async (req: Request, res: Response) => {
 
         const otp = generateRandomNumberString(6);
 
-        const user = await User.create({
+        const user = await userModel.create({
             name,
             email,
             account: {

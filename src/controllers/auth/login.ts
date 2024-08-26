@@ -8,7 +8,8 @@ import {
     generateRefreshToken,
 } from "../../helpers/jwtToken";
 import sendMail from "../../helpers/sendMail";
-import User from "../../models/user.model";
+
+import userModel from './../../models/user.model';
 
 export const login = async (req: Request, res: Response) => {
     try {
@@ -16,7 +17,7 @@ export const login = async (req: Request, res: Response) => {
             email: string;
             password: string;
         };
-        const user = await User.findOne({
+        const user = await userModel.findOne({
             email: email,
         });
 
