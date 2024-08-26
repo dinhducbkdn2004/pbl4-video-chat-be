@@ -42,7 +42,7 @@ const error = (res: Response, error: any) =>
     responseWithData(res, 500, error, "Error in server!", false);
 
 const accessTokenExpired = (res: Response) =>
-    responseWithData(res, 409, {}, "Need to refresh token!!!!", false);
+    responseWithData(res, 410, {}, "Need to refresh token!!!!", false);
 
 const responseHandler = {
     accessTokenExpired,

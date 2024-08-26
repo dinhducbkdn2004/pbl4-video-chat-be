@@ -5,11 +5,18 @@ import {
     verifyRefreshToken,
 } from "../../helpers/jwtToken";
 
-export default function resetToken(req: Request, res: Response) {
+interface ResetTokenBody {
+    refreshToken: string;
+}
+export default function resetToken(
+    req: Request<{}, {}, ResetTokenBody>,
+    res: Response
+) {
     try {
         const { refreshToken } = req.body as {
             refreshToken: string;
         };
+
         const decodeToken = verifyRefreshToken(refreshToken);
 
         const newAccessToken = generateAccessToken(
