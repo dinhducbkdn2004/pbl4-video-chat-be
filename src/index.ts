@@ -8,6 +8,7 @@ import { Socket, Server as SocketIOServer } from "socket.io";
 import env from "./env";
 import corsOptions from "./configs/cors.config";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app: Express = express();
 
@@ -19,6 +20,9 @@ connectDb();
 // Middleware setup
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+
+app.use(cookieParser());
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 

@@ -10,7 +10,7 @@ export const getMe = async (req: Request, res: Response) => {
 
         if (!queryUser)
             return responseHandler.badRequest(res, "User not found!");
-
+        
         responseHandler.ok(
             res,
             queryUser,

@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
 
 import responseHandler from "../../handlers/response.handler";
-import generateRandomNumberString from "../../helpers/generateRandomNumberString";
-import { hashPassword } from "../../helpers/hashPassword";
 import {
     generateAccessToken,
     generateRefreshToken,
 } from "../../helpers/jwtToken";
-import sendMail from "../../helpers/sendMail";
 import User from "../../models/user.model";
 
 export const login = async (req: Request, res: Response) => {
@@ -31,14 +28,13 @@ export const login = async (req: Request, res: Response) => {
 
         // if ((await comparePassword(password, user.account.password)) === false)
         //     return responseHandler.notFound(res, "Wrong password!");
+        const accessToken = generateAccessToken({ userId: user._id });
+        const refreshToken = generateRefreshToken({ userId: user._id });
 
         responseHandler.ok(
             res,
-            {
-                accessToken: generateAccessToken({ userId: user._id }),
-                refreshToken: generateRefreshToken({ userId: user._id }),
-            },
-            "Đăng nhập thành công"
+            { accessToken, refreshToken },
+            "Login successful"
         );
     } catch (error: any) {
         responseHandler.error(res, error);

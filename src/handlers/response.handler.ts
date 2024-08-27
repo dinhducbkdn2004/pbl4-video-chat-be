@@ -1,45 +1,63 @@
 import { Response } from "express";
-
-const responseWithData = (
-    res: Response,
-    statusCode: number,
-    data: any,
-    message: string,
-    isOk: boolean
-) => res.status(statusCode).json({ isOk, data, message, statusCode });
+interface ResponseToClient {
+    statusCode: number;
+    data?: any;
+    message: string;
+    isOk: boolean;
+}
+const responseWithData = (res: Response, responseToClient: ResponseToClient) =>
+    res.status(responseToClient.statusCode).json(responseToClient);
 
 const ok = (res: Response, data: object | Array<object>, message: string) =>
-    responseWithData(res, 200, data, message, true);
+    responseWithData(res, { data, message, isOk: true, statusCode: 200 });
 
 const created = (
     res: Response,
     data: object | Array<object>,
     message: string
-) => responseWithData(res, 201, data, message, true);
+) => responseWithData(res, { statusCode: 201, data, message, isOk: true });
 
 const unauthenticate = (res: Response) =>
-    responseWithData(res, 401, {}, "You have to login!", false);
+    responseWithData(res, {
+        statusCode: 401,
+        message: "You have to login!",
+        isOk: false,
+    });
 
 const unauthorize = (res: Response) =>
-    responseWithData(res, 403, {}, "You can't do that!", false);
+    responseWithData(res, {
+        statusCode: 403,
+        message: "You can't do that!",
+        isOk: false,
+    });
 
 const notFound = (res: Response, message: string) =>
-    responseWithData(res, 404, [], message, false);
+    responseWithData(res, { statusCode: 404, message, isOk: false });
 
 const badRequest = (res: Response, message: string) =>
-    responseWithData(res, 400, {}, message, false);
+    responseWithData(res, { statusCode: 400, message, isOk: false });
 
 const badRequestWithData = (
     res: Response,
     message: string,
     data: object | Array<object>
-) => responseWithData(res, 402, data, message, false);
+) => responseWithData(res, { statusCode: 402, data, message, isOk: false });
 
 const error = (res: Response, error: any) =>
-    responseWithData(res, 500, error, "Error in server!", false);
+    responseWithData(res, {
+        statusCode: 500,
+        data: error,
+        message: error.message || "Error in server!",
+        isOk: false,
+    });
 
 const accessTokenExpired = (res: Response) =>
-    responseWithData(res, 410, {}, "Need to refresh token", false);
+    responseWithData(res, {
+        statusCode: 410,
+        message: "Need to refresh token",
+        isOk: false,
+    });
+
 const responseHandler = {
     accessTokenExpired,
     badRequestWithData,

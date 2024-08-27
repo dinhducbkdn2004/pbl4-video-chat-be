@@ -11,19 +11,26 @@ const UserSchema = new mongoose.Schema({
     },
     account: {
         password: { type: String, required: true },
+
         otp: {
             type: String,
             default: null,
         },
+
         otpExp: {
             type: Date,
             default: null,
+        },
+        otpLeft: {
+            type: Number,
+            default: 5,
         },
 
         isVerified: {
             type: Boolean,
             default: false,
         },
+        
         loginType: {
             type: String,
             enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ

@@ -11,6 +11,7 @@ export const authenticate = async (
     next: NextFunction
 ) => {
     const authHeader = req.headers?.authorization;
+    console.log(authHeader);
 
     if (!authHeader) {
         return responseHandler.unauthenticate(res);
@@ -24,6 +25,7 @@ export const authenticate = async (
         const decode = verifyAccessToken(token);
 
         (req as any).user = typeof decode === "string" ? decode : decode.data;
+
         next();
     } catch (error: any) {
         if (error.message?.includes("jwt expired")) {
