@@ -12,25 +12,28 @@ const UserSchema = new mongoose.Schema(
                 "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
         },
         account: {
-            password: { type: String, required: true },
-            otp: {
-                type: String,
-                default: null,
-            },
-            otpExp: {
-                type: Date,
-                default: null,
-            },
+            type: {
+                password: { type: String, required: true },
+                otp: {
+                    type: String,
+                    default: null,
+                },
+                otpExp: {
+                    type: Date,
+                    default: null,
+                },
 
-            isVerified: {
-                type: Boolean,
-                default: false,
+                isVerified: {
+                    type: Boolean,
+                    default: false,
+                },
+                loginType: {
+                    type: String,
+                    enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
+                    required: true,
+                },
             },
-            loginType: {
-                type: String,
-                enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
-                required: true,
-            },
+            required: true,
         },
     },
     modelOption
