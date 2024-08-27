@@ -5,15 +5,18 @@ import {
     generateAccessToken,
     generateRefreshToken,
 } from "../../helpers/jwtToken";
-import User from "../../models/user.model";
+import sendMail from "../../helpers/sendMail";
 
-export const login = async (req: Request, res: Response) => {
+import userModel from "./../../models/user.model";
+
+interface LoginBody {
+    email: string;
+    password: string;
+}
+export const login = async (req: Request<{}, {}, LoginBody>, res: Response) => {
     try {
-        const { email, password } = req.body as {
-            email: string;
-            password: string;
-        };
-        const user = await User.findOne({
+        const { email, password } = req.body;
+        const user = await userModel.findOne({
             email: email,
         });
 

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import modelOption from "../configs/model.config";
 
 const UserSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -26,17 +27,18 @@ const UserSchema = new mongoose.Schema({
             default: 5,
         },
 
-        isVerified: {
-            type: Boolean,
-            default: false,
-        },
-        
-        loginType: {
-            type: String,
-            enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
-            required: true,
+            isVerified: {
+                type: Boolean,
+                default: false,
+            },
+            loginType: {
+                type: String,
+                enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
+                required: true,
+            },
         },
     },
-});
-const User = mongoose.model("User", UserSchema, "users");
-export default User;
+    modelOption
+);
+const userModel = mongoose.model("Users", UserSchema);
+export default userModel;

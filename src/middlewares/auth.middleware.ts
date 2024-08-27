@@ -20,7 +20,7 @@ export const authenticate = async (
     const token = authHeader.startsWith("Bearer ")
         ? authHeader.slice(7)
         : authHeader;
-
+    
     try {
         const decode = verifyAccessToken(token);
 

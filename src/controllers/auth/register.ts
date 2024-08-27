@@ -8,19 +8,22 @@ import {
     generateRefreshToken,
 } from "../../helpers/jwtToken";
 import sendMail from "../../helpers/sendMail";
-import User from "../../models/user.model";
-
-export const register = async (req: Request, res: Response) => {
+import userModel from "../../models/user.model";
+interface RegisterBody {
+    email: string;
+    password: string;
+    name: string;
+}
+export const register = async (
+    req: Request<{}, {}, RegisterBody>,
+    res: Response
+) => {
     try {
-        const { email, password, name } = req.body as {
-            email: string;
-            password: string;
-            name: string;
-        };
+        const { email, password, name } = req.body;
 
         const otp = generateRandomNumberString(6);
 
-        const user = await User.create({
+        const user = await userModel.create({
             name,
             email,
             account: {

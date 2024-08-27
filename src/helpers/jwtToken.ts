@@ -28,7 +28,7 @@ const verifyToken = (token: string, secretKey: Secret) => {
 };
 
 export const generateAccessToken = (data: object) =>
-    generateToken(data, JWT_SECRET_ACCESS_TOKEN, "1h");
+    generateToken(data, JWT_SECRET_ACCESS_TOKEN, "5s");
 
 export const generateRefreshToken = (data: object) =>
     generateToken(data, JWT_SECRET_REFRESH_TOKEN, "14 days");
