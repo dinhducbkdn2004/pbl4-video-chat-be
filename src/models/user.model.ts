@@ -22,7 +22,10 @@ const UserSchema = new mongoose.Schema(
                     type: Date,
                     default: null,
                 },
-
+                otpWrongCount: {
+                    type: Number,
+                    default: 0,
+                },
                 isVerified: {
                     type: Boolean,
                     default: false,

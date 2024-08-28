@@ -1,13 +1,26 @@
 import { Router } from "express";
-
-import { validateLogin } from "../validations/auth.validation";
 import authController from "../controllers/auth/auth.controller";
 import { authenticate } from "../middlewares/auth.middleware";
 
+import { validateHandler } from "../handlers/validation.handler";
+import authValidation from "./../validations/auth.validation";
+
 const authRoute: Router = Router();
 
-authRoute.post("/login", validateLogin, authController.login);
-authRoute.post("/register", authController.register);
+authRoute.post(
+    "/login",
+    authValidation.validateLogin,
+    validateHandler,
+    authController.login
+);
+
+authRoute.post(
+    "/register",
+    authValidation.validateRegister,
+    validateHandler,
+    authController.register
+);
+
 authRoute.put("/reset-token", authController.resetToken);
 authRoute.put("/change-password", authenticate, authController.changePassword);
 authRoute.put("/forgot-password", authController.forgotPassword);
