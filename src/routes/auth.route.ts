@@ -25,5 +25,6 @@ authRoute.put("/reset-token", authController.resetToken);
 authRoute.put("/change-password", authenticate, authController.changePassword);
 authRoute.put("/forgot-password", authController.forgotPassword);
 authRoute.put("/check-otp", authenticate, authController.checkOtp);
+authRoute.post("/oauth2/google", authController.loginByGoogle);
 
 export default authRoute;
