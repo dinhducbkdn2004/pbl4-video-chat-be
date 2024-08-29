@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema({
             type: Number,
             default: 5,
         },
+<<<<<<< HEAD
 
             isVerified: {
                 type: Boolean,
@@ -35,7 +36,34 @@ const UserSchema = new mongoose.Schema({
                 type: String,
                 enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
                 required: true,
+=======
+        account: {
+            type: {
+                password: { type: String, required: true },
+                otp: {
+                    type: String,
+                    default: null,
+                },
+                otpExp: {
+                    type: Date,
+                    default: null,
+                },
+                otpWrongCount: {
+                    type: Number,
+                    default: 0,
+                },
+                isVerified: {
+                    type: Boolean,
+                    default: false,
+                },
+                loginType: {
+                    type: String,
+                    enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
+                    required: true,
+                },
+>>>>>>> refs/remotes/origin/main
             },
+            required: true,
         },
     },
     modelOption
