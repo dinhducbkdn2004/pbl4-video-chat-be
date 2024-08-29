@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import connectDb from "./configs/database.config";
 import { createServer, Server } from "http";
 import { Socket, Server as SocketIOServer } from "socket.io";
-import env from "./env";
+import env from "./configs/env";
 import corsOptions from "./configs/cors.config";
 import cors from "cors";
 import cookieParser from "cookie-parser";

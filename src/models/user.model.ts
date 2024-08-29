@@ -11,49 +11,33 @@ const UserSchema = new mongoose.Schema(
             default:
                 "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
         },
+
         account: {
-            password: { type: String, required: true },
-
-            otp: {
-                type: String,
-                default: null,
-            },
-
-            otpExp: {
-                type: Date,
-                default: null,
-            },
-            otpLeft: {
-                type: Number,
-                default: 5,
-            },
-            account: {
-                type: {
-                    password: { type: String, required: true },
-                    otp: {
-                        type: String,
-                        default: null,
-                    },
-                    otpExp: {
-                        type: Date,
-                        default: null,
-                    },
-                    otpWrongCount: {
-                        type: Number,
-                        default: 0,
-                    },
-                    isVerified: {
-                        type: Boolean,
-                        default: false,
-                    },
-                    loginType: {
-                        type: String,
-                        enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
-                        required: true,
-                    },
+            type: {
+                password: { type: String },
+                otp: {
+                    type: String,
+                    default: null,
                 },
-                required: true,
+                otpExp: {
+                    type: Date,
+                    default: null,
+                },
+                otpWrongCount: {
+                    type: Number,
+                    default: 0,
+                },
+                isVerified: {
+                    type: Boolean,
+                    default: false,
+                },
+                loginType: {
+                    type: String,
+                    enum: ["GOOGLE", "SYSTEM"], // Sử dụng enum để giới hạn các giá trị hợp lệ
+                    required: true,
+                },
             },
+            required: true,
         },
     },
     modelOption

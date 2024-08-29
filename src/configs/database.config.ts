@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import envServer from "../env";
+import envServer from "./env";
 dotenv.config();
 const stringUrl: string = envServer.MONGODB_URL || "123";
 

@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import type { Secret } from "jsonwebtoken";
 
-import envServer from "../env";
+import envServer from "../configs/env";
 const JWT_SECRET_ACCESS_TOKEN = envServer.JWT_SECRET_ACCESS_TOKEN || "";
 const JWT_SECRET_REFRESH_TOKEN = envServer.JWT_SECRET_REFRESH_TOKEN || "";
 const generateToken = (
