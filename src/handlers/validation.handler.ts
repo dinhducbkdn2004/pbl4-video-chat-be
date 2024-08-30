@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Result, ValidationError, validationResult } from "express-validator";
 import responseHandler from "./response.handler";
-import { log } from "console";
 
 export const validateHandler = async (
     req: Request,
@@ -14,7 +13,6 @@ export const validateHandler = async (
             .array()
             .map((error) => `${error.msg}`)
             .join("; ");
-        console.log(errorMessages);
 
         return responseHandler.badRequest(res, errorMessages);
     }

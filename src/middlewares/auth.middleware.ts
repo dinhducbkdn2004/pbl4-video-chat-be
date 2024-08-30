@@ -1,9 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import responseHandler from "../handlers/response.handler";
-import User from "../models/user.model";
 import { verifyAccessToken } from "../helpers/jwtToken";
-import { log } from "console";
 
 export const authenticate = async (
     req: Request,
@@ -11,7 +9,6 @@ export const authenticate = async (
     next: NextFunction
 ) => {
     const authHeader = req.headers?.authorization;
-    console.log(authHeader);
 
     if (!authHeader) {
         return responseHandler.unauthenticate(res);
@@ -20,7 +17,7 @@ export const authenticate = async (
     const token = authHeader.startsWith("Bearer ")
         ? authHeader.slice(7)
         : authHeader;
-    
+
     try {
         const decode = verifyAccessToken(token);
 
@@ -28,6 +25,8 @@ export const authenticate = async (
 
         next();
     } catch (error: any) {
+        console.log(error);
+
         if (error.message?.includes("jwt expired")) {
             responseHandler.accessTokenExpired(res);
             return;

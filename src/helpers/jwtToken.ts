@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import type { Secret } from "jsonwebtoken";
 
 import envServer from "../configs/env";
+
 const JWT_SECRET_ACCESS_TOKEN = envServer.JWT_SECRET_ACCESS_TOKEN || "";
 const JWT_SECRET_REFRESH_TOKEN = envServer.JWT_SECRET_REFRESH_TOKEN || "";
 const generateToken = (
@@ -12,7 +13,7 @@ const generateToken = (
     try {
         return jwt.sign({ data }, secretKey, {
             expiresIn: timeExp,
-            algorithm: "HS256", // Thay thế "SHA256" bằng "HS256" hoặc thuật toán hợp lệ khác
+            algorithm: "HS256",
         });
     } catch (error: any) {
         throw error;
@@ -28,10 +29,18 @@ const verifyToken = (token: string, secretKey: Secret) => {
 };
 
 export const generateAccessToken = (data: object) =>
-    generateToken(data, JWT_SECRET_ACCESS_TOKEN, "5s");
+    generateToken(
+        data,
+        JWT_SECRET_ACCESS_TOKEN,
+        envServer.JWT_REFRESH_TOKEN_EXPIRE as string
+    );
 
 export const generateRefreshToken = (data: object) =>
-    generateToken(data, JWT_SECRET_REFRESH_TOKEN, "14 days");
+    generateToken(
+        data,
+        JWT_SECRET_REFRESH_TOKEN,
+        envServer.JWT_REFRESH_TOKEN_EXPIRE as string
+    );
 
 export const verifyAccessToken = (token: string) =>
     verifyToken(token, JWT_SECRET_ACCESS_TOKEN);

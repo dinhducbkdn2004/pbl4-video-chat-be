@@ -1,10 +1,11 @@
 import { Request, Response, Router } from "express";
-import authRoute from "./auth.route";
-import userRoute from "./user.route";
+
+import authRoute from "../controllers/auth/auth.controller";
+import userRoute from "../controllers/user/user.controller";
 
 const routes: Router = Router();
 
-routes.get("/hello-world", (req: Request, res: Response) => {
+routes.get("/hello-world", (_, res: Response) => {
     res.send("Hello world from the API!");
 });
 routes.use("/auth", authRoute);
