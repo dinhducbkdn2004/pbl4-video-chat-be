@@ -25,6 +25,8 @@ export const authenticate = async (
 
         next();
     } catch (error: any) {
+        console.log(error);
+
         if (error.message?.includes("jwt expired")) {
             responseHandler.accessTokenExpired(res);
             return;

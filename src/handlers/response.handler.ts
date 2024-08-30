@@ -57,8 +57,12 @@ const accessTokenExpired = (res: Response) =>
         message: "Need to refresh token",
         isOk: false,
     });
-
+const errorOrBadRequest = (res: Response, error: any) => {
+    if (typeof error == "string") return responseHandler.badRequest(res, error);
+    responseHandler.error(res, error);
+};
 const responseHandler = {
+    errorOrBadRequest,
     accessTokenExpired,
     badRequestWithData,
     ok,
