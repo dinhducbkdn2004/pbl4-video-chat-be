@@ -1,4 +1,5 @@
 import { CorsOptions } from "cors";
+import { log } from "console";
 
 const whitelist = ["http://localhost:5173"];
 const corsOptions: CorsOptions = {
