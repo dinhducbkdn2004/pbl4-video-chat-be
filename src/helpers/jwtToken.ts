@@ -3,8 +3,6 @@ import type { Secret } from "jsonwebtoken";
 
 import envServer from "../configs/env";
 
-const JWT_SECRET_ACCESS_TOKEN = envServer.JWT_SECRET_ACCESS_TOKEN || "";
-const JWT_SECRET_REFRESH_TOKEN = envServer.JWT_SECRET_REFRESH_TOKEN || "";
 const generateToken = (
     data: object,
     secretKey: Secret,
@@ -31,18 +29,18 @@ const verifyToken = (token: string, secretKey: Secret) => {
 export const generateAccessToken = (data: object) =>
     generateToken(
         data,
-        JWT_SECRET_ACCESS_TOKEN,
+        envServer.JWT_SECRET_ACCESS_TOKEN as string,
         envServer.JWT_REFRESH_TOKEN_EXPIRE as string
     );
 
 export const generateRefreshToken = (data: object) =>
     generateToken(
         data,
-        JWT_SECRET_REFRESH_TOKEN,
+        envServer.JWT_SECRET_REFRESH_TOKEN as string,
         envServer.JWT_REFRESH_TOKEN_EXPIRE as string
     );
 
 export const verifyAccessToken = (token: string) =>
-    verifyToken(token, JWT_SECRET_ACCESS_TOKEN);
+    verifyToken(token, envServer.JWT_SECRET_ACCESS_TOKEN as string);
 export const verifyRefreshToken = (token: string) =>
-    verifyToken(token, JWT_SECRET_REFRESH_TOKEN);
+    verifyToken(token, envServer.JWT_SECRET_REFRESH_TOKEN as string);

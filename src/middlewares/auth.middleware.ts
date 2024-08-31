@@ -34,4 +34,4 @@ export const authenticate = async (
         responseHandler.error(res, error);
     }
 };
-export const validateRegister = async (req: Request, res: Response) => {};
+

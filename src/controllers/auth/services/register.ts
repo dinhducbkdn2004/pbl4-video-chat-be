@@ -1,3 +1,4 @@
+import OtpForm from "../../../constants/OtpForm";
 import generateRandomNumberString from "../../../helpers/generateRandomNumberString";
 import { hashPassword } from "../../../helpers/hashPassword";
 import sendMail from "../../../helpers/sendMail";
@@ -13,8 +14,10 @@ const register = async ({
     name: string;
 }): Promise<string> => {
     const otp = generateRandomNumberString(6);
-    const checkUser = userModel.findOne({ email });
+    const checkUser = await userModel.findOne({ email });
     if (checkUser !== null) throw "Mail already registered!";
+
+    sendMail([email], "Mã xác thực tài khoản", OtpForm(otp));
     await userModel.create({
         name,
         email,
@@ -26,7 +29,7 @@ const register = async ({
             loginType: "SYSTEM",
         },
     });
-    sendMail([email], "Mã xác thực tài khoản", otp);
+
     return email;
 };
 export default register;

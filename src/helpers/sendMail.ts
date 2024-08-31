@@ -12,12 +12,13 @@ const transporter = nodemailer.createTransport({
 export default async function sendMail(
     to: string[],
     subject: string,
-    text: string
+
+    html: string
 ) {
     await transporter.sendMail({
         from: "Hệ thống chat video",
         to: to.join(", "),
         subject: subject,
-        text: text,
+        html: html,
     });
 }

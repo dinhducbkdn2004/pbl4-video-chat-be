@@ -3,10 +3,7 @@ import authInputDto from "./dtos/authValidation";
 import { validateHandler } from "../../handlers/validation.handler";
 import responseHandler from "../../handlers/response.handler";
 import authService from "./services/auth.service";
-import {
-    authenticate,
-    validateRegister,
-} from "../../middlewares/auth.middleware";
+import { authenticate } from "../../middlewares/auth.middleware";
 import {
     ChangePasswordBody,
     CheckOtpBody,
@@ -35,12 +32,16 @@ authRoute.post(
 
 authRoute.post(
     "/register",
-    validateRegister,
+    authInputDto.validateRegister,
     validateHandler,
     async (req: Request<{}, {}, RegisterBody>, res: Response) => {
         try {
             const email = await authService.register(req.body);
-            responseHandler.ok(res, { email }, "Đăng nhập thành công");
+            responseHandler.ok(
+                res,
+                { email },
+                `Đăng kí thành công, vui lòng sử dụng mã OTP đã gửi về email ${email} để xác thực tài khoản`
+            );
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error);
         }
