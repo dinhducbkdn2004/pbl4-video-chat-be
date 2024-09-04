@@ -3,26 +3,28 @@ import { generateAccessToken } from "../../../helpers/jwtToken";
 import { generateRefreshToken } from "../../../helpers/jwtToken";
 
 const checkOtp = async (
-  otp: string,
-  email: string
+    otp: string,
+    email: string
 ): Promise<{ accessToken: string; refreshToken: string }> => {
-  const user = await userModel.findOne({ email });
-  if (!user) throw new Error("Không tồn tại email!");
+    const user = await userModel.findOne({ email });
+    if (!user) throw new Error("Không tồn tại email!");
 
-  if (user.account.otp !== otp) {
-    throw new Error("OTP không hợp lệ!");
-  }
+    if (user.account.otp !== otp) {
+        throw new Error("OTP không hợp lệ!");
+    }
 
-  if (user.account.otpExp < new Date()) {
-    throw new Error("OTP đã hết hạn!");
-  }
+    if (user.account.otpExp < new Date()) {
+        throw new Error("OTP đã hết hạn!");
+    }
 
-  const accessToken = generateAccessToken(user._id);
-  const refreshToken = generateRefreshToken(user._id);
+    const accessToken = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken(user._id);
 
-  await user.save();
+    user.account.isVerified = true;
 
-  return { accessToken, refreshToken };
+    await user.save();
+
+    return { accessToken, refreshToken };
 };
 
 export default checkOtp;
