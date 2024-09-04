@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
-
+import userModel from "../../../models/user.model";
+import { hashPassword } from "../../../helpers/hashPassword";
 
 const changePassword = async (newPassword: string, userId: string) => {
-    // tiếp tục =))))
-    // responseHandler.ok(
-    //     res,
-    //     {
-    //         accessToken: generateAccessToken(user._id),
-    //         refreshToken: generateRefreshToken(user._id),
-    //     },
-    //     "Change password successfully!"
-    // );
+  const user = await userModel.findById(userId);
+  if (!user) {
+    throw new Error("User not found!");
+  }
+
+  const hashedPassword = await hashPassword(newPassword);
+
+  user.account.password = hashedPassword;
+  await user.save();
 };
 export default changePassword;

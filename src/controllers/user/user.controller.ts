@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import responseHandler from "../../handlers/response.handler";
+import responseHandler from "../../helpers/handlers/response.handler";
 
 import userService from "./services/user.service";
 import { Router } from "express";
@@ -12,15 +12,20 @@ import { stat } from "fs";
 const userRoute: Router = Router();
 
 userRoute.get("/me", authenticate, async (req: Request, res: Response) => {
+<<<<<<< HEAD
     try {
         const { userId } = (req as any).user;
         console.log(userId);
+=======
+  try {
+    const { userId } = (req as any).user;
+>>>>>>> refs/remotes/origin/main
 
-        const user = await userService.getMe(userId);
-        responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
-    } catch (error: any) {
-        responseHandler.errorOrBadRequest(res, error);
-    }
+    const user = await userService.getMe(userId);
+    responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
+  } catch (error: any) {
+    responseHandler.errorOrBadRequest(res, error);
+  }
 });
 
 userRoute.post(

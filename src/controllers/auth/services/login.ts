@@ -1,23 +1,30 @@
 import { comparePassword } from "../../../helpers/hashPassword";
 import {
-    generateAccessToken,
-    generateRefreshToken,
+  generateAccessToken,
+  generateRefreshToken,
 } from "../../../helpers/jwtToken";
 import userModel from "../../../models/user.model";
 
 const login = async (
-    email: string,
-    password: string
+  email: string,
+  password: string
 ): Promise<{
-    accessToken: string;
-    refreshToken: string;
+  accessToken: string;
+  refreshToken: string;
 }> => {
+<<<<<<< HEAD
     const user = await userModel.findOne({
         email,
     });
+=======
+  const user = await userModel.findOne({
+    email: email,
+  });
+>>>>>>> refs/remotes/origin/main
 
-    if (user === null) throw "Not found your account!";
+  if (user === null) throw "Not found your account!";
 
+<<<<<<< HEAD
     // if (user.account.isVerified === false) throw "Please verify your accout!";
 
     // if (user.account.password === null)
@@ -31,10 +38,22 @@ const login = async (
 
     const accessToken = generateAccessToken({ userId: user._id });
     const refreshToken = generateRefreshToken({ userId: user._id });
+=======
+  // if (user.account.isVerified === false)
+  //     return responseHandler.badRequest(
+  //         res,
+  //         "Please verify your account!"
+  //     );
 
-    return {
-        accessToken,
-        refreshToken,
-    };
+  // if ((await comparePassword(password, user.account.password)) === false)
+  //     return responseHandler.notFound(res, "Wrong password!");
+  const accessToken = generateAccessToken({ userId: user._id });
+  const refreshToken = generateRefreshToken({ userId: user._id });
+>>>>>>> refs/remotes/origin/main
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
 export default login;

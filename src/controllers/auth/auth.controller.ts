@@ -1,68 +1,68 @@
 import { Request, Response, Router } from "express";
 import authInputDto from "./dtos/authValidation";
-import { validateHandler } from "../../handlers/validation.handler";
-import responseHandler from "../../handlers/response.handler";
+import { validateHandler } from "../../helpers/handlers/validation.handler";
+import responseHandler from "../../helpers/handlers/response.handler";
 import authService from "./services/auth.service";
 import { authenticate } from "../../middlewares/auth.middleware";
 import {
-    ChangePasswordBody,
-    CheckOtpBody,
-    LoginBody,
-    LoginByGoogleBody,
-    RegisterBody,
-    ResetTokenBody,
+  ChangePasswordBody,
+  CheckOtpBody,
+  LoginBody,
+  LoginByGoogleBody,
+  RegisterBody,
+  ResetTokenBody,
 } from "./dtos/auth.dto";
 
 const authRoute: Router = Router();
 
 authRoute.post(
-    "/login",
-    authInputDto.validateLogin,
-    validateHandler,
-    async (req: Request<{}, {}, LoginBody>, res: Response) => {
-        try {
-            const { email, password } = req.body;
-            const data = await authService.login(email, password);
-            responseHandler.ok(res, data, "Đăng nhập thành công");
-        } catch (error: any) {
-            responseHandler.errorOrBadRequest(res, error);
-        }
+  "/login",
+  authInputDto.validateLogin,
+  validateHandler,
+  async (req: Request<{}, {}, LoginBody>, res: Response) => {
+    try {
+      const { email, password } = req.body;
+      const data = await authService.login(email, password);
+      responseHandler.ok(res, data, "Đăng nhập thành công");
+    } catch (error: any) {
+      responseHandler.errorOrBadRequest(res, error);
     }
+  }
 );
 
 authRoute.post(
-    "/register",
-    authInputDto.validateRegister,
-    validateHandler,
-    async (req: Request<{}, {}, RegisterBody>, res: Response) => {
-        try {
-            const email = await authService.register(req.body);
-            responseHandler.ok(
-                res,
-                { email },
-                `Đăng kí thành công, vui lòng sử dụng mã OTP đã gửi về email ${email} để xác thực tài khoản`
-            );
-        } catch (error: any) {
-            responseHandler.errorOrBadRequest(res, error);
-        }
+  "/register",
+  authInputDto.validateRegister,
+  validateHandler,
+  async (req: Request<{}, {}, RegisterBody>, res: Response) => {
+    try {
+      const email = await authService.register(req.body);
+      responseHandler.ok(
+        res,
+        { email },
+        `Đăng kí thành công, vui lòng sử dụng mã OTP đã gửi về email ${email} để xác thực tài khoản`
+      );
+    } catch (error: any) {
+      responseHandler.errorOrBadRequest(res, error);
     }
+  }
 );
 
 authRoute.put(
-    "/reset-token",
-    async (req: Request<{}, {}, ResetTokenBody>, res: Response) => {
-        try {
-            const { refreshToken } = req.body;
-            const newAccessToken = authService.resetToken(refreshToken);
-            responseHandler.ok(
-                res,
-                { accessToken: newAccessToken },
-                "Get new access token successfully!"
-            );
-        } catch (error: any) {
-            responseHandler.errorOrBadRequest(res, error);
-        }
+  "/reset-token",
+  async (req: Request<{}, {}, ResetTokenBody>, res: Response) => {
+    try {
+      const { refreshToken } = req.body;
+      const newAccessToken = authService.resetToken(refreshToken);
+      responseHandler.ok(
+        res,
+        { accessToken: newAccessToken },
+        "Get new access token successfully!"
+      );
+    } catch (error: any) {
+      responseHandler.errorOrBadRequest(res, error);
     }
+  }
 );
 
 authRoute.put(
@@ -80,6 +80,7 @@ authRoute.put(
             responseHandler.errorOrBadRequest(res, error);
         }
     }
+  
 );
 
 authRoute.put(
@@ -101,6 +102,7 @@ authRoute.put(
             responseHandler.errorOrBadRequest(res, error);
         }
     }
+  
 );
 authRoute.put(
     "/check-otp",
@@ -115,6 +117,7 @@ authRoute.put(
             responseHandler.errorOrBadRequest(res, error);
         }
     }
+  
 );
 
 authRoute.post(
@@ -130,6 +133,7 @@ authRoute.post(
             responseHandler.errorOrBadRequest(res, error);
         }
     }
+  
 );
 
 export default authRoute;
