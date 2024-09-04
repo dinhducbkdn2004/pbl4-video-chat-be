@@ -4,7 +4,7 @@
     "main": "index.js",
     "scripts": {
         "start": "ts-node src/index.ts",
-        "build": "tsc && rm -rf dist",
+        "build": "rm -rf dist && tsc",
         "dev": "ts-node-dev --respawn --transpile-only src/index.ts"
     },
     "keywords": [],
