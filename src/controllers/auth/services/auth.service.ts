@@ -5,6 +5,7 @@ import  login  from "./login";
 import loginByGoogle from "./loginByGoogle";
 import register  from "./register";
 import resetToken from "./resetToken";
+import sendOtp from "./sendOtp";
 
 const authService = {
     register,
@@ -14,5 +15,6 @@ const authService = {
     changePassword,
     forgotPassword,
     loginByGoogle,
+    sendOtp,
 };
 export default authService;
