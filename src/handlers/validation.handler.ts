@@ -8,6 +8,8 @@ export const validateHandler = async (
     next: NextFunction
 ) => {
     const errors: Result<ValidationError> = validationResult(req);
+    console.log(errors);
+
     if (!errors.isEmpty()) {
         const errorMessages = errors
             .array()

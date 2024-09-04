@@ -68,6 +68,8 @@ authRoute.put(
 authRoute.put(
     "/change-password",
     authenticate,
+    authInputDto.validateChangePassword,
+    validateHandler,
     async (req: Request<{}, {}, ChangePasswordBody>, res: Response) => {
         try {
             const { newPassword } = req.body;
@@ -82,6 +84,8 @@ authRoute.put(
 
 authRoute.put(
     "/forgot-password",
+    authInputDto.validateForgotPassword,
+    validateHandler,
     async (req: Request<{}, {}, ChangePasswordBody>, res: Response) => {
         try {
             const { email } = req.body;
@@ -100,6 +104,8 @@ authRoute.put(
 );
 authRoute.put(
     "/check-otp",
+    authInputDto.validateCheckOtp,
+    validateHandler,
     async (req: Request<{}, {}, CheckOtpBody>, res: Response) => {
         try {
             const { otp, email } = req.body;
@@ -113,6 +119,8 @@ authRoute.put(
 
 authRoute.post(
     "/oauth2/google",
+    authInputDto.validateLoginByGoogle,
+    validateHandler,
     async (req: Request<{}, {}, LoginByGoogleBody>, res: Response) => {
         try {
             const { credential } = req.body;

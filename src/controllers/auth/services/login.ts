@@ -1,3 +1,4 @@
+import { comparePassword } from "../../../helpers/hashPassword";
 import {
     generateAccessToken,
     generateRefreshToken,
@@ -12,19 +13,22 @@ const login = async (
     refreshToken: string;
 }> => {
     const user = await userModel.findOne({
-        email: email,
+        email,
     });
 
     if (user === null) throw "Not found your account!";
 
-    // if (user.account.isVerified === false)
-    //     return responseHandler.badRequest(
-    //         res,
-    //         "Please verify your account!"
-    //     );
+    // if (user.account.isVerified === false) throw "Please verify your accout!";
 
-    // if ((await comparePassword(password, user.account.password)) === false)
-    //     return responseHandler.notFound(res, "Wrong password!");
+    // if (user.account.password === null)
+    //     throw "Phải đăng nhập bằng google và đổi lại mật khẩu!";
+
+    // if (
+    //     user.account.password &&
+    //     (await comparePassword(password, user.account.password)) === false
+    // )
+    //     throw "Wrong password!";
+
     const accessToken = generateAccessToken({ userId: user._id });
     const refreshToken = generateRefreshToken({ userId: user._id });
 
