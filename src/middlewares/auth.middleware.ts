@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import responseHandler from "../helpers/handlers/response.handler";
+import responseHandler from "../handlers/response.handler";
 import { verifyAccessToken } from "../helpers/jwtToken";
 
 export const authenticate = async (
