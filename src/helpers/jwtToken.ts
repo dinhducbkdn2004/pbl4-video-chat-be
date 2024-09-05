@@ -30,7 +30,7 @@ export const generateAccessToken = (data: object) =>
     generateToken(
         data,
         envServer.JWT_SECRET_ACCESS_TOKEN as string,
-        envServer.JWT_REFRESH_TOKEN_EXPIRE as string
+        envServer.JWT_ACCESS_TOKEN_EXPIRE as string
     );
 
 export const generateRefreshToken = (data: object) =>
