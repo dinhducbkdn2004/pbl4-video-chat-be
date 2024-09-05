@@ -49,6 +49,7 @@ const register = async ({
         "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
       email,
     };
+    â;
   } catch (error) {
     return {
       success: false,
