@@ -27,3 +27,4 @@ const sendOtp = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     yield user.save();
 });
 exports.default = sendOtp;
+//# sourceMappingURL=sendOtp.js.map

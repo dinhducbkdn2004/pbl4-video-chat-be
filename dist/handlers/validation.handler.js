@@ -28,3 +28,4 @@ const validateHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, fu
     next();
 });
 exports.validateHandler = validateHandler;
+//# sourceMappingURL=validation.handler.js.map

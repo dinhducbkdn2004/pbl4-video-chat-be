@@ -80,3 +80,4 @@ const authInputDto = {
     validateRegister,
 };
 exports.default = authInputDto;
+//# sourceMappingURL=authValidation.js.map

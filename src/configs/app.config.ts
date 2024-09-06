@@ -1,4 +1,4 @@
-import { Express } from "express";
+import { Express, Response } from "express";
 import cors from "cors";
 import corsOptions from "./cors.config";
 import cookieParser from "cookie-parser";
@@ -14,7 +14,9 @@ const configApp = async (app: Express) => {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(morgan(":method :status - :response-time ms"));
-    
+    app.get("/", (_, res: Response) => {
+        res.send("Hello world from the API!");
+    });
     // API routes
     app.use("/api/v1", routes);
 };

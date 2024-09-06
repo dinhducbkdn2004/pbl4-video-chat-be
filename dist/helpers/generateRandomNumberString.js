@@ -11,3 +11,4 @@ function generateRandomNumberString(length = 6) {
     return result;
 }
 exports.default = generateRandomNumberString;
+//# sourceMappingURL=generateRandomNumberString.js.map

@@ -21,3 +21,4 @@ const MessageSchema = new mongoose_1.default.Schema({
 }, model_config_1.default);
 const messageModel = mongoose_1.default.model("Messages", MessageSchema);
 exports.default = messageModel;
+//# sourceMappingURL=message.model.js.map

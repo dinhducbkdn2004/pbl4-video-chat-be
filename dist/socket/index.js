@@ -66,3 +66,4 @@ const initSocketIO = (httpServer) => {
     }));
 };
 exports.default = initSocketIO;
+//# sourceMappingURL=index.js.map

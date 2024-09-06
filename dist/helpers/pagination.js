@@ -10,3 +10,4 @@ function getPagination(page = 1, limit = 10) {
         limit: maxLimit,
     };
 }
+//# sourceMappingURL=pagination.js.map

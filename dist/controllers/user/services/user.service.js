@@ -14,3 +14,4 @@ const userService = {
     updateFriendRequest: updateFriendRequest_1.default,
 };
 exports.default = userService;
+//# sourceMappingURL=user.service.js.map

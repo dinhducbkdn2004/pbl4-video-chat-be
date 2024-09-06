@@ -25,7 +25,11 @@ const configApp = (app) => __awaiter(void 0, void 0, void 0, function* () {
     app.use(body_parser_1.default.json());
     app.use(body_parser_1.default.urlencoded({ extended: true }));
     app.use((0, morgan_1.default)(":method :status - :response-time ms"));
+    app.get("/", (_, res) => {
+        res.send("Hello world from the API!");
+    });
     // API routes
     app.use("/api/v1", routes_1.default);
 });
 exports.default = configApp;
+//# sourceMappingURL=app.config.js.map

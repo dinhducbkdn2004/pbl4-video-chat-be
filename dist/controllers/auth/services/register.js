@@ -37,3 +37,4 @@ const register = (_a) => __awaiter(void 0, [_a], void 0, function* ({ email, pas
     return email;
 });
 exports.default = register;
+//# sourceMappingURL=register.js.map

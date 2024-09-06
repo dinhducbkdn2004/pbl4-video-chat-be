@@ -24,3 +24,4 @@ const FriendRequestSchema = new mongoose_1.default.Schema({
 }, model_config_1.default);
 const friendRequestModel = mongoose_1.default.model("FriendRequests", FriendRequestSchema);
 exports.default = friendRequestModel;
+//# sourceMappingURL=friendRequest.model.js.map

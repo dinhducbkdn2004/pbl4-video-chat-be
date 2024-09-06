@@ -21,3 +21,4 @@ const NotificationSchema = new mongoose_1.default.Schema({
 }, model_config_1.default);
 const notificationModel = mongoose_1.default.model("Notifications", NotificationSchema);
 exports.default = notificationModel;
+//# sourceMappingURL=notification.model.js.map

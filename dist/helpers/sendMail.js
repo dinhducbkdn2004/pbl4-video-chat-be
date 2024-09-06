@@ -32,3 +32,4 @@ function sendMail(to, subject, html) {
         });
     });
 }
+//# sourceMappingURL=sendMail.js.map

@@ -30,3 +30,4 @@ const sendAddFriendRequest = (senderId, receiverId) => __awaiter(void 0, void 0,
     return newRequest;
 });
 exports.default = sendAddFriendRequest;
+//# sourceMappingURL=addFriendRequest.js.map

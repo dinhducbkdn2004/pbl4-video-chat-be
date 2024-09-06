@@ -30,3 +30,4 @@ const getFriendRequests = (userId_1, ...args_1) => __awaiter(void 0, [userId_1, 
     return friendRequests;
 });
 exports.default = getFriendRequests;
+//# sourceMappingURL=getFriendRequest.js.map

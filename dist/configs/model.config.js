@@ -5,3 +5,4 @@ const modelOption = {
     versionKey: false,
 };
 exports.default = modelOption;
+//# sourceMappingURL=model.config.js.map

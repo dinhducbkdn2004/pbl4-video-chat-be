@@ -33,3 +33,4 @@ const verifyAccessToken = (token) => verifyToken(token, env_1.default.JWT_SECRET
 exports.verifyAccessToken = verifyAccessToken;
 const verifyRefreshToken = (token) => verifyToken(token, env_1.default.JWT_SECRET_REFRESH_TOKEN);
 exports.verifyRefreshToken = verifyRefreshToken;
+//# sourceMappingURL=jwtToken.js.map

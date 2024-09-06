@@ -20,3 +20,4 @@ const getMe = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     return user;
 });
 exports.default = getMe;
+//# sourceMappingURL=getMe.js.map

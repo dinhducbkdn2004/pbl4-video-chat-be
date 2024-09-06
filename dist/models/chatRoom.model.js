@@ -25,3 +25,4 @@ const ChatRoomSchema = new mongoose_1.default.Schema({
 }, model_config_1.default);
 const chatRoomModel = mongoose_1.default.model("ChatRooms", ChatRoomSchema);
 exports.default = chatRoomModel;
+//# sourceMappingURL=chatRoom.model.js.map

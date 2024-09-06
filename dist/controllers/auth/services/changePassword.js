@@ -15,12 +15,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = __importDefault(require("../../../models/user.model"));
 const hashPassword_1 = require("../../../helpers/hashPassword");
 const changePassword = (newPassword, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.default.findById(userId);
-    if (!user) {
-        throw new Error("User not found!");
+    try {
+        const user = yield user_model_1.default.findById(userId);
+        if (!user) {
+            return { success: false, message: "Người dùng không tồn tại!" };
+        }
+        const hashedPassword = yield (0, hashPassword_1.hashPassword)(newPassword);
+        user.account.password = hashedPassword;
+        yield user.save();
+        return { success: true, message: "Mật khẩu đã được thay đổi thành công!" };
     }
-    const hashedPassword = yield (0, hashPassword_1.hashPassword)(newPassword);
-    user.account.password = hashedPassword;
-    yield user.save();
+    catch (error) {
+        return { success: false, message: `Có lỗi xảy ra: ${error}` };
+    }
 });
 exports.default = changePassword;
+//# sourceMappingURL=changePassword.js.map

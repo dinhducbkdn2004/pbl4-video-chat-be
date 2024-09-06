@@ -24,3 +24,4 @@ const googleAuth = (cridential) => __awaiter(void 0, void 0, void 0, function* (
     return payload;
 });
 exports.default = googleAuth;
+//# sourceMappingURL=googleAuth.js.map

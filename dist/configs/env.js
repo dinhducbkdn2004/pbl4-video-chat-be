@@ -18,3 +18,4 @@ const envServer = {
     JWT_ACCESS_TOKEN_EXPIRE: process.env.JWT_ACCESS_TOKEN_EXPIRE,
 };
 exports.default = envServer;
+//# sourceMappingURL=env.js.map

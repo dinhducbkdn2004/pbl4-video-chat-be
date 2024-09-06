@@ -32,3 +32,4 @@ const checkOtp = (otp, email) => __awaiter(void 0, void 0, void 0, function* () 
     return { accessToken, refreshToken };
 });
 exports.default = checkOtp;
+//# sourceMappingURL=checkOtp.js.map

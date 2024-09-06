@@ -92,3 +92,4 @@ authRoute.post("/oauth2/google", authValidation_1.default.validateLoginByGoogle,
     }
 }));
 exports.default = authRoute;
+//# sourceMappingURL=auth.controller.js.map

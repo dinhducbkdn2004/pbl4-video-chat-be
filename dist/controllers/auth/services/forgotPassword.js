@@ -28,3 +28,4 @@ const forgotPassword = (email) => __awaiter(void 0, void 0, void 0, function* ()
     (0, sendMail_1.default)([email], "Mã xác thực đổi mật khẩu", (0, OtpForm_1.default)(otp));
 });
 exports.default = forgotPassword;
+//# sourceMappingURL=forgotPassword.js.map

@@ -11,3 +11,4 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const searchGroupsAndGroups = (name_1, ...args_1) => __awaiter(void 0, [name_1, ...args_1], void 0, function* (name, page = 0, limit = 20) { });
 exports.default = searchGroupsAndGroups;
+//# sourceMappingURL=searchGroupsAndUsers.js.map

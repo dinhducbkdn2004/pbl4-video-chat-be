@@ -40,3 +40,4 @@ const loginByGoogle = (credential) => __awaiter(void 0, void 0, void 0, function
     };
 });
 exports.default = loginByGoogle;
+//# sourceMappingURL=loginByGoogle.js.map

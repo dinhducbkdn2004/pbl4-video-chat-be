@@ -48,3 +48,4 @@ const updateFriendRequest = (senderId, receiverId, status) => __awaiter(void 0, 
     return data;
 });
 exports.default = updateFriendRequest;
+//# sourceMappingURL=updateFriendRequest.js.map

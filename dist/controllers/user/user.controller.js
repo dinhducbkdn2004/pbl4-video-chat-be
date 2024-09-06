@@ -93,3 +93,4 @@ userRoute.get("/friend-request", auth_middleware_1.authenticate, (req, res) => _
     }
 }));
 exports.default = userRoute;
+//# sourceMappingURL=user.controller.js.map

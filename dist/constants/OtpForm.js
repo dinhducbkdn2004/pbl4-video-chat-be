@@ -76,3 +76,4 @@ const OtpForm = (otp) => `
 </html>
 `;
 exports.default = OtpForm;
+//# sourceMappingURL=OtpForm.js.map

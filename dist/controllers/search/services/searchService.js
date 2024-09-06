@@ -8,3 +8,4 @@ const searchService = {
     searchGroupsAndGroups: searchGroupsAndUsers_1.default,
 };
 exports.default = searchService;
+//# sourceMappingURL=searchService.js.map

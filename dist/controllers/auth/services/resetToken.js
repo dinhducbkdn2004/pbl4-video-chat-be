@@ -7,3 +7,4 @@ function resetToken(refreshToken) {
     const newAccessToken = (0, jwtToken_1.generateAccessToken)(typeof decodeToken === "string" ? decodeToken : decodeToken.data);
     return newAccessToken;
 }
+//# sourceMappingURL=resetToken.js.map

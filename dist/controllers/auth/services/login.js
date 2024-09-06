@@ -26,10 +26,9 @@ const login = (email, password) => __awaiter(void 0, void 0, void 0, function* (
         yield auth_service_1.default.sendOtp(user._id.toString());
         throw `Your account hasn't been verified. We has send otp to email: ${user.email}. Please use this otp to verify your accout!`;
     }
-    if (user.account.password === null)
+    if (!user.account.password)
         throw "Phải đăng nhập bằng google và đổi lại mật khẩu!";
-    if (user.account.password &&
-        (yield (0, hashPassword_1.comparePassword)(password, user.account.password)) === false)
+    if ((yield (0, hashPassword_1.comparePassword)(password, user.account.password)) === false)
         throw "Wrong password!";
     const accessToken = (0, jwtToken_1.generateAccessToken)({ userId: user._id });
     const refreshToken = (0, jwtToken_1.generateRefreshToken)({ userId: user._id });
@@ -39,3 +38,4 @@ const login = (email, password) => __awaiter(void 0, void 0, void 0, function* (
     };
 });
 exports.default = login;
+//# sourceMappingURL=login.js.map

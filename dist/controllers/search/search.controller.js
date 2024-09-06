@@ -15,3 +15,4 @@ searchRoute.get("/search-groups-and-users", (req, res) => __awaiter(void 0, void
     const { name, page, limit } = req.params;
 }));
 exports.default = searchRoute;
+//# sourceMappingURL=search.controller.js.map
