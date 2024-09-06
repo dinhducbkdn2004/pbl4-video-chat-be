@@ -12,6 +12,7 @@ const transporter = nodemailer.createTransport({
 export default async function sendMail(
     to: string[],
     subject: string,
+
     html: string
 ) {
     await transporter.sendMail({
