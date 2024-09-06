@@ -13,13 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
-const jwtToken_1 = require("../helpers/jwtToken");
 const user_service_1 = __importDefault(require("../controllers/user/services/user.service"));
+const authSocket_1 = __importDefault(require("./authSocket"));
 const onlineUsers = new Map();
 const initSocketIO = (httpServer) => {
     const io = new socket_io_1.Server(httpServer, {
         cors: {
-            origin: "http://localhost:5173", // Allow this origin to connect
+            origin: [
+                "http://localhost:5173, https://pbl4-video-chat-fe.vercel.app",
+            ], // Allow this origin to connect
             methods: ["GET", "POST"], // Allow specific HTTP methods
             allowedHeaders: ["Content-Type"], // Allow specific headers
             credentials: true, // Allow credentials to be sent
@@ -27,14 +29,13 @@ const initSocketIO = (httpServer) => {
     });
     io.on("connection", (socket) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const accessToken = socket.handshake.headers.authorization;
-            if (!accessToken)
-                throw new Error("No authentication");
-            const decode = (0, jwtToken_1.verifyAccessToken)(accessToken);
-            const { userId } = typeof decode === "string" ? { userId: decode } : decode.data;
-            const user = yield user_service_1.default.getMe(userId);
+            const user = yield (0, authSocket_1.default)(socket);
             // Add user to the onlineUsers map
-            onlineUsers.set(userId, { socketId: socket.id, name: user.name });
+            const userId = user._id.toString();
+            onlineUsers.set(userId, {
+                socketId: socket.id,
+                name: user.name,
+            });
             console.log(`${user.name} connected`);
             socket.broadcast.emit("online-users", Array.from(onlineUsers.values()));
             socket.on("client-send-friend-request", (receiverId) => __awaiter(void 0, void 0, void 0, function* () {

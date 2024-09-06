@@ -22,7 +22,17 @@ const userRoute = (0, express_1.Router)();
 userRoute.get("/me", auth_middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userId } = req.user;
-        const user = yield user_service_1.default.getMe(userId);
+        const user = yield user_service_1.default.getUser(userId);
+        response_handler_1.default.ok(res, user, `Hello ${user.name}, welcome back!`);
+    }
+    catch (error) {
+        response_handler_1.default.errorOrBadRequest(res, error);
+    }
+}));
+userRoute.get("/:userId", auth_middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { userId } = req.params;
+        const user = yield user_service_1.default.getUser(userId);
         response_handler_1.default.ok(res, user, `Hello ${user.name}, welcome back!`);
     }
     catch (error) {
@@ -34,7 +44,7 @@ userRoute.post("/send-add-friend-request/:friendId", auth_middleware_1.authentic
         .notEmpty()
         .withMessage("thiếu trường friendId")
         .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-        const user = yield user_service_1.default.getMe(value);
+        const user = yield user_service_1.default.getUser(value);
         if (!user)
             throw "Không tồi tại người dùng để kết bạn";
     })),
@@ -54,7 +64,7 @@ userRoute.put("/update-friend-request/:friendId", auth_middleware_1.authenticate
         .notEmpty()
         .withMessage("thiếu trường friendId")
         .custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-        const user = yield user_service_1.default.getMe(value);
+        const user = yield user_service_1.default.getUser(value);
         if (!user)
             throw "Không tồi tại người dùng để kết bạn";
     })),

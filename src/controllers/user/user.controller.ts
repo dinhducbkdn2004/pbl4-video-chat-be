@@ -7,7 +7,7 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { SendAddFriendRequestParams } from "./dtos/user.dto";
 import { param, query } from "express-validator";
 
-import { stat } from "fs";
+
 import { validateHandler } from "../../handlers/validation.handler";
 
 const userRoute: Router = Router();
@@ -16,7 +16,16 @@ userRoute.get("/me", authenticate, async (req: Request, res: Response) => {
     try {
         const { userId } = (req as any).user;
 
-        const user = await userService.getMe(userId);
+        const user = await userService.getUser(userId);
+        responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error);
+    }
+});
+userRoute.get("/:userId", authenticate, async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const user = await userService.getUser(userId);
         responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error);
@@ -31,7 +40,7 @@ userRoute.post(
             .notEmpty()
             .withMessage("thiếu trường friendId")
             .custom(async (value: string) => {
-                const user = await userService.getMe(value);
+                const user = await userService.getUser(value);
                 if (!user) throw "Không tồi tại người dùng để kết bạn";
             }),
     ],
@@ -60,7 +69,7 @@ userRoute.put(
             .notEmpty()
             .withMessage("thiếu trường friendId")
             .custom(async (value: string) => {
-                const user = await userService.getMe(value);
+                const user = await userService.getUser(value);
 
                 if (!user) throw "Không tồi tại người dùng để kết bạn";
             }),

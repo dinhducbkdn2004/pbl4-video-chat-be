@@ -8,8 +8,9 @@ import { SearchGroupsAndUsers } from "./dtos/search.dto";
 const searchRoute: Router = Router();
 searchRoute.get(
     "/search-groups-and-users",
-    async (req: Request<SearchGroupsAndUsers, {}, {}>, res: Response) => {
-        const { name, page, limit } = req.params;
+    authenticate,
+    async (req: Request, res: Response) => {
+        const { name, page, limit } = req.query;
     }
 );
 

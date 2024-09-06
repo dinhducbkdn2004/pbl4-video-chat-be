@@ -8,12 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
-const auth_middleware_1 = require("../../middlewares/auth.middleware");
-const searchRoute = (0, express_1.Router)();
-searchRoute.get("/search-groups-and-users", auth_middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, page, limit } = req.query;
-}));
-exports.default = searchRoute;
-//# sourceMappingURL=search.controller.js.map
+const user_model_1 = __importDefault(require("../../../models/user.model"));
+const getUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_model_1.default.findById(userId).select("-account");
+    if (!user)
+        throw "User not found!";
+    return user;
+});
+exports.default = getUser;
+//# sourceMappingURL=getUser.js.map
