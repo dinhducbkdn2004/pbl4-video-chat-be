@@ -1,13 +1,14 @@
 import { Server as SocketIOServer, Socket } from "socket.io";
 import { Server } from "http";
-
-import { verifyAccessToken } from "../helpers/jwtToken";
 import userService from "../controllers/user/services/user.service";
+import authSocket from "./authSocket";
 const onlineUsers = new Map<string, { socketId: string; name: string }>();
 const initSocketIO = (httpServer: Server) => {
     const io: SocketIOServer = new SocketIOServer(httpServer, {
         cors: {
-            origin: "http://localhost:5173", // Allow this origin to connect
+            origin: [
+                "http://localhost:5173, https://pbl4-video-chat-fe.vercel.app",
+            ], // Allow this origin to connect
             methods: ["GET", "POST"], // Allow specific HTTP methods
             allowedHeaders: ["Content-Type"], // Allow specific headers
             credentials: true, // Allow credentials to be sent
@@ -16,15 +17,13 @@ const initSocketIO = (httpServer: Server) => {
 
     io.on("connection", async (socket: Socket) => {
         try {
-            const accessToken = socket.handshake.headers.authorization;
-            if (!accessToken) throw new Error("No authentication");
-            const decode = verifyAccessToken(accessToken as string);
-            const { userId } =
-                typeof decode === "string" ? { userId: decode } : decode.data;
-            const user = await userService.getMe(userId);
-
+            const user = await authSocket(socket);
             // Add user to the onlineUsers map
-            onlineUsers.set(userId, { socketId: socket.id, name: user.name });
+            const userId = user._id.toString();
+            onlineUsers.set(userId, {
+                socketId: socket.id,
+                name: user.name,
+            });
 
             console.log(`${user.name} connected`);
 

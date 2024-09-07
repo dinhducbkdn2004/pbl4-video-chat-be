@@ -1,7 +1,7 @@
 import { comparePassword } from "../../../helpers/hashPassword";
 import {
-  generateAccessToken,
-  generateRefreshToken,
+    generateAccessToken,
+    generateRefreshToken,
 } from "../../../helpers/jwtToken";
 import userModel from "../../../models/user.model";
 import authService from "./auth.service";
@@ -24,6 +24,7 @@ const login = async (
     throw `Your account hasn't been verified. We has send otp to email: ${user.email}. Please use this otp to verify your account!`;
   }
 
+<<<<<<< HEAD
   if (user.account.password === null)
     throw "Phải đăng nhập bằng google và đổi lại mật khẩu!";
 
@@ -32,6 +33,13 @@ const login = async (
     (await comparePassword(password, user.account.password)) === false
   )
     throw "Wrong password!";
+=======
+    if (!user.account.password)
+        throw "Phải đăng nhập bằng google và đổi lại mật khẩu!";
+
+    if ((await comparePassword(password, user.account.password)) === false)
+        throw "Wrong password!";
+>>>>>>> 02c9f79fd36ac6f5a2c8bdc2a9f80ae4549a88ff
 
   const accessToken = generateAccessToken({ userId: user._id });
   const refreshToken = generateRefreshToken({ userId: user._id });
