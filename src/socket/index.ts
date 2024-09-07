@@ -7,10 +7,11 @@ const initSocketIO = (httpServer: Server) => {
     const io: SocketIOServer = new SocketIOServer(httpServer, {
         cors: {
             origin: [
-                "http://localhost:5173, https://pbl4-video-chat-fe.vercel.app",
+                "http://localhost:5173",
+                "https://pbl4-video-chat-fe.vercel.app",
             ], // Allow this origin to connect
             methods: ["GET", "POST"], // Allow specific HTTP methods
-            allowedHeaders: ["Content-Type"], // Allow specific headers
+            allowedHeaders: ["Content-Type", "authorization"], // Allow specific headers
             credentials: true, // Allow credentials to be sent
         },
     });

@@ -7,7 +7,6 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { SendAddFriendRequestParams } from "./dtos/user.dto";
 import { param, query } from "express-validator";
 
-
 import { validateHandler } from "../../handlers/validation.handler";
 
 const userRoute: Router = Router();
@@ -27,6 +26,16 @@ userRoute.get("/:userId", authenticate, async (req: Request, res: Response) => {
         const { userId } = req.params;
         const user = await userService.getUser(userId);
         responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error);
+    }
+});
+
+userRoute.get("/", authenticate, async (req: Request, res: Response) => {
+    try {
+        const user = await userService.getUser();
+
+        responseHandler.ok(res, user, ``);
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error);
     }
