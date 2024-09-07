@@ -1,25 +1,31 @@
 export interface LoginBody {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 export interface ChangePasswordBody {
-    newPassword: string;
+  newPassword: string;
 }
 export interface RegisterBody {
-    email: string;
-    password: string;
-    name: string;
+  email: string;
+  password: string;
+  name: string;
 }
 export interface ResetTokenBody {
-    refreshToken: string;
+  refreshToken: string;
 }
 export interface CheckOtpBody {
-    email: string;
-    otp: string;
+  email: string;
+  otp: string;
 }
 export interface LoginByGoogleBody {
-    credential: string;
+  credential: string;
 }
 export interface ChangePasswordBody {
-    email: string;
+  email: string;
+}
+export interface ResetPasswordBody {
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
 }
