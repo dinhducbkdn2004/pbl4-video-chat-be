@@ -10,9 +10,10 @@ const getFriendRequests = async (
     const friendRequests = await friendRequestModel
         .find({
             $or: [{ receiver: userId }],
+            status: "PENDING",
         })
-        .populate("sender", "-account") // Populate sender details
-        .populate("receiver", "-account") // Populate receiver details
+        .populate("sender", "_id name avatar") // Populate sender details
+        .populate("receiver", "_id name avatar") // Populate receiver details
         .skip(pagination.skip)
         .limit(pagination.limit)
         .sort({
