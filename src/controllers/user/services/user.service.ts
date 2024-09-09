@@ -1,6 +1,7 @@
 import sendAddFriendRequest from "./addFriendRequest";
+import getFriendList from "./getFriendList";
 import getFriendRequests from "./getFriendRequest";
-import getUser from "./getUser";
+import getUser, { getAllUsers } from "./getUser";
 
 import updateFriendRequest from "./updateFriendRequest";
 
@@ -9,6 +10,7 @@ const userService = {
     getUser,
     sendAddFriendRequest,
     updateFriendRequest,
-    
+    getAllUsers,
+    getFriendList,
 };
 export default userService;

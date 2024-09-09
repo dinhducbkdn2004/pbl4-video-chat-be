@@ -7,8 +7,8 @@ import { authenticate } from "../../middlewares/auth.middleware";
 import { SendAddFriendRequestParams } from "./dtos/user.dto";
 import { param, query } from "express-validator";
 
-
 import { validateHandler } from "../../handlers/validation.handler";
+import { log } from "console";
 
 const userRoute: Router = Router();
 
@@ -22,11 +22,40 @@ userRoute.get("/me", authenticate, async (req: Request, res: Response) => {
         responseHandler.errorOrBadRequest(res, error);
     }
 });
-userRoute.get("/:userId", authenticate, async (req: Request, res: Response) => {
+
+userRoute.get(
+    "/get-detail/:userId/friend-list",
+    authenticate,
+    async (req: Request, res: Response) => {
+        try {
+            const { userId } = req.params;
+
+            const users = await userService.getFriendList(userId);
+            responseHandler.ok(res, users, "Lấy danh sách thành công!");
+        } catch (error) {
+            responseHandler.errorOrBadRequest(res, error);
+        }
+    }
+);
+
+userRoute.get(
+    "/get-detail/:userId",
+    authenticate,
+    async (req: Request, res: Response) => {
+        try {
+            const { userId } = req.params;
+            const user = await userService.getUser(userId);
+            responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error);
+        }
+    }
+);
+
+userRoute.get("/getAll", authenticate, async (req: Request, res: Response) => {
     try {
-        const { userId } = req.params;
-        const user = await userService.getUser(userId);
-        responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`);
+        const user = await userService.getAllUsers();
+        responseHandler.ok(res, user, ``);
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error);
     }
@@ -49,10 +78,11 @@ userRoute.post(
         try {
             const { userId } = (req as any).user;
             const { friendId } = req.params;
-
+            const { caption } = req.body;
             const isSuccess = userService.sendAddFriendRequest(
                 userId,
-                friendId
+                friendId,
+                caption
             );
             responseHandler.ok(res, { isSuccess }, "Add friend successfully!");
         } catch (error: any) {
@@ -93,7 +123,7 @@ userRoute.put(
 
             const { friendId } = req.params;
             const { status } = req.query as {
-                status: "PENDING" | "ACCEPTED" | "DECLINED";
+                status: "ACCEPTED" | "DECLINED";
             };
 
             const data = await userService.updateFriendRequest(

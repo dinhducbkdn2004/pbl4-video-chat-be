@@ -2,15 +2,17 @@ import { Server as SocketIOServer, Socket } from "socket.io";
 import { Server } from "http";
 import userService from "../controllers/user/services/user.service";
 import authSocket from "./authSocket";
+import { log } from "console";
 const onlineUsers = new Map<string, { socketId: string; name: string }>();
 const initSocketIO = (httpServer: Server) => {
     const io: SocketIOServer = new SocketIOServer(httpServer, {
         cors: {
             origin: [
-                "http://localhost:5173, https://pbl4-video-chat-fe.vercel.app",
+                "http://localhost:5173",
+                "https://pbl4-video-chat-fe.vercel.app",
             ], // Allow this origin to connect
             methods: ["GET", "POST"], // Allow specific HTTP methods
-            allowedHeaders: ["Content-Type"], // Allow specific headers
+            allowedHeaders: ["Content-Type", "authorization"], // Allow specific headers
             credentials: true, // Allow credentials to be sent
         },
     });
@@ -26,6 +28,7 @@ const initSocketIO = (httpServer: Server) => {
             });
 
             console.log(`${user.name} connected`);
+            console.log(onlineUsers);
 
             socket.broadcast.emit(
                 "online-users",
@@ -34,22 +37,30 @@ const initSocketIO = (httpServer: Server) => {
 
             socket.on(
                 "client-send-friend-request",
-                async (receiverId: string) => {
+                async (data: { recieverId: string; caption: string }) => {
                     const newRequest = await userService.sendAddFriendRequest(
                         userId,
-                        receiverId
+                        data.recieverId,
+                        data.caption
                     );
 
-                    io.emit("sever-send-friend-request", newRequest);
+                    const senderSocketId = onlineUsers.get(data.recieverId)
+                        ?.socketId as string;
+
+                    if (senderSocketId)
+                        socket
+                            .to(senderSocketId)
+                            .emit("sever-send-friend-request", newRequest);
                 }
             );
             // Handle message sending
             socket.on(
                 "client-update-friend-request",
-                async (receiverId: string, status: "ACCEPTED" | "DECLINED") => {
+                async (senderId: string, status: "ACCEPTED" | "DECLINED") => {
                     const data = await userService.updateFriendRequest(
+                        senderId,
                         userId,
-                        receiverId,
+
                         status
                     );
                     io.emit("sever-update-friend-request", data);
