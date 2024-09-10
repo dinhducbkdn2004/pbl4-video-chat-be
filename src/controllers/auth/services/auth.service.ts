@@ -6,11 +6,10 @@ import loginByGoogle from "./loginByGoogle";
 import register from "./register";
 import resetPassword from "./resetPassword";
 import resetToken from "./resetToken";
-import searchUsersAndGroups from "../../search/services/search";
+import searchUsersAndGroups from "../../search/services/searchUsers";
 import sendOtp from "./sendOtp";
 
 const authService = {
-  searchUsersAndGroups,
   register,
   login,
   resetToken,

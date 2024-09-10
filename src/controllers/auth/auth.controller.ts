@@ -112,6 +112,7 @@ authRoute.put(
     try {
       const { email, otp, newPassword, confirmPassword } = req.body;
       await authService.resetPassword(email, otp, newPassword, confirmPassword);
+
       responseHandler.ok(res, {}, "Mật khẩu đã được thay đổi thành công!");
     } catch (error: any) {
       responseHandler.errorOrBadRequest(res, error);
@@ -147,30 +148,5 @@ authRoute.post(
     }
   }
 );
-
-authRoute.get("/friends", authenticate, async (req: Request, res: Response) => {
-  try {
-    const { userId } = (req as any).user;
-    const friends = await authService.getFriends(userId);
-    responseHandler.ok(res, { friends }, "Lấy danh sách bạn bè thành công!");
-  } catch (error: any) {
-    responseHandler.errorOrBadRequest(res, error);
-  }
-});
-
-authRoute.get("/search", authenticate, async (req: Request, res: Response) => {
-  try {
-    const { query } = req.query;
-
-    if (!query) {
-      return responseHandler.errorOrBadRequest(res, "Thiếu từ khóa tìm kiếm");
-    }
-
-    const results = await authService.searchUsersAndGroups(query as string);
-    responseHandler.ok(res, results, "Tìm kiếm thành công!");
-  } catch (error: any) {
-    responseHandler.errorOrBadRequest(res, error);
-  }
-});
 
 export default authRoute;
