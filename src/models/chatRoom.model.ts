@@ -24,6 +24,10 @@ const ChatRoomSchema = new mongoose.Schema(
             enum: ['PUBLIC', 'PRIVATE'],
             required: true,
             default: 'PRIVATE'
+        },
+        lastMessage: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Messages'
         }
     },
     modelOption

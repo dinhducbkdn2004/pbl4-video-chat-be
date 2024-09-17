@@ -31,7 +31,7 @@ searchRoute.get('/users', authenticate, async (req: Request, res: Response) => {
         };
         const result = await searchService.searchUsers(name, Number(page), Number(limit));
 
-        responseHandler.ok(res, result, 'Tìm kiếm người dùng thành công!');
+        responseHandler.ok(res, result.users, 'Tìm kiếm người dùng thành công!');
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error);
     }
