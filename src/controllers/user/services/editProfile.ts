@@ -19,7 +19,6 @@ const editProfile = async (data: {
             dataToUpdate[item as keyof UserProfile] = data[item as keyof typeof data];
         }
     }
-    console.log(dataToUpdate);
 
     const profileUpdated = await userModel
         .findByIdAndUpdate(data.userId, dataToUpdate, { new: true })

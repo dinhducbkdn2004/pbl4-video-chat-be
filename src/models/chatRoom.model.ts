@@ -3,7 +3,7 @@ import modelOption from '../configs/model.config';
 
 const ChatRoomSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true },
+        name: { type: String, default: '' },
         participants: [
             {
                 type: mongoose.Schema.Types.ObjectId,

@@ -3,6 +3,8 @@ import { Server } from 'http';
 import userService from '../controllers/user/services/user.service';
 import authSocket from './authSocket';
 import onlineUsersEvent from './events/online-users';
+import messageService from '../controllers/message/services/message.service';
+import { log } from 'console';
 
 const initSocketIO = (httpServer: Server) => {
     const io: SocketIOServer = new SocketIOServer(httpServer, {
@@ -41,10 +43,12 @@ const initSocketIO = (httpServer: Server) => {
                 );
                 io.emit('sever-update-friend-request', data);
             });
-            socket.on('client-send-message', (message: string) => {
+            socket.on('client-send-message', async (message: string, chatRoomId: string) => {
                 console.log(`Message from ${user.name}: ${message}`);
-                // Broadcast message to all connected clients
-                io.emit('server-send-message', { user: user.name, message });
+
+                const messsage = await messageService.createMessage(userId, message, chatRoomId);
+                log(message);
+                socket.emit('server-send-message', messsage);
             });
 
             // Handle disconnection

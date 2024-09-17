@@ -9,7 +9,7 @@ const sendAddFriendRequest = async (
 ) => {
     if (senderId === receiverId)
         throw new Error("Không thể kết bạn với chính mình");
-
+    
     const receiver = await userModel.findById(receiverId).select("friends");
 
     if (receiver?.friends.includes(new mongoose.Types.ObjectId(senderId)))
