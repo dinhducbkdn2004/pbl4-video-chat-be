@@ -1,39 +1,46 @@
 import { getPagination } from '../../../helpers/pagination';
 import chatRoomModel from '../../../models/chatRoom.model';
 
-const searchChatRooms = async (name: string, page: number = 1, limit = 10, type?: 'PUBLIC' | 'PRIVATE') => {
+const searchChatRooms = async (
+    name: string,
+    page: number = 1,
+    limit: number = 10,
+    type?: 'PUBLIC' | 'PRIVATE',
+    getMy?: boolean,
+    userId?: string
+) => {
     const pagination = getPagination(page, limit);
 
     type SearchOption = {
-        name: RegExp;
+        name?: RegExp;
         typeRoom?: 'PUBLIC' | 'PRIVATE';
+        participants?: string;
+        $or?: any[];
     };
 
-    const searchOption: SearchOption = {
-        name: new RegExp(name, 'i')
-    };
-
-    if (type) searchOption.typeRoom = type;
+    const searchOption: SearchOption = {};
+    if (name) {
+        searchOption.name = new RegExp(name, 'i');
+    }
+    if (type === 'PRIVATE') {
+        searchOption.typeRoom = 'PRIVATE';
+        searchOption.participants = userId;
+    } else if (type === 'PUBLIC') {
+        searchOption.typeRoom = 'PUBLIC';
+    }
+    if (getMy) {
+        searchOption.$or = [{ typeRoom: 'PUBLIC' }, { typeRoom: 'PRIVATE', participants: userId }];
+    }
 
     const chatRooms = await chatRoomModel
         .find(searchOption)
-        .select('name isGroupChat participants')
+        .select('name isGroupChat participants updatedAt')
         .populate('participants', 'name avatar')
-        .skip(pagination.limit)
-        .limit(pagination.skip);
+        .sort({ updatedAt: -1 })
+        .skip(pagination.skip)
+        .limit(pagination.limit);
 
     return chatRooms;
 };
-
-// const getChatRoomDetails = async (chatRoomId: string) => {
-//   const chatRoom = await chatRoomModel
-//     .findById(chatRoomId)
-//     .populate("participants", "_id name avatar")
-//     .populate("messages");
-
-//   if (!chatRoom) throw new Error("Phòng chat không tồn tại!");
-
-//   return chatRoom;
-// };
 
 export default searchChatRooms;
