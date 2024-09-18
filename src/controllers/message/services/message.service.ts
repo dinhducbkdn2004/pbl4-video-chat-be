@@ -1,6 +1,7 @@
-import createMessage from "./createMessage"
-
+import createMessage from './createMessage';
+import getMessagesByChatRoomId from './getMessageByRoomId';
 const messageService = {
-    createMessage
-}
-export default messageService
+    createMessage,
+    getMessagesByChatRoomId
+};
+export default messageService;
