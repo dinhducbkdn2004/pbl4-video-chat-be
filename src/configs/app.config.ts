@@ -1,22 +1,23 @@
-import { Express, Response } from "express";
-import cors from "cors";
-import corsOptions from "./cors.config";
-import cookieParser from "cookie-parser";
-import bodyParser from "body-parser";
-import routes from "../routes";
-import morgan from "morgan";
-const configApp = async (app: Express) => {
-  app.use(cors(corsOptions));
-  app.options("*", cors(corsOptions));
+import { Express, Response } from 'express'
+import cors from 'cors'
+import corsOptions from './cors.config'
+import cookieParser from 'cookie-parser'
+import bodyParser from 'body-parser'
 
-  app.use(cookieParser());
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(morgan(":method :status - :response-time ms"));
-  app.get("/", (_, res: Response) => {
-    res.send("Hello world from the API!");
-  });
-  // API routes
-  app.use("/api/v1", routes);
-};
-export default configApp;
+import morgan from 'morgan'
+import routes from './route.config'
+const configApp = async (app: Express) => {
+    app.use(cors(corsOptions))
+    app.options('*', cors(corsOptions))
+
+    app.use(cookieParser())
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(morgan('dev'))
+    app.get('/', (_, res: Response) => {
+        res.send('Hello world from the API!')
+    })
+    // API routes
+    app.use('/api/v1', routes)
+}
+export default configApp

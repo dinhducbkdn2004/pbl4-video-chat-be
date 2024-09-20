@@ -72,5 +72,5 @@ const OtpForm = (otp: string) => `
         </div>
     </body>
 </html>
-`;
-export default OtpForm;
+`
+export default OtpForm

@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv'
 
-dotenv.config();
+dotenv.config()
 
 const envServer = {
     MONGODB_URL: process.env.MONGODB_URL,
@@ -12,6 +12,6 @@ const envServer = {
     GOOGLE_OATH_CLIENT_ID: process.env.GOOGLE_OATH_CLIENT_ID,
     GOOGLE_OATH_CLIENT_SECRET: process.env.GOOGLE_OATH_CLIENT_SECRET,
     JWT_REFRESH_TOKEN_EXPIRE: process.env.JWT_REFRESH_TOKEN_EXPIRE,
-    JWT_ACCESS_TOKEN_EXPIRE: process.env.JWT_ACCESS_TOKEN_EXPIRE,
-};
-export default envServer;
+    JWT_ACCESS_TOKEN_EXPIRE: process.env.JWT_ACCESS_TOKEN_EXPIRE
+}
+export default envServer
