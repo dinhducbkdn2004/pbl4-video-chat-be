@@ -3,9 +3,8 @@ import { authenticate } from '../../../middlewares/auth.middleware'
 import responseHandler from '../../../handlers/response.handler'
 import friendRequestService from './friendRequest.service'
 import { validateHandler } from '../../../handlers/validation.handler'
-import { CreateFriendRequestDto, UpdateFriendRequestDto } from './friendRequest.dto'
+import { CreateFriendRequestDto, UpdateFriendRequestDto, UpdateFriendRequestParams } from './friendRequest.dto'
 import friendRequestValidation from './friendRequest.validation'
-import { log } from 'console'
 
 const friendRequestRoute = Router()
 friendRequestRoute.get(
@@ -39,7 +38,7 @@ friendRequestRoute.post(
             const { userId } = req.user
             const { caption, friendId } = req.body
 
-            const newRequest = friendRequestService.sendAddFriendRequest(userId, friendId, caption)
+            const newRequest = await friendRequestService.sendAddFriendRequest(userId, friendId, caption)
             responseHandler.ok(res, newRequest, 'Add friend successfully!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
@@ -52,12 +51,11 @@ friendRequestRoute.patch(
     authenticate,
     validateHandler,
     friendRequestValidation.updateRequest,
-    async (req: Request<{ requestId: string }, {}, UpdateFriendRequestDto>, res: Response) => {
+    async (req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestDto>, res: Response) => {
         try {
             const { userId } = req.user
             const { status } = req.body
             const { requestId } = req.params
-
             const data = await friendRequestService.updateFriendRequest(userId, requestId, status)
             responseHandler.ok(res, data, 'update friend request successfully!')
         } catch (error: any) {

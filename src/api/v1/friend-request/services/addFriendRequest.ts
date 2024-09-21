@@ -10,20 +10,17 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
     if (receiver?.friends.includes(new mongoose.Types.ObjectId(senderId)))
         throw 'Không thể kết bạn vì 2 người đã là bạn'
 
-    await friendRequestModel.create({
+    const request = await friendRequestModel.create({
         sender: senderId,
         receiver: receiverId,
         status: 'PENDING',
         caption
     })
     const newRequest = await friendRequestModel
-        .findOne({
-            sender: senderId,
-            receiver: receiverId,
-            status: 'PENDING'
-        })
+        .findById(request._id)
         .populate('sender', 'name avatar _id')
         .populate('receiver', 'name avatar _id')
+    if (!newRequest) throw 'Lỗi create'
 
     return newRequest
 }
