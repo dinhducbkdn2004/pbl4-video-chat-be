@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express'
-
+import responseHandler from '../../../handlers/response.handler'
 import { Types } from 'mongoose'
 import { authenticate } from '../../../middlewares/auth.middleware'
 import messageService from './message.service'
@@ -19,9 +19,8 @@ messageRoute.get('/message', authenticate, async (req: Request, res: Response) =
         const messages = await messageService.getMessagesByChatRoomId(chatRoomId, page, limit)
 
         return messages
-    } catch (error) {
-        console.error(error)
-        return res.status(500).json({ message: 'Server Error' })
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
     }
 })
 export default messageRoute
