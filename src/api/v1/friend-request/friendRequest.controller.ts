@@ -7,7 +7,7 @@ import friendRequestInputDto from './friendRequest.dto'
 
 const friendRequestRoute = Router()
 friendRequestRoute.get(
-    '/friend-request',
+    '/get-my',
     authenticate,
 
     async (req: Request, res: Response) => {

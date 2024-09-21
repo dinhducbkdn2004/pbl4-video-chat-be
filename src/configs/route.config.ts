@@ -4,6 +4,7 @@ import userRoute from '../api/v1/user/user.controller'
 
 import uploadRoute from '../api/v1/upload/upload.controller'
 import chatRoomRoute from '../api/v1/chat-room/chatRoom.controller'
+import messageRoute from '~/api/v1/message/message.controller'
 
 const routes: Router = Router()
 
@@ -11,5 +12,6 @@ routes.use('/auth', authRoute)
 routes.use('/users', userRoute)
 routes.use('/upload', uploadRoute)
 routes.use('/chat-rooms', chatRoomRoute)
+routes.use('/messages', messageRoute)
 
 export default routes

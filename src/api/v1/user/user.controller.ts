@@ -19,13 +19,14 @@ userRoute.get('/me', authenticate, async (req: Request, res: Response) => {
     }
 })
 
-userRoute.put('/me/edit-profile', authenticate, async (req: Request, res: Response) => {
+userRoute.put('/edit-profile', authenticate, async (req: Request, res: Response) => {
     try {
         const { name, avatar, introduction, backgroundImage } = req.body
-        console.log(req.body)
 
-        const { userId } = (req as any).user
+        const { userId } = req.user
+
         const updatedProfile = await userService.editProfile({ userId, name, avatar, introduction, backgroundImage })
+
         responseHandler.ok(res, updatedProfile, 'Cậpt nhập thông tin người dùng thành công!')
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error)
@@ -62,26 +63,7 @@ userRoute.get('/getAll', authenticate, async (req: Request, res: Response) => {
     }
 })
 
-userRoute.get('/users', authenticate, async (req: Request, res: Response) => {
-    try {
-        const {
-            name,
-            page = 1,
-            limit = 10
-        } = req.query as {
-            name: string
-            page: string
-            limit: string
-        }
-        const result = await userService.searchUsers(name, Number(page), Number(limit))
-
-        responseHandler.ok(res, result.users, 'Tìm kiếm người dùng thành công!')
-    } catch (error: any) {
-        responseHandler.errorOrBadRequest(res, error)
-    }
-})
-
-userRoute.get('/users', authenticate, async (req: Request, res: Response) => {
+userRoute.get('/search', authenticate, async (req: Request, res: Response) => {
     try {
         const {
             name,

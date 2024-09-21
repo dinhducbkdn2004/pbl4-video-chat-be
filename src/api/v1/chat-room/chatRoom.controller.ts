@@ -19,7 +19,7 @@ chatRoomRoute.post(
     async (req: Request<{}, {}, createChatRoom>, res: Response) => {
         try {
             const { users, name = '' } = req.body
-            const { userId } = (req as any).user
+            const { userId } = req.user
             users.push(userId)
 
             const newChatRoom = await chatRoomService.createChatRoom(users, name)
@@ -31,7 +31,7 @@ chatRoomRoute.post(
     }
 )
 
-chatRoomRoute.get('/chatrooms', authenticate, async (req: Request, res: Response) => {
+chatRoomRoute.get('/search', authenticate, async (req: Request, res: Response) => {
     try {
         const {
             name,
@@ -46,7 +46,7 @@ chatRoomRoute.get('/chatrooms', authenticate, async (req: Request, res: Response
             typeRoom?: 'PUBLIC' | 'PRIVATE'
             getMy?: string
         }
-        const { userId } = (req as any).user
+        const { userId } = req.user
 
         const result = await chatRoomService.searchChatRooms(
             name,

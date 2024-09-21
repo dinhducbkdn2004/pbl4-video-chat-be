@@ -8,7 +8,8 @@ const messageRoute: Router = Router()
 
 messageRoute.get('/message', authenticate, async (req: Request, res: Response) => {
     try {
-        const { chatRoomId } = req.params
+        const { chatRoomId } = req.query as { chatRoomId: string }
+
         const page = parseInt(req.query.page as string) || 1
         const limit = parseInt(req.query.limit as string) || 10
 
