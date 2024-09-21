@@ -2,7 +2,7 @@ import { getPagination } from '../../../../helpers/pagination'
 import chatRoomModel from '../chatRoom.model'
 
 const searchChatRooms = async (
-    name: string,
+    name?: string,
     page: number = 1,
     limit: number = 10,
     type?: 'PUBLIC' | 'PRIVATE',

@@ -3,12 +3,12 @@ import userModel from '../../user/user.model'
 import friendRequestModel from '../friendRequest.model'
 
 const sendAddFriendRequest = async (senderId: string, receiverId: string, caption: string) => {
-    if (senderId === receiverId) throw new Error('Không thể kết bạn với chính mình')
+    if (senderId === receiverId) throw 'Không thể kết bạn với chính mình'
 
     const receiver = await userModel.findById(receiverId).select('friends')
 
     if (receiver?.friends.includes(new mongoose.Types.ObjectId(senderId)))
-        throw new Error('Không thể kết bạn vì 2 người đã là bạn')
+        throw 'Không thể kết bạn vì 2 người đã là bạn'
 
     await friendRequestModel.create({
         sender: senderId,

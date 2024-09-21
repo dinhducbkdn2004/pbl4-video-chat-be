@@ -3,7 +3,9 @@ import { authenticate } from '../../../middlewares/auth.middleware'
 import responseHandler from '../../../handlers/response.handler'
 import friendRequestService from './friendRequest.service'
 import { validateHandler } from '../../../handlers/validation.handler'
-import friendRequestInputDto from './friendRequest.dto'
+import { CreateFriendRequestDto, UpdateFriendRequestDto } from './friendRequest.dto'
+import friendRequestValidation from './friendRequest.validation'
+import { log } from 'console'
 
 const friendRequestRoute = Router()
 friendRequestRoute.get(
@@ -12,12 +14,14 @@ friendRequestRoute.get(
 
     async (req: Request, res: Response) => {
         try {
-            const { userId } = (req as any).user
-            const { page, limit } = req.query as {
+            const { userId } = req.user
+
+            const { page = 1, limit = 10 } = req.query as {
                 page: string
                 limit: string
             }
-            const data = await friendRequestService.getFriendRequests(userId, page, limit)
+
+            const data = await friendRequestService.getFriendRequests(userId, +page, +limit)
             responseHandler.ok(res, data, 'get friend request successfully!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
@@ -26,37 +30,35 @@ friendRequestRoute.get(
 )
 
 friendRequestRoute.post(
-    '/send-add-friend-request/:friendId',
+    '/add-friend',
     authenticate,
-    friendRequestInputDto.addFriend,
+    friendRequestValidation.addFriend,
     validateHandler,
-    async (req: Request, res: Response) => {
+    async (req: Request<{}, {}, CreateFriendRequestDto>, res: Response) => {
         try {
-            const { userId } = (req as any).user
-            const { friendId } = req.params
-            const { caption } = req.body
-            const isSuccess = friendRequestService.sendAddFriendRequest(userId, friendId, caption)
-            responseHandler.ok(res, { isSuccess }, 'Add friend successfully!')
+            const { userId } = req.user
+            const { caption, friendId } = req.body
+
+            const newRequest = friendRequestService.sendAddFriendRequest(userId, friendId, caption)
+            responseHandler.ok(res, newRequest, 'Add friend successfully!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }
     }
 )
 
-friendRequestRoute.put(
-    '/update-friend-request/:friendId',
+friendRequestRoute.patch(
+    '/update/:requestId',
     authenticate,
     validateHandler,
-    friendRequestInputDto.updateRequest,
-    async (req: Request, res: Response) => {
+    friendRequestValidation.updateRequest,
+    async (req: Request<{ requestId: string }, {}, UpdateFriendRequestDto>, res: Response) => {
         try {
-            const { userId } = (req as any).user
-            const { friendId } = req.params
-            const { status } = req.query as {
-                status: 'ACCEPTED' | 'DECLINED'
-            }
+            const { userId } = req.user
+            const { status } = req.body
+            const { requestId } = req.params
 
-            const data = await friendRequestService.updateFriendRequest(userId, friendId, status)
+            const data = await friendRequestService.updateFriendRequest(userId, requestId, status)
             responseHandler.ok(res, data, 'update friend request successfully!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
