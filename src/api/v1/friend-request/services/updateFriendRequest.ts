@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
-import friendRequestModel from '../../../models/friendRequest.model'
-import userModel from '../../../models/user.model'
+import userModel from '~/api/v1/user/user.model'
+import friendRequestModel from '~/api/v1/friend-request/friendRequest.model'
 
 const updateFriendRequest = async (senderId: string, receiverId: string, status: 'ACCEPTED' | 'DECLINED') => {
     if (senderId === receiverId) throw 'Không thể kết bạn với chính bạn'

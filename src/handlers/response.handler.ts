@@ -50,6 +50,8 @@ const accessTokenExpired = (res: Response) =>
         isOk: false
     })
 const errorOrBadRequest = (res: Response, error: any) => {
+    console.log(error)
+
     if (typeof error == 'string') return responseHandler.badRequest(res, error)
     responseHandler.error(res, error)
 }
