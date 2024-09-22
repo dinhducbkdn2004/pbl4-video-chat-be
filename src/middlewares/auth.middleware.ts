@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import responseHandler from '../handlers/response.handler'
 import { verifyAccessToken } from '../helpers/jwtToken'
 import { JwtPayload } from 'jsonwebtoken'
+import { Types } from 'mongoose'
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers?.authorization
@@ -15,19 +16,18 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
     try {
         const decoded = verifyAccessToken(token)
 
+        if (!Types.ObjectId.isValid((decoded as JwtPayload).data.userId)) throw 'Invalid friendId'
+
         if (typeof decoded !== 'string' && (decoded as JwtPayload).data) {
             req.user = (decoded as JwtPayload).data
         }
 
         next()
     } catch (error: any) {
-        console.log(error)
-
         if (error.message?.includes('jwt expired')) {
-            responseHandler.accessTokenExpired(res)
-            return
+            return responseHandler.accessTokenExpired(res)
         }
 
-        responseHandler.error(res, error)
+        return responseHandler.error(res, error)
     }
 }

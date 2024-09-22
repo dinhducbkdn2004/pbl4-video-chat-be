@@ -1,8 +1,8 @@
 import { getPagination } from '~/helpers/pagination'
 import friendRequestModel from '../friendRequest.model'
 
-const getFriendRequests = async (userId: string, page: string = '0', limit: string = '10') => {
-    const pagination = getPagination(+page, +limit)
+const getFriendRequests = async (userId: string, page: number = 1, limit: number = 10) => {
+    const pagination = getPagination(page, limit)
     const friendRequests = await friendRequestModel
         .find({
             $or: [{ receiver: userId }],

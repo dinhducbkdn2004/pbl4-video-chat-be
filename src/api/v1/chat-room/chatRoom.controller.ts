@@ -7,7 +7,7 @@ import { authenticate } from '../../../middlewares/auth.middleware'
 import responseHandler from '../../../handlers/response.handler'
 import chatRoomValidation from './chatroom.validation'
 import { validateHandler } from '../../../handlers/validation.handler'
-import { createChatRoom } from './chatRoom.dto'
+import { createChatRoom, searchChatroomQueryParams } from './chatRoom.dto'
 
 const chatRoomRoute: Router = Router()
 
@@ -31,34 +31,27 @@ chatRoomRoute.post(
     }
 )
 
-chatRoomRoute.get('/search', authenticate, async (req: Request, res: Response) => {
-    try {
-        const {
-            name,
-            page = '1',
-            limit = '10',
-            typeRoom,
-            getMy
-        } = req.query as {
-            name: string
-            page: string
-            limit: string
-            typeRoom?: 'PUBLIC' | 'PRIVATE'
-            getMy?: string
-        }
-        const { userId } = req.user
+chatRoomRoute.get(
+    '/search',
+    authenticate,
+    async (req: Request<{}, {}, {}, Partial<searchChatroomQueryParams>>, res: Response) => {
+        try {
+            const { name, page = '1', limit = '10', typeRoom, getMy } = req.query
+            const { userId } = req.user
 
-        const result = await chatRoomService.searchChatRooms(
-            name,
-            Number(page),
-            Number(limit),
-            typeRoom,
-            getMy === 'true',
-            userId
-        )
-        responseHandler.ok(res, result, 'Tìm kiếm chatroom thành công!')
-    } catch (error: any) {
-        responseHandler.errorOrBadRequest(res, error)
+            const result = await chatRoomService.searchChatRooms(
+                name,
+                Number(page),
+                Number(limit),
+                typeRoom,
+                getMy === 'true',
+                userId
+            )
+            responseHandler.ok(res, result, 'Tìm kiếm chatroom thành công!')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
     }
-})
+)
+
 export default chatRoomRoute

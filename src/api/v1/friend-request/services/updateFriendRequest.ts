@@ -2,45 +2,27 @@ import mongoose from 'mongoose'
 import userModel from '~/api/v1/user/user.model'
 import friendRequestModel from '~/api/v1/friend-request/friendRequest.model'
 
-const updateFriendRequest = async (senderId: string, receiverId: string, status: 'ACCEPTED' | 'DECLINED') => {
-    if (senderId === receiverId) throw 'Không thể kết bạn với chính bạn'
+const updateFriendRequest = async (senderId: string, requestId: string, status: 'ACCEPTED' | 'DECLINED') => {
+    const request = await friendRequestModel.findById(requestId)
+    if (!request) throw 'Không tồn tại request'
+
+    if (senderId === request.receiver.toString()) throw 'Không thể kết bạn với chính bạn'
 
     const senderUser = await userModel.findById(senderId)
-    const receiverUser = await userModel.findById(receiverId)
 
-    if (senderUser === null || receiverUser === null) throw 'Sender or Receiver does not exist'
+    if (senderUser === null) throw 'Sender or Receiver does not exist'
 
-    const newRequest = await friendRequestModel.findOneAndUpdate(
-        {
-            sender: senderId,
-            receiver: receiverId
-        },
-        {
-            status
-        },
-        { new: true } // This option returns the updated document
-    )
+    request.status = status
 
-    if (newRequest === null) throw 'Không tồn tại request để update !'
+    const newRequset = await request.save()
 
-    if (status === 'ACCEPTED') {
-        senderUser.friends.push(new mongoose.Types.ObjectId(receiverId))
-        receiverUser.friends.push(new mongoose.Types.ObjectId(senderId))
-        await senderUser.save()
-        await receiverUser.save()
-    }
+    // if (status === 'ACCEPTED') {
+    //     senderUser.friends.push(new mongoose.Types.ObjectId(receiverId))
+    //     receiverUser.friends.push(new mongoose.Types.ObjectId(senderId))
+    //     await senderUser.save()
+    //     await receiverUser.save()
+    // }
 
-    const data = await friendRequestModel
-        .findOne({
-            sender: senderId,
-            receiver: receiverId,
-            status
-        })
-        .populate('sender', '-account') // Populate sender details
-        .populate('receiver', '-account')
-    console.log(data)
-
-    if (data === null) throw 'Không tồi tại request để get'
-    return data
+    return newRequset
 }
 export default updateFriendRequest

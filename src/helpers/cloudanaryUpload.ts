@@ -1,4 +1,7 @@
 import cloudinary from '../configs/cloudinary.config'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const getPresignedUrl = (publicId: string, folder: string): string => {
     const timestamp = Math.round(new Date().getTime() / 1000)
@@ -9,7 +12,7 @@ export const getPresignedUrl = (publicId: string, folder: string): string => {
             folder: folder,
             public_id: publicId
         },
-        process.env.API_SECRET || ''
+        process.env.CLOUNDINARY_API_SECRET || ''
     )
 
     const url = cloudinary.utils.url(publicId, {
@@ -19,7 +22,7 @@ export const getPresignedUrl = (publicId: string, folder: string): string => {
         secure: true,
         timestamp: timestamp,
         signature: signature,
-        api_key: process.env.API_KEY || ''
+        api_key: process.env.CLOUNDINARY_API_KEY || ''
     })
 
     return url

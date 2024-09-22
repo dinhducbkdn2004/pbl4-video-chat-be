@@ -19,7 +19,7 @@ userRoute.get('/me', authenticate, async (req: Request, res: Response) => {
     }
 })
 
-userRoute.put('/edit-profile', authenticate, async (req: Request, res: Response) => {
+userRoute.patch('/me/edit-profile', authenticate, async (req: Request, res: Response) => {
     try {
         const { name, avatar, introduction, backgroundImage } = req.body
 
