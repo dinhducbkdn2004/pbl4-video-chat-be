@@ -3,27 +3,21 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-export const getPresignedUrl = (publicId: string, folder: string): string => {
-    const timestamp = Math.round(new Date().getTime() / 1000)
+export const getPresignedUrl = (folder: string) => {
+    const timestamp = Math.round(new Date().getTime() / 1000) // Unix timestamp
 
+    // Generate a signature using Cloudinary SDK
     const signature = cloudinary.utils.api_sign_request(
-        {
-            timestamp: timestamp,
-            folder: folder,
-            public_id: publicId
-        },
-        process.env.CLOUNDINARY_API_SECRET || ''
+        { timestamp, folder },
+        process.env.CLOUDINARY_API_SECRET || '' // Your Cloudinary API secret
     )
 
-    const url = cloudinary.utils.url(publicId, {
-        resource_type: 'auto',
-        folder: folder,
-        sign_url: true,
-        secure: true,
-        timestamp: timestamp,
-        signature: signature,
-        api_key: process.env.CLOUNDINARY_API_KEY || ''
-    })
-
-    return url
+    // Send the signature and required details back to the client
+    return {
+        signature,
+        timestamp,
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+        apiKey: process.env.CLOUDINARY_API_KEY,
+        folder
+    }
 }
