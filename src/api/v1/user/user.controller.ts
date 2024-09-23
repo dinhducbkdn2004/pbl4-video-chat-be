@@ -5,12 +5,14 @@ import userService from './user.service'
 
 import responseHandler from '../../../handlers/response.handler'
 import { authenticate } from '../../../middlewares/auth.middleware'
+import { getOneToOneChatRoom } from '../chat-room/services/getOneToOneChatRoom'
+import chatRoomService from '../chat-room/chatRoom.service'
 
 const userRoute: Router = Router()
 
 userRoute.get('/me', authenticate, async (req: Request, res: Response) => {
     try {
-        const { userId } = (req as any).user
+        const { userId } = req.user
 
         const user = await userService.getUser(userId)
         responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`)
@@ -47,8 +49,34 @@ userRoute.get('/get-detail/:userId/friend-list', authenticate, async (req: Reque
 userRoute.get('/get-detail/:userId', authenticate, async (req: Request, res: Response) => {
     try {
         const { userId } = req.params
+        const { userId: userCallApiId } = req.user
         const user = await userService.getUser(userId)
-        responseHandler.ok(res, user, `Hello ${user.name}, welcome back!`)
+        const { _id, name, avatar, backgroundImage, introduction, isOnline, friends } = user
+        const oneToOneRoom = await chatRoomService.getOneToOneChatRoom(userCallApiId, user._id.toString())
+
+        if (oneToOneRoom !== null)
+            return responseHandler.ok(
+                res,
+                {
+                    _id,
+                    name,
+                    avatar,
+                    backgroundImage,
+                    introduction,
+                    isOnline,
+                    friends,
+                    chatRoomId: oneToOneRoom._id
+                },
+                `Hello ${user.name}, welcome back!`
+            )
+
+        const newOneToOneRoom = await chatRoomService.createChatRoom(userCallApiId, [userId], '', 'PRIVATE')
+
+        responseHandler.ok(
+            res,
+            { _id, name, avatar, backgroundImage, introduction, isOnline, friends, chatRoomId: newOneToOneRoom._id },
+            `Hello ${user.name}, welcome back!`
+        )
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error)
     }

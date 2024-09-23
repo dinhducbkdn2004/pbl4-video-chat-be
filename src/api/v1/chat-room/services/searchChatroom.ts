@@ -34,8 +34,8 @@ const searchChatRooms = async (
 
     const chatRooms = await chatRoomModel
         .find(searchOption)
-        .select('name isGroupChat participants updatedAt')
-        .populate('participants', 'name avatar')
+        .select('name typeRoom participants updatedAt')
+        .populate('participants', 'name avatar isOnline')
         .sort({ updatedAt: -1 })
         .skip(pagination.skip)
         .limit(pagination.limit)

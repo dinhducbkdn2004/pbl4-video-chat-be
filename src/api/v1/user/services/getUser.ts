@@ -1,3 +1,4 @@
+import chatRoomService from '../../chat-room/chatRoom.service'
 import userModel from '../user.model'
 
 const getUser = async (userId: string) => {
