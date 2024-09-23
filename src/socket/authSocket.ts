@@ -8,6 +8,9 @@ const authSocket = async (socket: Socket) => {
     const decode = verifyAccessToken(accessToken as string)
     const { userId } = typeof decode === 'string' ? { userId: decode } : decode.data
     const user = await userService.getUser(userId)
-    return user
+    user.isOnline = true
+    user.socketId = socket.id
+    const newUser = await user.save()
+    return newUser
 }
 export default authSocket

@@ -19,6 +19,8 @@ const UserSchema = new mongoose.Schema(
         ],
         backgroundImage: { type: String, required: true, default: '' },
         introduction: { type: String, required: true, default: '' },
+        isOnline: { type: Boolean },
+        socketId: { type: String },
         chatRooms: [
             {
                 type: mongoose.Schema.Types.ObjectId,

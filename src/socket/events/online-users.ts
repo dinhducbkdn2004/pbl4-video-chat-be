@@ -1,22 +1,14 @@
 import { Socket } from 'socket.io'
-const onlineUsers = new Map<string, { socketId: string; name: string; userId: string; avatar: string }>()
-const onlineUsersEvent = (socket: Socket) => {
+import userService from '~/api/v1/user/user.service'
+
+const onlineUsersEvent = async (socket: Socket) => {
     const user = socket.handshake.auth
     const userId = user._id.toString()
+    const onlineFriends = await userService.getOnlineFriends(userId)
+    socket.emit('online-users', onlineFriends)
 
-    socket.emit('online-users', Array.from(onlineUsers.values()))
+    socket.to(onlineFriends.map((friend) => (friend.socketId ? friend.socketId : ''))).emit('add-online-friend', user)
 
-    if (!onlineUsers.has(userId)) {
-        onlineUsers.set(userId, {
-            socketId: socket.id,
-            name: user.name,
-            userId,
-            avatar: user.avatar
-        })
-    }
-
-    socket.broadcast.emit('online-users', Array.from(onlineUsers.values()))
-
-    return onlineUsers
+    return onlineFriends
 }
 export default onlineUsersEvent

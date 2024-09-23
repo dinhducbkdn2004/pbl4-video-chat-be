@@ -14,6 +14,13 @@ const MessageSchema = new mongoose.Schema(
             required: true
         },
         content: { type: String, required: true },
+        type: {
+            type: String,
+            enum: ['Text', 'Media', 'Document', 'Link']
+        },
+        file: {
+            type: String
+        },
         isRead: { type: Boolean, default: false } // Message read status
     },
     modelOption

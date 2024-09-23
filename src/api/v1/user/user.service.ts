@@ -6,11 +6,12 @@ import getUser, { getAllUsers } from './services/getUser'
 
 import updateFriendRequest from '../friend-request/services/updateFriendRequest'
 import searchUsers from './services/searchUsers'
+import { getOnlineFriends } from './services/getOnlineFriend'
 
 const userService = {
     searchUsers,
     editProfile,
-
+    getOnlineFriends,
     getUser,
 
     getAllUsers,
