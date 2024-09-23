@@ -42,9 +42,25 @@ messageRoute.post(
     async (req: Request<{}, {}, CreateMesssage>, res: Response) => {
         const { userId } = req.user
         const { content, type, file, chatRoomId } = req.body
-        const message = await messageService.createMessage(userId, content, chatRoomId, type, file)
+        const { newMessage, updatedChatRoom } = await messageService.createMessage(
+            userId,
+            content,
+            chatRoomId,
+            type,
+            file
+        )
+        const io = getIO()
+        io.to(
+            updatedChatRoom.participants
+                .filter((person: any) => person.isOnline && person._id.toString() !== userId)
+                .map((person: any) => person.socketId)
+        ).emit('new message', newMessage)
 
-        responseHandler.ok(res, message, 'Tạo tin nhắn thành công')
+        io.to(
+            updatedChatRoom.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
+        ).emit('updated chatroom', updatedChatRoom)
+
+        responseHandler.ok(res, { message: newMessage, chatRoom: updatedChatRoom }, 'Tạo tin nhắn thành công')
     }
 )
 

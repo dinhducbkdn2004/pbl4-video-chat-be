@@ -23,16 +23,11 @@ const createMessage = async (
 
     chatRoom.messages.push(message._id)
     chatRoom.lastMessage = message._id
-    await chatRoom.save()
+    const updatedChatRoom = await chatRoom.save()
 
     const newMessage = await messageModel.findById(message._id).populate('sender', 'name avatar _id')
     if (newMessage === null) throw 'Lỗi get'
-    const io = getIO()
-    io.to(
-        chatRoom.participants
-            .filter((person: any) => person.isOnline && person._id.toString() !== sender)
-            .map((person: any) => person.socketId)
-    ).emit('server send new message', message)
-    return newMessage
+
+    return { newMessage, updatedChatRoom }
 }
 export default createMessage

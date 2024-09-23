@@ -8,7 +8,7 @@ export const disconnectEvent = async (socket: Socket, onlineUser: any[]) => {
         const user = socket.handshake.auth
 
         console.log(`${user.name} disconnected`)
-        socket.to(onlineUser.map((user) => user.socketId)).emit('server send disconnect friend', user)
+        socket.to(onlineUser.map((user) => user.socketId)).emit('disconnect friend', user)
 
         user.isOnline = false
         user.socketId = null
