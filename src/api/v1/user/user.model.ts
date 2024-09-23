@@ -17,8 +17,8 @@ const UserSchema = new mongoose.Schema(
                 default: []
             }
         ],
-        backgroundImage: { type: String, required: true, default: '' },
-        introduction: { type: String, required: true, default: '' },
+        backgroundImage: { type: String, default: '' },
+        introduction: { type: String, default: '' },
         isOnline: { type: Boolean },
         socketId: { type: String },
         chatRooms: [

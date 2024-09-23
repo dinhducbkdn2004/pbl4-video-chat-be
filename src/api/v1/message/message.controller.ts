@@ -4,6 +4,8 @@ import messageService from './message.service'
 import responseHandler from '../../../handlers/response.handler'
 import messageValidation from './message.validation'
 import { validateHandler } from '~/handlers/validation.handler'
+import { CreateMesssage } from './message.dto'
+import { getIO } from '~/socket/socket'
 
 const messageRoute: Router = Router()
 
@@ -25,14 +27,24 @@ messageRoute.get(
             }
             const result = await messageService.getMessagesByChatRoomId(chatRoomId, Number(page), Number(limit))
 
-            if (!result || result.length === 0) {
-                return responseHandler.notFound(res, 'Không tìm thấy tin nhắn nào')
-            }
-
             responseHandler.ok(res, result, 'Lấy danh sách tin nhắn thành công')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }
+    }
+)
+
+messageRoute.post(
+    '/',
+    authenticate,
+    messageValidation.createMessage,
+    validateHandler,
+    async (req: Request<{}, {}, CreateMesssage>, res: Response) => {
+        const { userId } = req.user
+        const { content, type, file, chatRoomId } = req.body
+        const message = await messageService.createMessage(userId, content, chatRoomId, type, file)
+
+        responseHandler.ok(res, message, 'Tạo tin nhắn thành công')
     }
 )
 

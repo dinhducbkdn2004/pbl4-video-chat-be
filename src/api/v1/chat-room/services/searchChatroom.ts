@@ -5,7 +5,7 @@ const searchChatRooms = async (
     name?: string,
     page: number = 1,
     limit: number = 10,
-    type?: 'PUBLIC' | 'PRIVATE',
+    privacy?: 'PUBLIC' | 'PRIVATE',
     getMy?: boolean,
     userId?: string
 ) => {
@@ -13,7 +13,7 @@ const searchChatRooms = async (
 
     type SearchOption = {
         name?: RegExp
-        typeRoom?: 'PUBLIC' | 'PRIVATE'
+        privacy?: 'PUBLIC' | 'PRIVATE'
         participants?: string
         $or?: any[]
     }
@@ -22,14 +22,14 @@ const searchChatRooms = async (
     if (name) {
         searchOption.name = new RegExp(name, 'i')
     }
-    if (type === 'PRIVATE') {
-        searchOption.typeRoom = 'PRIVATE'
+    if (privacy === 'PRIVATE') {
+        searchOption.privacy = 'PRIVATE'
         searchOption.participants = userId
-    } else if (type === 'PUBLIC') {
-        searchOption.typeRoom = 'PUBLIC'
+    } else if (privacy === 'PUBLIC') {
+        searchOption.privacy = 'PUBLIC'
     }
     if (getMy) {
-        searchOption.$or = [{ typeRoom: 'PUBLIC' }, { typeRoom: 'PRIVATE', participants: userId }]
+        searchOption.$or = [{ privacy: 'PUBLIC' }, { privacy: 'PRIVATE', participants: userId }]
     }
 
     const chatRooms = await chatRoomModel

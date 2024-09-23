@@ -4,6 +4,7 @@ import modelOption from '../../../configs/model.config'
 const ChatRoomSchema = new mongoose.Schema(
     {
         name: { type: String, default: '' },
+        createdBy: { type: mongoose.Schema.Types.ObjectId, required: true },
         participants: [
             {
                 type: mongoose.Schema.Types.ObjectId,
@@ -18,12 +19,11 @@ const ChatRoomSchema = new mongoose.Schema(
                 default: []
             }
         ],
-        isGroupChat: { type: Boolean, default: false },
-        typeRoom: {
+        typeRoom: { type: String, enum: ['OneToOne', 'Group'], required: true },
+        privacy: {
             type: String,
             enum: ['PUBLIC', 'PRIVATE'],
-            required: true,
-            default: 'PRIVATE'
+            required: true
         },
         lastMessage: {
             type: mongoose.Schema.Types.ObjectId,

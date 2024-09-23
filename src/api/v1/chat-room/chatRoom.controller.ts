@@ -18,11 +18,10 @@ chatRoomRoute.post(
     validateHandler,
     async (req: Request<{}, {}, createChatRoom>, res: Response) => {
         try {
-            const { users, name = '' } = req.body
+            const { users, name = '', privacy } = req.body
             const { userId } = req.user
-            users.push(userId)
 
-            const newChatRoom = await chatRoomService.createChatRoom(users, name)
+            const newChatRoom = await chatRoomService.createChatRoom(userId, users, name, privacy)
 
             responseHandler.ok(res, newChatRoom, 'Tạo room thành công')
         } catch (error: any) {
@@ -36,14 +35,14 @@ chatRoomRoute.get(
     authenticate,
     async (req: Request<{}, {}, {}, Partial<searchChatroomQueryParams>>, res: Response) => {
         try {
-            const { name, page = '1', limit = '10', typeRoom, getMy } = req.query
+            const { name, page = '1', limit = '10', privacy, getMy } = req.query
             const { userId } = req.user
 
             const result = await chatRoomService.searchChatRooms(
                 name,
                 Number(page),
                 Number(limit),
-                typeRoom,
+                privacy,
                 getMy === 'true',
                 userId
             )

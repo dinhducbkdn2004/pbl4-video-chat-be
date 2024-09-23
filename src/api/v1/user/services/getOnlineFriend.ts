@@ -13,6 +13,6 @@ export const getOnlineFriends = async (userId: string) => {
             _id: { $in: user.friends }, // Lọc theo danh sách bạn bè
             isOnline: true // Lọc những bạn bè đang online
         })
-        .select('name avatar')
+        .select('name avatar socketId')
     return onlineFriends
 }
