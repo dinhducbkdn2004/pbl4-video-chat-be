@@ -1,9 +1,9 @@
 import mongoose from 'mongoose'
 import modelOption from '../../../configs/model.config'
-
+export type NotificationTypes = 'MESSAGE' | 'FRIEND_REQUEST'
 const NotificationSchema = new mongoose.Schema(
     {
-        user: {
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
             required: true
@@ -13,8 +13,12 @@ const NotificationSchema = new mongoose.Schema(
             enum: ['MESSAGE', 'FRIEND_REQUEST'],
             required: true
         },
-        message: { type: String },
-        isRead: { type: Boolean, default: false }
+        message: { type: String, required: true },
+        isRead: { type: Boolean, default: false },
+        detail: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true
+        }
     },
     modelOption
 )

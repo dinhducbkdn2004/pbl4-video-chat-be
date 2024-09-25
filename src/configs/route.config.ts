@@ -6,6 +6,7 @@ import uploadRoute from '../api/v1/upload/upload.controller'
 import chatRoomRoute from '../api/v1/chat-room/chatRoom.controller'
 import messageRoute from '~/api/v1/message/message.controller'
 import friendRequestRoute from '~/api/v1/friend-request/friendRequest.controller'
+import notificationsRoute from '~/api/v1/notifications/notification.controller'
 
 const routes: Router = Router()
 
@@ -15,5 +16,6 @@ routes.use('/upload', uploadRoute)
 routes.use('/chat-rooms', chatRoomRoute)
 routes.use('/messages', messageRoute)
 routes.use('/friend-requests', friendRequestRoute)
+routes.use('/notifications', notificationsRoute)
 
 export default routes

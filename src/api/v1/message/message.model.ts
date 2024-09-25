@@ -21,7 +21,7 @@ const MessageSchema = new mongoose.Schema(
         file: {
             type: String
         },
-        isRead: { type: Boolean, default: false } // Message read status
+        isRead: { type: mongoose.Schema.Types.ObjectId, required: true, default: [] }
     },
     modelOption
 )
