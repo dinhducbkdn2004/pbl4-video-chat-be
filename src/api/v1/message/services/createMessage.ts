@@ -18,7 +18,8 @@ const createMessage = async (
         content,
         chatRoom: chatRoomId,
         type,
-        file
+        file,
+        isRead: []
     })
 
     chatRoom.messages.push(message._id)
@@ -27,7 +28,14 @@ const createMessage = async (
 
     const newMessage = await messageModel.findById(message._id).populate('sender', 'name avatar _id')
     if (newMessage === null) throw 'Lỗi get'
+    const io = getIO()
+    io.to(
+        updatedChatRoom.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
+    ).emit('new message', newMessage)
 
+    io.to(
+        updatedChatRoom.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
+    ).emit('updated chatroom', updatedChatRoom)
     return { newMessage, updatedChatRoom }
 }
 export default createMessage

@@ -25,15 +25,7 @@ chatRoomRoute.post(
 
             const newChatRoom = await chatRoomService.createChatRoom(userId, users, name, privacy)
 
-            ;[userId, ...users].forEach(
-                async (user_id: string) =>
-                    await notificationService.createNotification(
-                        `Bạn đã được thêm vào phòng chat ${name}`,
-                        user_id,
-                        'MESSAGE',
-                        newChatRoom._id.toString()
-                    )
-            )
+            
 
             responseHandler.ok(res, newChatRoom, 'Tạo room thành công')
         } catch (error: any) {

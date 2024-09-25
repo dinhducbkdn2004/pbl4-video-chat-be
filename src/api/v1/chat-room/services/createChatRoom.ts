@@ -1,3 +1,4 @@
+import { notificationService } from '../../notifications/notification.service'
 import chatRoomModel from '../chatRoom.model'
 
 const createChatRoom = async (
@@ -14,6 +15,15 @@ const createChatRoom = async (
         privacy,
         typeRoom: paticipants.length === 2 ? 'OneToOne' : 'Group'
     })
+    paticipants.forEach(
+        async (user_id: string) =>
+            await notificationService.createNotification(
+                `Bạn đã được thêm vào phòng chat ${name}`,
+                user_id,
+                'MESSAGE',
+                room._id.toString()
+            )
+    )
     return room
 }
 export default createChatRoom

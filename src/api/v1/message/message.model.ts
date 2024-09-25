@@ -13,7 +13,10 @@ const MessageSchema = new mongoose.Schema(
             ref: 'Users',
             required: true
         },
-        content: { type: String, required: true },
+        content: {
+            type: String,
+            required: true
+        },
         type: {
             type: String,
             enum: ['Text', 'Media', 'Document', 'Link']
@@ -21,7 +24,11 @@ const MessageSchema = new mongoose.Schema(
         file: {
             type: String
         },
-        isRead: { type: mongoose.Schema.Types.ObjectId, required: true, default: [] }
+        isRead: {
+            type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Users' }],
+            required: true,
+            default: []
+        }
     },
     modelOption
 )

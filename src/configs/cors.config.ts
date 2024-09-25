@@ -1,7 +1,7 @@
 import { CorsOptions } from 'cors'
 import { log } from 'console'
 
-const whitelist = ['http://localhost:5173', 'https://pbl4-video-chat-fe.vercel.app']
+const whitelist = ['http://localhost:5173', 'https://pbl4-video-chat-fe.onrender.com']
 const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
         if (!origin || whitelist.includes(origin)) {

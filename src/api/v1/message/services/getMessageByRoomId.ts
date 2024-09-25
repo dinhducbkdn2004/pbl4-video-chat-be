@@ -6,7 +6,6 @@ const getMessagesByChatRoomId = async (chatRoomId: string, page: number = 1, lim
 
     const messages = await messageModel
         .find({ chatRoom: chatRoomId })
-        .select('-chatRoom')
         .populate('sender', 'name avatar')
         .sort({ createdAt: -1 })
         .skip(pagination.skip)
