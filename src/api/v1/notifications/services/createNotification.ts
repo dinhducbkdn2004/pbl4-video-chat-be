@@ -1,7 +1,7 @@
-import { getIO } from '~/socket/socket'
 import notificationModel, { NotificationTypes } from '../notification.model'
 import userModel from '../../user/user.model'
 import mongoose from 'mongoose'
+import { getIO } from '~/configs/socket.config'
 
 export const createNotification = async (
     message: string,

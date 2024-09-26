@@ -1,4 +1,5 @@
-import { getIO } from '~/socket/socket'
+
+import { getIO } from '~/configs/socket.config'
 import chatRoomModel from '../../chat-room/chatRoom.model'
 import messageModel from '../message.model'
 

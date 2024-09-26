@@ -3,7 +3,8 @@ import { createServer, Server } from 'http'
 import configApp from './configs/app.config'
 import connectDb from './configs/database.config'
 import env from './configs/env'
-import initSocketIO from './socket/socket'
+import initSocketIO from './configs/socket.config'
+
 
 const app: Express = express()
 const PORT: string | number = env.PORT || 3000
