@@ -10,7 +10,7 @@ const createMessage = async (
     file?: string
 ) => {
     const chatRoom = await chatRoomModel.findById(chatRoomId).populate('participants', 'name avatar isOnlie socketId')
-    console.log('chatRoom: ', chatRoom)
+
     if (chatRoom === null) throw 'Không tìm thấy chat room!'
 
     const message = await messageModel.create({

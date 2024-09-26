@@ -1,7 +1,14 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
 export type NotificationTypes = 'MESSAGE' | 'FRIEND_REQUEST'
-const NotificationSchema = new mongoose.Schema(
+export interface INotification {
+    userId: Types.ObjectId
+    type: NotificationTypes
+    message: string
+    isRead: boolean
+    detail: Types.ObjectId
+}
+const NotificationSchema = new mongoose.Schema<INotification>(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -23,5 +30,5 @@ const NotificationSchema = new mongoose.Schema(
     modelOption
 )
 
-const notificationModel = mongoose.model('Notifications', NotificationSchema)
+const notificationModel = mongoose.model<INotification>('Notifications', NotificationSchema)
 export default notificationModel

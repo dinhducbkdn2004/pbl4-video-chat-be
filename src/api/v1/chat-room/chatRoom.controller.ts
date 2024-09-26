@@ -25,8 +25,6 @@ chatRoomRoute.post(
 
             const newChatRoom = await chatRoomService.createChatRoom(userId, users, name, privacy)
 
-            
-
             responseHandler.ok(res, newChatRoom, 'Tạo room thành công')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)

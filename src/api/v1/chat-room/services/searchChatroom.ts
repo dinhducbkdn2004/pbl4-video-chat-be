@@ -1,5 +1,6 @@
-import { getPagination } from '../../../../helpers/pagination'
 import chatRoomModel from '../chatRoom.model'
+import { getPagination } from '../../../../helpers/pagination'
+import { IUser } from '../../user/user.model'
 
 const searchChatRooms = async (
     name?: string,
@@ -35,12 +36,25 @@ const searchChatRooms = async (
     const chatRooms = await chatRoomModel
         .find(searchOption)
         .select('name typeRoom participants updatedAt')
-        .populate('participants', 'name avatar isOnline')
+        .populate<{ participants: IUser[] }>('participants', 'name avatar isOnline')
         .sort({ updatedAt: -1 })
         .skip(pagination.skip)
         .limit(pagination.limit)
+        .lean()
 
-    return chatRooms
+    const updatedChatRooms = chatRooms.map((room) => {
+        if (room.typeRoom === 'OneToOne') {
+            // Find the other participant (opponent)
+            const opponent = room.participants.find((participant) => participant._id.toString() !== userId)
+            room.name = opponent?.name || ''
+            room.chatRoomImage = opponent?.avatar || ''
+            room.isOnline = opponent?.isOnline as boolean
+        }
+
+        return room
+    })
+
+    return updatedChatRooms
 }
 
 export default searchChatRooms

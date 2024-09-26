@@ -1,7 +1,31 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
 
-const UserSchema = new mongoose.Schema(
+export type LoginType = 'GOOGLE' | 'SYSTEM'
+export interface IUser {
+    _id: Types.ObjectId
+    name: string
+    email: string
+    avatar: string
+    friends: Types.ObjectId[]
+    backgroundImage: string
+    introduction: string
+    isOnline: boolean
+    socketId: string
+    chatRooms: Types.ObjectId[]
+    notifications: Types.ObjectId[]
+    account: {
+        password: string
+        otp: string
+        otpExp: Date
+        otpWrongCount: number
+        isVerified: boolean
+        loginType: LoginType
+        otpAttempts: number
+        otpLockUntil?: Date
+    }
+}
+const UserSchema = new mongoose.Schema<IUser>(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
@@ -17,9 +41,12 @@ const UserSchema = new mongoose.Schema(
                 default: []
             }
         ],
-        backgroundImage: { type: String, default: '' },
+        backgroundImage: {
+            type: String,
+            default: 'https://cdn.trendhunterstatic.com/thumbs/human-facebook-default-avatar.jpeg?auto=webp'
+        },
         introduction: { type: String, default: '' },
-        isOnline: { type: Boolean },
+        isOnline: { type: Boolean, required: true, default: false },
         socketId: { type: String },
         chatRooms: [
             {
@@ -44,7 +71,8 @@ const UserSchema = new mongoose.Schema(
                 },
                 otpExp: {
                     type: Date,
-                    default: null
+                    default: Date.now(),
+                    required: true
                 },
                 otpWrongCount: {
                     type: Number,
@@ -53,22 +81,24 @@ const UserSchema = new mongoose.Schema(
                 isVerified: {
                     type: Boolean,
                     default: false
-                }, // xác nhận tài khoản đã chưa xác thực email
+                },
                 loginType: {
                     type: String,
-                    enum: ['GOOGLE', 'SYSTEM'], // Sử dụng enum để giới hạn các giá trị hợp lệ
+                    enum: ['GOOGLE', 'SYSTEM'],
                     required: true
                 },
                 otpAttempts: {
                     type: Number,
                     default: 0
                 },
-                otpLockUntil: Date
+                otpLockUntil: {
+                    type: Date
+                }
             },
             required: true
         }
     },
     modelOption
 )
-const userModel = mongoose.model('Users', UserSchema)
+const userModel = mongoose.model<IUser>('Users', UserSchema)
 export default userModel

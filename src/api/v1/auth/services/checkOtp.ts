@@ -24,7 +24,7 @@ const checkOtp = async (otp: string, email: string): Promise<{ accessToken: stri
         await user.save()
         throw new Error(`OTP không hợp lệ! Bạn còn ${MAX_OTP_ATTEMPTS - user.account.otpAttempts} lần thử.`)
     }
-
+    if (!user.account.otpExp) throw 'User chưa có otp'
     if (user.account.otpExp < new Date()) {
         throw new Error('OTP đã hết hạn!')
     }

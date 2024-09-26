@@ -1,13 +1,29 @@
-import mongoose from 'mongoose'
+import mongoose, { Schema, Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
 
-const ChatRoomSchema = new mongoose.Schema(
+export type TypeRoom = 'OneToOne' | 'Group'
+export type Privacy = 'PUBLIC' | 'PRIVATE'
+
+export interface IChatRoom {
+    name: string
+    chatRoomImage: string
+    createdBy: Types.ObjectId
+    participants: Types.ObjectId[]
+    messages: Types.ObjectId[]
+    typeRoom: TypeRoom
+    privacy: Privacy
+    lastMessage: Types.ObjectId
+    isOnline: boolean
+}
+
+const ChatRoomSchema = new mongoose.Schema<IChatRoom>(
     {
         name: { type: String, default: '' },
+        chatRoomImage: { type: String, default: '' },
         createdBy: { type: mongoose.Schema.Types.ObjectId, required: true },
         participants: [
             {
-                type: mongoose.Schema.Types.ObjectId,
+                type: Schema.Types.ObjectId,
                 ref: 'Users',
                 required: true
             }
@@ -33,5 +49,5 @@ const ChatRoomSchema = new mongoose.Schema(
     modelOption
 )
 
-const chatRoomModel = mongoose.model('ChatRooms', ChatRoomSchema)
+const chatRoomModel = mongoose.model<IChatRoom>('ChatRooms', ChatRoomSchema)
 export default chatRoomModel
