@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 import userModel from '~/api/v1/user/user.model'
 import friendRequestModel from '~/api/v1/friend-request/friendRequest.model'
+import { createNotification } from '../../notifications/services/createNotification'
 
 const updateFriendRequest = async (receiverId: string, requestId: string, status: 'ACCEPTED' | 'DECLINED') => {
     const request = await friendRequestModel.findById(requestId)
@@ -29,8 +30,29 @@ const updateFriendRequest = async (receiverId: string, requestId: string, status
         }
         await senderUser.save()
         await receiverUser.save()
+        await createNotification(
+            'Bạn đã chấp nhận lời mời kết bạn!',
+            receiverId.toString(),
+            'FRIEND_REQUEST',
+            updatedRequest._id.toString()
+        )
+
+        await createNotification(
+            'Yêu cầu kết bạn của bạn đã được chấp nhận!',
+            senderUser._id.toString(),
+            'FRIEND_REQUEST',
+            updatedRequest._id.toString()
+        )
+    } else if (status === 'DECLINED') {
+        await createNotification(
+            'Yêu cầu kết bạn của bạn đã bị từ chối.',
+            receiverId.toString(),
+            'FRIEND_REQUEST',
+            updatedRequest._id.toString()
+        )
     }
 
     return { updatedRequest, senderUser, receiverUser }
 }
+
 export default updateFriendRequest

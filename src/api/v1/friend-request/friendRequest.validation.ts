@@ -17,18 +17,16 @@ const friendRequestValidation = {
     ],
 
     updateRequest: [
-        body('friendId')
+        body('requestId')
             .notEmpty()
-            .withMessage('thiếu trường friendId')
+            .withMessage('requestId')
             .custom(async (value: string) => {
-                if (!Types.ObjectId.isValid(value)) throw 'Invalid friendId'
-                const user = await userService.getUser(value)
-                if (!user) throw 'Không tồi tại người dùng để kết bạn'
+                if (!Types.ObjectId.isValid(value)) throw 'Invalid requestId'
             }),
         body('status')
             .notEmpty()
             .withMessage('Thiếu trường status')
-            .custom((value: string) => {
+            .custom(async (value: string) => {
                 if (!(value === 'ACCEPTED' || value === 'DECLINED'))
                     throw 'trường status phải có giá trị ACCEPTED hoặc DECLINED'
             })
