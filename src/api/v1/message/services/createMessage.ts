@@ -1,4 +1,5 @@
-import { getIO } from '~/socket/socket'
+
+import { getIO } from '~/configs/socket.config'
 import chatRoomModel from '../../chat-room/chatRoom.model'
 import messageModel from '../message.model'
 
@@ -10,7 +11,7 @@ const createMessage = async (
     file?: string
 ) => {
     const chatRoom = await chatRoomModel.findById(chatRoomId).populate('participants', 'name avatar isOnlie socketId')
-    console.log('chatRoom: ', chatRoom)
+
     if (chatRoom === null) throw 'Không tìm thấy chat room!'
 
     const message = await messageModel.create({

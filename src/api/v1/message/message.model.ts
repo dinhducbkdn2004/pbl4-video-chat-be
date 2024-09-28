@@ -1,7 +1,15 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
-
-const MessageSchema = new mongoose.Schema(
+export type MessageType = 'Text' | 'Media' | 'Document' | 'Link'
+export interface IMessage {
+    chatRoom: Types.ObjectId
+    sender: Types.ObjectId
+    content: string
+    type: MessageType
+    fileUrl?: string
+    isRead: Types.ObjectId[]
+}
+const MessageSchema = new mongoose.Schema<IMessage>(
     {
         chatRoom: {
             type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +29,7 @@ const MessageSchema = new mongoose.Schema(
             type: String,
             enum: ['Text', 'Media', 'Document', 'Link']
         },
-        file: {
+        fileUrl: {
             type: String
         },
         isRead: {
@@ -33,5 +41,5 @@ const MessageSchema = new mongoose.Schema(
     modelOption
 )
 
-const messageModel = mongoose.model('Messages', MessageSchema)
+const messageModel = mongoose.model<IMessage>('Messages', MessageSchema)
 export default messageModel

@@ -1,7 +1,14 @@
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
+export type FriendRequestStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED'
+export interface IFriendRequest {
+    sender: Types.ObjectId
+    receiver: Types.ObjectId
+    status: FriendRequestStatus
+    caption: string
+}
 
-const FriendRequestSchema = new mongoose.Schema(
+const FriendRequestSchema = new mongoose.Schema<IFriendRequest>(
     {
         sender: {
             type: mongoose.Schema.Types.ObjectId,
@@ -26,5 +33,5 @@ const FriendRequestSchema = new mongoose.Schema(
     modelOption
 )
 
-const friendRequestModel = mongoose.model('FriendRequests', FriendRequestSchema)
+const friendRequestModel = mongoose.model<IFriendRequest>('FriendRequests', FriendRequestSchema)
 export default friendRequestModel

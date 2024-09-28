@@ -1,3 +1,4 @@
+import { log } from 'console'
 import { notificationService } from '../../notifications/notification.service'
 import chatRoomModel from '../chatRoom.model'
 
@@ -15,6 +16,7 @@ const createChatRoom = async (
         privacy,
         typeRoom: paticipants.length === 2 ? 'OneToOne' : 'Group'
     })
+    log(paticipants)
     paticipants.forEach(
         async (user_id: string) =>
             await notificationService.createNotification(

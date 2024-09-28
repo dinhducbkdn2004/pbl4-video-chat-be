@@ -5,29 +5,26 @@ import friendRequestService from './friendRequest.service'
 import { validateHandler } from '../../../handlers/validation.handler'
 import { CreateFriendRequestDto, UpdateFriendRequestDto, UpdateFriendRequestParams } from './friendRequest.dto'
 import friendRequestValidation from './friendRequest.validation'
-import { getIO } from '~/socket/socket'
+import { getIO } from '~/configs/socket.config'
+import { createNotification } from '../notifications/services/createNotification'
 
 const friendRequestRoute = Router()
-friendRequestRoute.get(
-    '/get-my',
-    authenticate,
 
-    async (req: Request, res: Response) => {
-        try {
-            const { userId } = req.user
+friendRequestRoute.get('/get-my', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.user
 
-            const { page = 1, limit = 10 } = req.query as {
-                page: string
-                limit: string
-            }
-
-            const data = await friendRequestService.getFriendRequests(userId, +page, +limit)
-            responseHandler.ok(res, data, 'get friend request successfully!')
-        } catch (error: any) {
-            responseHandler.errorOrBadRequest(res, error)
+        const { page = 1, limit = 10 } = req.query as {
+            page: string
+            limit: string
         }
+
+        const data = await friendRequestService.getFriendRequests(userId, +page, +limit)
+        responseHandler.ok(res, data, 'Lấy danh sách yêu cầu kết bạn thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
     }
-)
+})
 
 friendRequestRoute.post(
     '/add-friend',
@@ -40,6 +37,13 @@ friendRequestRoute.post(
             const { caption, friendId } = req.body
 
             const newRequest = await friendRequestService.sendAddFriendRequest(userId, friendId, caption)
+
+            await createNotification(
+                'Bạn có một lời mời kết bạn mới!',
+                friendId,
+                'FRIEND_REQUEST',
+                newRequest._id.toString()
+            )
 
             const io = getIO()
             io.to(friendId).emit('new friend request', newRequest)
@@ -54,8 +58,8 @@ friendRequestRoute.post(
 friendRequestRoute.patch(
     '/update/:requestId',
     authenticate,
-    validateHandler,
     friendRequestValidation.updateRequest,
+    validateHandler,
     async (req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestDto>, res: Response) => {
         try {
             const { userId } = req.user
@@ -75,6 +79,17 @@ friendRequestRoute.patch(
                     friend: receiverUser
                 })
             }
+            const notificationMessage =
+                status === 'ACCEPTED'
+                    ? 'Yêu cầu kết bạn của bạn đã được chấp nhận!'
+                    : 'Yêu cầu kết bạn của bạn đã bị từ chối.'
+
+            await createNotification(
+                notificationMessage,
+                senderUser._id.toString(),
+                'FRIEND_REQUEST',
+                updatedRequest._id.toString()
+            )
 
             responseHandler.ok(res, updatedRequest, 'Cập nhật lời mời kết bạn thành công!')
         } catch (error: any) {

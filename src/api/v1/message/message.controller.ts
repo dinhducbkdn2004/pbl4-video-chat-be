@@ -5,7 +5,6 @@ import responseHandler from '../../../handlers/response.handler'
 import messageValidation from './message.validation'
 import { validateHandler } from '~/handlers/validation.handler'
 import { CreateMesssage } from './message.dto'
-import { getIO } from '~/socket/socket'
 
 const messageRoute: Router = Router()
 
