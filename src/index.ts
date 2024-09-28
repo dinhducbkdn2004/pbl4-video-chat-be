@@ -5,7 +5,6 @@ import connectDb from './configs/database.config'
 import env from './configs/env'
 import initSocketIO from './configs/socket.config'
 
-
 const app: Express = express()
 const PORT: string | number = env.PORT || 3000
 const httpServer: Server = createServer(app)
