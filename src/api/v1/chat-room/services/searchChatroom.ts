@@ -1,6 +1,7 @@
 import chatRoomModel from '../chatRoom.model'
 import { getPagination } from '../../../../helpers/pagination'
 import { IUser } from '../../user/user.model'
+import messageModel, { IMessage } from '../../message/message.model'
 
 const searchChatRooms = async (
     name?: string,
@@ -35,8 +36,16 @@ const searchChatRooms = async (
 
     const chatRooms = await chatRoomModel
         .find(searchOption)
-        .select('name typeRoom participants updatedAt')
-        .populate<{ participants: IUser[] }>('participants', 'name avatar isOnline')
+        .select('name typeRoom participants updatedAt lastMessage')
+        .populate<{ participants: IUser[] }>('participants', 'name avatar')
+        .populate<{ lastMessage: IMessage[] }>({
+            path: 'lastMessage', // Populate lastMessage first
+            select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
+            populate: {
+                path: 'sender', // Nested populate for sender
+                select: 'name avatar' // Select fields from the sender (user model)
+            }
+        })
         .sort({ updatedAt: -1 })
         .skip(pagination.skip)
         .limit(pagination.limit)
@@ -48,11 +57,12 @@ const searchChatRooms = async (
             const opponent = room.participants.find((participant) => participant._id.toString() !== userId)
             room.name = opponent?.name || ''
             room.chatRoomImage = opponent?.avatar || ''
-            room.isOnline = opponent?.isOnline as boolean
+            room.isOnline = opponent?.isOnline || false
         }
 
         return room
     })
+    console.log(updatedChatRooms)
 
     return updatedChatRooms
 }
