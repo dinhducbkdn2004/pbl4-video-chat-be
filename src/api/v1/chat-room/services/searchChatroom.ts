@@ -62,7 +62,6 @@ const searchChatRooms = async (
 
         return room
     })
-    console.log(updatedChatRooms)
 
     return updatedChatRooms
 }

@@ -74,4 +74,14 @@ chatRoomRoute.get(
     }
 )
 
+chatRoomRoute.get('/:chatRoomId', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId } = req.params
+        const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
+        responseHandler.ok(res, chatRoom, 'Tìm kiếm chatroom thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
+
 export default chatRoomRoute
