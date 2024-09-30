@@ -1,7 +1,11 @@
+import { log } from 'console'
 import { Server } from 'http'
 import { Socket, Server as SocketIOServer } from 'socket.io'
+import chatRoomModel from '~/api/v1/chat-room/chatRoom.model'
+import chatRoomService from '~/api/v1/chat-room/chatRoom.service'
 import userService from '~/api/v1/user/user.service'
 import authSocket from '~/socket/authSocket'
+import callVideoEvents from '~/socket/events/call-video-event'
 import { disconnectEvent } from '~/socket/events/disconnect'
 import onlineUsersEvent from '~/socket/events/online-users'
 
@@ -23,26 +27,7 @@ const initSocketIO = (httpServer: Server) => {
 
             await onlineUsersEvent(socket)
 
-            socket.on(
-                'start new call',
-                async ({ userToCallSocketIds, from }: { userToCallSocketIds: string; from: string }) => {
-                    const callee = await userService.getUser(userToCallSocketIds)
-                    console.log(callee)
-
-                    io.to(callee.socketId).emit('new video call', { from })
-                }
-            )
-            socket.on('get my infor', () => {
-                socket.emit('get my infor', user)
-            })
-
-            socket.on('answer a call', (data) => {
-                io.to(data.to).emit('callee accecpted', data)
-            })
-
-            socket.on("callee's calling someone", ({ calleData, callerData }) => {
-                io.to(callerData.socketId).emit("callee's calling someone", { calleData, callerData })
-            })
+            callVideoEvents(socket)
 
             disconnectEvent(socket)
         } catch (error: any) {
