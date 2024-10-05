@@ -27,7 +27,7 @@ const initSocketIO = (httpServer: Server) => {
 
             await onlineUsersEvent(socket)
 
-            callVideoEvents(socket)
+            await callVideoEvents(socket)
 
             disconnectEvent(socket)
         } catch (error: any) {

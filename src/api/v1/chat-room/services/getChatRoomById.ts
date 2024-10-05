@@ -4,7 +4,7 @@ import chatRoomModel from '../chatRoom.model'
 export const getChatRoomById = async (chatRoomId: string, userId: string) => {
     const room = await chatRoomModel
         .findById(chatRoomId)
-        .populate<{ participants: IUser[] }>('participants', 'name avatar')
+        .populate<{ participants: IUser[] }>('participants', 'name avatar socketId')
 
     if (room === null) throw 'Không tìm thấy chat room'
     if (room.typeRoom === 'OneToOne') {
