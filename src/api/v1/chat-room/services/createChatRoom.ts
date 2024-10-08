@@ -4,20 +4,21 @@ import chatRoomModel from '../chatRoom.model'
 
 const createChatRoom = async (
     createdBy: string,
-    paticipants: string[],
+    participants: string[],
     name: string,
     privacy: 'PUBLIC' | 'PRIVATE'
 ) => {
-    paticipants.push(createdBy)
+    participants.push(createdBy)
     const room = await chatRoomModel.create({
         createdBy,
         name,
-        participants: paticipants,
+        participants: participants,
+        admins: participants.length > 2 ? [createdBy] : [],
         privacy,
-        typeRoom: paticipants.length === 2 ? 'OneToOne' : 'Group'
+        typeRoom: participants.length === 2 ? 'OneToOne' : 'Group'
     })
-    log(paticipants)
-    paticipants.forEach(
+    log(participants)
+    participants.forEach(
         async (user_id: string) =>
             await notificationService.createNotification(
                 `Bạn đã được thêm vào phòng chat ${name}`,

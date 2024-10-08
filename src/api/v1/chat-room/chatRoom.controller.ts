@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 
 import { Router } from 'express'
-
 import chatRoomService from './chatRoom.service'
 import { authenticate } from '../../../middlewares/auth.middleware'
 import responseHandler from '../../../handlers/response.handler'
@@ -85,4 +84,43 @@ chatRoomRoute.get('/:chatRoomId', authenticate, async (req: Request, res: Respon
     }
 })
 
+chatRoomRoute.post('/add-member', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId } = req.body
+        const { newMemberId } = req.body
+        const { userId } = req.user
+
+        const updatedChatRoom = await chatRoomService.addMember(chatRoomId, newMemberId, userId)
+        responseHandler.ok(res, updatedChatRoom, 'Thêm thành viên thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
+
+chatRoomRoute.delete('/remove-member', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId } = req.body
+        const { memberId } = req.body
+        const { userId } = req.user
+
+        const updatedChatRoom = await chatRoomService.removeMember(chatRoomId, memberId, userId)
+
+        responseHandler.ok(res, updatedChatRoom, 'Xóa thành viên thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
+chatRoomRoute.patch('/change-details', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId } = req.body
+        const { userId } = req.user
+        const { newName, newImage } = req.body
+
+        const updatedChatRoom = await chatRoomService.changeDetails(chatRoomId, userId, newName, newImage)
+
+        responseHandler.ok(res, updatedChatRoom, 'Thay đổi thông tin phòng chat thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
 export default chatRoomRoute

@@ -9,6 +9,7 @@ export interface IChatRoom {
     chatRoomImage: string
     createdBy: Types.ObjectId
     participants: Types.ObjectId[]
+    admins: Types.ObjectId[]
     messages: Types.ObjectId[]
     typeRoom: TypeRoom
     privacy: Privacy
@@ -26,6 +27,15 @@ const ChatRoomSchema = new mongoose.Schema<IChatRoom>(
                 type: Schema.Types.ObjectId,
                 ref: 'Users',
                 required: true
+            }
+        ],
+        admins: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Users',
+                required: function () {
+                    return this.typeRoom === 'Group'
+                }
             }
         ],
         messages: [
