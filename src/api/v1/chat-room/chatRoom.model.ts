@@ -10,6 +10,7 @@ export interface IChatRoom {
     createdBy: Types.ObjectId
     participants: Types.ObjectId[]
     admins: Types.ObjectId[]
+    moderators: Types.ObjectId[]
     messages: Types.ObjectId[]
     typeRoom: TypeRoom
     privacy: Privacy
@@ -36,6 +37,13 @@ const ChatRoomSchema = new mongoose.Schema<IChatRoom>(
                 required: function () {
                     return this.typeRoom === 'Group'
                 }
+            }
+        ],
+        moderators: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Users',
+                required: false
             }
         ],
         messages: [

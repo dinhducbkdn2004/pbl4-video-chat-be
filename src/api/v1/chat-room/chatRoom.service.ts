@@ -6,6 +6,8 @@ import { getChatRoomById } from './services/getChatRoomById'
 import addMember from './services/addMember'
 import removeMember from './services/removeMember'
 import changeDetails from './services/changeDetails'
+import leaveGroup from './services/leaveGroup'
+import changeRole from './services/changeRole'
 
 const chatRoomService = {
     searchChatRooms,
@@ -14,6 +16,8 @@ const chatRoomService = {
     getChatRoomById,
     addMember,
     removeMember,
-    changeDetails
+    changeDetails,
+    leaveGroup,
+    changeRole
 }
 export default chatRoomService
