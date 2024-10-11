@@ -86,8 +86,7 @@ chatRoomRoute.get('/:chatRoomId', authenticate, async (req: Request, res: Respon
 
 chatRoomRoute.post('/add-member', authenticate, async (req: Request, res: Response) => {
     try {
-        const { chatRoomId } = req.body
-        const { newMemberId } = req.body
+        const { chatRoomId, newMemberId } = req.body
         const { userId } = req.user
 
         const updatedChatRoom = await chatRoomService.addMember(chatRoomId, newMemberId, userId)
@@ -99,8 +98,7 @@ chatRoomRoute.post('/add-member', authenticate, async (req: Request, res: Respon
 
 chatRoomRoute.delete('/remove-member', authenticate, async (req: Request, res: Response) => {
     try {
-        const { chatRoomId } = req.body
-        const { memberId } = req.body
+        const { chatRoomId, memberId } = req.body
         const { userId } = req.user
 
         const updatedChatRoom = await chatRoomService.removeMember(chatRoomId, memberId, userId)
@@ -112,13 +110,38 @@ chatRoomRoute.delete('/remove-member', authenticate, async (req: Request, res: R
 })
 chatRoomRoute.patch('/change-details', authenticate, async (req: Request, res: Response) => {
     try {
-        const { chatRoomId } = req.body
+        const { chatRoomId, newName, newImage } = req.body
         const { userId } = req.user
-        const { newName, newImage } = req.body
 
         const updatedChatRoom = await chatRoomService.changeDetails(chatRoomId, userId, newName, newImage)
 
         responseHandler.ok(res, updatedChatRoom, 'Thay đổi thông tin phòng chat thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
+
+chatRoomRoute.delete('/leave-group', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId } = req.body
+        const { userId } = req.user
+
+        const updatedChatRoom = await chatRoomService.leaveGroup(chatRoomId, userId)
+
+        responseHandler.ok(res, updatedChatRoom, 'Bạn đã rời khỏi cuộc trò chuyện thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
+
+chatRoomRoute.patch('/change-role', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId, userId, role } = req.body
+        const { userId: adminId } = req.user
+
+        const updatedChatRoom = await chatRoomService.changeRole(chatRoomId, userId, adminId, role)
+
+        responseHandler.ok(res, updatedChatRoom, 'Thay đổi vai trò thành công!')
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error)
     }

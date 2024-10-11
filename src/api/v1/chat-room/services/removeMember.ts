@@ -4,12 +4,21 @@ import { notificationService } from '../../notifications/notification.service'
 
 const removeMember = async (chatRoomId: string, memberId: string, adminId: string) => {
     const chatRoom = await chatRoomModel.findById(chatRoomId)
+
     if (!chatRoom || chatRoom.typeRoom !== 'Group') {
         throw new Error('Phòng chat không tồn tại hoặc không phải là nhóm.')
     }
 
-    if (!chatRoom.admins.includes(new Types.ObjectId(adminId))) {
-        throw new Error('Bạn không có quyền thực hiện hành động này.')
+    const isAdmin = chatRoom.admins.includes(new Types.ObjectId(adminId))
+    const isModerator = chatRoom.moderators.includes(new Types.ObjectId(adminId))
+    const donotdelete = chatRoom.admins.includes(new Types.ObjectId(memberId))
+
+    if (isModerator) {
+        if (donotdelete) {
+            throw new Error('Bạn không có quyền xóa Admin ra khỏi nhóm')
+        }
+    } else if (!isAdmin && !isModerator) {
+        throw new Error('Bạn không có quyền xóa thành viên')
     }
 
     if (!chatRoom.participants.includes(new Types.ObjectId(memberId))) {
@@ -26,7 +35,6 @@ const removeMember = async (chatRoomId: string, memberId: string, adminId: strin
         'MESSAGE',
         chatRoomId
     )
-
     return chatRoom
 }
 
