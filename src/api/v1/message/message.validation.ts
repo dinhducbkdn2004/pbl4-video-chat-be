@@ -1,6 +1,7 @@
 import { body, param, query } from 'express-validator'
 
 const messageValidation = {
+    getSeoData: [query('url').notEmpty()],
     getByRoomchatId: [
         query('chatRoomId')
             .notEmpty()

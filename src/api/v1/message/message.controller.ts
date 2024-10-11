@@ -6,6 +6,8 @@ import messageValidation from './message.validation'
 import { validateHandler } from '~/handlers/validation.handler'
 import { CreateMesssage } from './message.dto'
 import mongoose from 'mongoose'
+const got = async () => await import('got')
+import metascraperInstace from '~/configs/metascraper.config'
 
 const messageRoute: Router = Router()
 
@@ -52,6 +54,21 @@ messageRoute.post(
         })
 
         responseHandler.ok(res, { message: newMessage, chatRoom: updatedChatRoom }, 'Tạo tin nhắn thành công')
+    }
+)
+messageRoute.get(
+    '/get-seo-data',
+    authenticate,
+    messageValidation.getSeoData,
+    validateHandler,
+    async (req: Request<{}, {}, {}, { url: string }>, res: Response) => {
+        const { url } = req.query
+        const gotModule = await got()
+        const { body: html, url: finalUrl } = await gotModule.default(url)
+
+        const metadata = await metascraperInstace({ html, url: finalUrl })
+
+        responseHandler.ok(res, metadata, 'Lấy thông tin SEO thành công')
     }
 )
 
