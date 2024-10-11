@@ -5,6 +5,7 @@ import responseHandler from '../../../handlers/response.handler'
 import messageValidation from './message.validation'
 import { validateHandler } from '~/handlers/validation.handler'
 import { CreateMesssage } from './message.dto'
+import mongoose from 'mongoose'
 
 const messageRoute: Router = Router()
 
@@ -40,14 +41,15 @@ messageRoute.post(
     validateHandler,
     async (req: Request<{}, {}, CreateMesssage>, res: Response) => {
         const { userId } = req.user
+
         const { content, type, file, chatRoomId } = req.body
-        const { newMessage, updatedChatRoom } = await messageService.createMessage(
-            userId,
+        const { newMessage, updatedChatRoom } = await messageService.createMessage({
             content,
-            chatRoomId,
-            type,
-            file
-        )
+            fileUrl: file,
+            chatRoom: new mongoose.Types.ObjectId(chatRoomId),
+            sender: userId,
+            type
+        })
 
         responseHandler.ok(res, { message: newMessage, chatRoom: updatedChatRoom }, 'Tạo tin nhắn thành công')
     }

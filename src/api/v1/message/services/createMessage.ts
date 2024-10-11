@@ -1,14 +1,9 @@
 import { getIO } from '~/configs/socket.config'
 import chatRoomModel from '../../chat-room/chatRoom.model'
-import messageModel from '../message.model'
+import messageModel, { IMessage, MessageType } from '../message.model'
 
-const createMessage = async (
-    sender: string,
-    content: string,
-    chatRoomId: string,
-    type: 'Text' | 'Media' | 'Document' | 'Link',
-    file?: string
-) => {
+const createMessage = async (messageData: Omit<IMessage, 'isRead'>) => {
+    const { chatRoom: chatRoomId, sender, content, type, fileUrl: file } = messageData
     const chatRoom = await chatRoomModel.findById(chatRoomId).populate('participants', 'name avatar isOnlie socketId')
 
     if (chatRoom === null) throw 'Không tìm thấy chat room!'
@@ -18,9 +13,10 @@ const createMessage = async (
         content,
         chatRoom: chatRoomId,
         type,
-        file,
+        fileUrl: file,
         isRead: []
     })
+    console.log(message)
 
     chatRoom.messages.push(message._id)
     chatRoom.lastMessage = message._id

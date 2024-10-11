@@ -1,10 +1,10 @@
 import mongoose, { Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
-export type MessageType = 'Text' | 'Media' | 'Document' | 'Link'
+export type MessageType = 'Text' | 'Picture' | 'Document' | 'Link' | 'Video'
 export interface IMessage {
     chatRoom: Types.ObjectId
     sender: Types.ObjectId
-    content: string
+    content?: string
     type: MessageType
     fileUrl?: string
     isRead: Types.ObjectId[]
@@ -22,12 +22,11 @@ const MessageSchema = new mongoose.Schema<IMessage>(
             required: true
         },
         content: {
-            type: String,
-            required: true
+            type: String
         },
         type: {
             type: String,
-            enum: ['Text', 'Media', 'Document', 'Link']
+            enum: ['Text', 'Video', 'Picture', 'Document', 'Link']
         },
         fileUrl: {
             type: String

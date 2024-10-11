@@ -1,6 +1,8 @@
+import { MessageType } from './message.model'
+
 export interface CreateMesssage {
-    content: string
+    content?: string
     chatRoomId: string
-    type: 'Text' | 'Media' | 'Document' | 'Link'
+    type: MessageType
     file?: string
 }

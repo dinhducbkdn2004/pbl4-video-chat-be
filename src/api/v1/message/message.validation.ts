@@ -9,18 +9,18 @@ const messageValidation = {
             .withMessage('Chat room ID must be a valid MongoDB ID')
     ],
     createMessage: [
-        body('content')
-            .notEmpty()
-            .withMessage('Thiếu trường content')
-            .isString()
-            .withMessage('content must be a string'),
         body('type')
             .notEmpty()
             .withMessage('Thiếu trường type')
             .custom(async (value) => {
-                const isTypeEnum = value === 'Text' || value === 'Media' || value === 'Document' || value === 'Link'
+                const isTypeEnum =
+                    value === 'Video' ||
+                    value === 'Text' ||
+                    value === 'Picture' ||
+                    value === 'Document' ||
+                    value === 'Link'
 
-                if (!isTypeEnum) throw "type là enum('Text' | 'Media' | 'Document' | 'Link')"
+                if (!isTypeEnum) throw "type là enum('Text' | 'Picture' | 'Document' | 'Link' | 'Video')"
             }),
         body('chatRoomId')
             .notEmpty()
