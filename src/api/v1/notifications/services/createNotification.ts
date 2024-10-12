@@ -13,6 +13,8 @@ export const createNotification = async (
     if (!user) throw 'Không tìm thấy user'
 
     const notification = await notificationModel.create({ userId, message, type, detail: detailId })
+    console.log(notification)
+
     user.notifications.push(notification._id)
     await user.save()
     if (user.isOnline)

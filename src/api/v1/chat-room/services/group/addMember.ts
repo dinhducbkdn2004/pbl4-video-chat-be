@@ -24,7 +24,7 @@ const addMember = async (chatRoomId: string, newMemberId: string, adminId: strin
     await notificationService.createNotification(
         `Bạn đã được thêm vào phòng chat ${chatRoom.name}`,
         newMemberId,
-        'MESSAGE',
+        'ChatRooms',
         chatRoom._id.toString()
     )
 

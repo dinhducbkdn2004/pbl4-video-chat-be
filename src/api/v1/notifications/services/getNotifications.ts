@@ -1,22 +1,33 @@
 import { getPagination } from '~/helpers/pagination'
 import userModel from '../../user/user.model'
 import notificationModel from '../../notifications/notification.model'
+import { IFriendRequest } from '../../friend-request/friendRequest.model'
+import { IChatRoom } from '../../chat-room/chatRoom.model'
 
 export const getNotifications = async (userId: string, page: number, limit: number) => {
     const pagination = getPagination(page, limit)
 
-    const user = await userModel
-        .findById(userId)
-        .select('notifications')
-        .populate({
-            path: 'notifications',
-            model: notificationModel, // Populate từ bảng Notifications
-            options: { skip: pagination.skip, limit: pagination.limit }
-        })
+    // Lấy danh sách thông báo từ người dùng và populate từ bảng Notifications
+    const notifications = await notificationModel
+        .find({ userId })
+        .skip(pagination.skip)
+        .limit(pagination.limit)
+        .sort({ createdAt: -1 })
 
-    if (user === null) throw new Error('User không tồn tại')
-
-    const notifications = user.notifications
+    for (const notification of notifications) {
+        switch (notification.type) {
+            case 'ChatRooms':
+                await notification.populate<{ detail: IChatRoom }>({
+                    path: 'detail'
+                })
+                break
+            case 'FriendRequests':
+                await notification.populate<{ detail: IFriendRequest }>({
+                    path: 'detail'
+                })
+                break
+        }
+    }
 
     return notifications
 }

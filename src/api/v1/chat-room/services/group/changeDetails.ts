@@ -19,14 +19,14 @@ const changeDetails = async (chatRoomId: string, adminId: string, newName?: stri
         await notificationService.createNotification(
             `Bạn đã thay đổi tên Group thành ${newName}`,
             adminId,
-            'MESSAGE',
+            'ChatRooms',
             chatRoomId
         )
         for (const member of remainingMembers) {
             await notificationService.createNotification(
                 `Group đã được đổi tên thành ${newName}`,
                 member.toString(),
-                'MESSAGE',
+                'ChatRooms',
                 chatRoomId
             )
         }
@@ -34,12 +34,12 @@ const changeDetails = async (chatRoomId: string, adminId: string, newName?: stri
 
     if (newImage && newImage.trim() !== '') {
         chatRoom.chatRoomImage = newImage
-        await notificationService.createNotification(`Bạn thay đổi ảnh Group`, adminId, 'MESSAGE', chatRoomId)
+        await notificationService.createNotification(`Bạn thay đổi ảnh Group`, adminId, 'ChatRooms', chatRoomId)
         for (const member of remainingMembers) {
             await notificationService.createNotification(
                 `Ảnh Group đã được thay đổi`,
                 member.toString(),
-                'MESSAGE',
+                'ChatRooms',
                 chatRoomId
             )
         }

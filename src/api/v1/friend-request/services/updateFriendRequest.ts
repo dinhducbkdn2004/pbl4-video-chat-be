@@ -33,21 +33,21 @@ const updateFriendRequest = async (receiverId: string, requestId: string, status
         await createNotification(
             'Bạn đã chấp nhận lời mời kết bạn!',
             receiverId.toString(),
-            'FRIEND_REQUEST',
+            'FriendRequests',
             updatedRequest._id.toString()
         )
 
         await createNotification(
             'Yêu cầu kết bạn của bạn đã được chấp nhận!',
             senderUser._id.toString(),
-            'FRIEND_REQUEST',
+            'FriendRequests',
             updatedRequest._id.toString()
         )
     } else if (status === 'DECLINED') {
         await createNotification(
             'Yêu cầu kết bạn của bạn đã bị từ chối.',
             receiverId.toString(),
-            'FRIEND_REQUEST',
+            'FriendRequests',
             updatedRequest._id.toString()
         )
     }

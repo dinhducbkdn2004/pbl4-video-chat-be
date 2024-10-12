@@ -1,6 +1,6 @@
 import mongoose, { Types } from 'mongoose'
 import modelOption from '../../../configs/model.config'
-export type NotificationTypes = 'MESSAGE' | 'FRIEND_REQUEST'
+export type NotificationTypes = 'ChatRooms' | 'FriendRequests'
 export interface INotification {
     userId: Types.ObjectId
     type: NotificationTypes
@@ -17,12 +17,13 @@ const NotificationSchema = new mongoose.Schema<INotification>(
         },
         type: {
             type: String,
-            enum: ['MESSAGE', 'FRIEND_REQUEST'],
+            enum: ['ChatRooms', 'FriendRequests'],
             required: true
         },
         message: { type: String, required: true },
         isRead: { type: Boolean, default: false },
         detail: {
+            refPath: 'type',
             type: mongoose.Schema.Types.ObjectId,
             required: true
         }

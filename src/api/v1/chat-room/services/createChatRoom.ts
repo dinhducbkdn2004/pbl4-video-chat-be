@@ -17,13 +17,13 @@ const createChatRoom = async (
         privacy,
         typeRoom: participants.length === 2 ? 'OneToOne' : 'Group'
     })
-    log(participants)
+
     participants.forEach(
         async (user_id: string) =>
             await notificationService.createNotification(
                 `Bạn đã được thêm vào phòng chat ${name}`,
                 user_id,
-                'MESSAGE',
+                'ChatRooms',
                 room._id.toString()
             )
     )
