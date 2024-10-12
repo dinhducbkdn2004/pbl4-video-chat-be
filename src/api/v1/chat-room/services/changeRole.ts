@@ -26,7 +26,7 @@ const changeRole = async (chatRoomId: string, userId: string, adminId: string, r
                 await notificationService.createNotification(
                     `Bạn đã được thăng chức thành admin trong phòng chat ${chatRoom.name}`,
                     userId,
-                    'MESSAGE',
+                    'ChatRooms',
                     chatRoomId
                 )
             }
@@ -41,7 +41,7 @@ const changeRole = async (chatRoomId: string, userId: string, adminId: string, r
                 await notificationService.createNotification(
                     `Bạn đã được thăng chức thành moderator trong phòng chat ${chatRoom.name}`,
                     userId,
-                    'MESSAGE',
+                    'ChatRooms',
                     chatRoomId
                 )
             }

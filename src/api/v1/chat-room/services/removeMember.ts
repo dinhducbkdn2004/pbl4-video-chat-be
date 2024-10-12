@@ -32,7 +32,7 @@ const removeMember = async (chatRoomId: string, memberId: string, adminId: strin
     await notificationService.createNotification(
         `Bạn đã bị xóa khỏi phòng chat ${chatRoom.name}`,
         memberId,
-        'MESSAGE',
+        'ChatRooms',
         chatRoomId
     )
     return chatRoom

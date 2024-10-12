@@ -23,7 +23,7 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
         .populate('receiver', 'name avatar _id')
 
     if (!newRequest) throw 'Lỗi tạo yêu cầu kết bạn'
-    await createNotification('Bạn có một lời mời kết bạn mới!', receiverId, 'FRIEND_REQUEST', newRequest._id.toString())
+    await createNotification('Bạn có một lời mời kết bạn mới!', receiverId, 'ChatRooms', newRequest._id.toString())
 
     return newRequest
 }
