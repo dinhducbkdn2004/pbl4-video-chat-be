@@ -22,4 +22,21 @@ notificationsRoute.get(
     }
 )
 
+notificationsRoute.patch(
+    '/seen-notification',
+    authenticate,
+
+    async (req: Request, res: Response) => {
+        try {
+            const { userId } = req.user
+            const { notificationId } = req.body
+            const result = await notificationService.seenNotification(userId, notificationId)
+
+            responseHandler.ok(res, result, 'Đã đọc tất cả thông báo')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
+    }
+)
+
 export default notificationsRoute

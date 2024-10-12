@@ -1,6 +1,6 @@
-import chatRoomModel from '../chatRoom.model'
+import chatRoomModel from '../../chatRoom.model'
 import { Types } from 'mongoose'
-import { notificationService } from '../../notifications/notification.service'
+import { notificationService } from '../../../notifications/notification.service'
 
 const removeMember = async (chatRoomId: string, memberId: string, adminId: string) => {
     const chatRoom = await chatRoomModel.findById(chatRoomId)

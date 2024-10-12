@@ -5,7 +5,6 @@ import notificationModel from '../../notifications/notification.model'
 export const getNotifications = async (userId: string, page: number, limit: number) => {
     const pagination = getPagination(page, limit)
 
-    // Lấy danh sách thông báo từ người dùng và populate từ bảng Notifications
     const user = await userModel
         .findById(userId)
         .select('notifications')

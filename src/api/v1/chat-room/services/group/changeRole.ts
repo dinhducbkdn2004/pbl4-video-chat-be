@@ -1,6 +1,6 @@
-import chatRoomModel from '../chatRoom.model'
+import chatRoomModel from '../../chatRoom.model'
 import { Types } from 'mongoose'
-import { notificationService } from '../../notifications/notification.service'
+import { notificationService } from '../../../notifications/notification.service'
 
 const changeRole = async (chatRoomId: string, userId: string, adminId: string, role: 'admin' | 'moderator') => {
     const chatRoom = await chatRoomModel.findById(chatRoomId)

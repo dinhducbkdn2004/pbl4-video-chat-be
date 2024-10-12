@@ -1,7 +1,7 @@
 import { log } from 'console'
-import chatRoomModel from '../chatRoom.model'
-import userModel from '../../user/user.model'
-import { notificationService } from '../../notifications/notification.service'
+import chatRoomModel from '../../chatRoom.model'
+import userModel from '../../../user/user.model'
+import { notificationService } from '../../../notifications/notification.service'
 import { Types } from 'mongoose'
 
 const addMember = async (chatRoomId: string, newMemberId: string, adminId: string) => {

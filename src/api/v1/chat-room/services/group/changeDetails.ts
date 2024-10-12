@@ -1,5 +1,5 @@
-import { notificationService } from '../../notifications/notification.service'
-import chatRoomModel from '../chatRoom.model'
+import { notificationService } from '../../../notifications/notification.service'
+import chatRoomModel from '../../chatRoom.model'
 import { Types } from 'mongoose'
 
 const changeDetails = async (chatRoomId: string, adminId: string, newName?: string, newImage?: string) => {

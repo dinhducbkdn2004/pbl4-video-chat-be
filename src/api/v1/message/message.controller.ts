@@ -55,4 +55,21 @@ messageRoute.post(
     }
 )
 
+messageRoute.get('/getMediaDocumentLink', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { chatRoomId, page = '1', limit = '10', type } = req.query
+
+        const messages = await messageService.getMDL(
+            chatRoomId as string,
+            parseInt(page as string),
+            parseInt(limit as string),
+            type as 'Media' | 'Document' | 'Link'
+        )
+
+        responseHandler.ok(res, messages, `Lấy thành công danh sách ${type}`)
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
+
 export default messageRoute
