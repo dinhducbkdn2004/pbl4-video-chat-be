@@ -40,7 +40,7 @@ chatRoomRoute.get(
             const { userId } = req.user
 
             const result = await chatRoomService.searchChatRooms(
-                name,
+                name as string,
                 Number(page),
                 Number(limit),
                 privacy,
