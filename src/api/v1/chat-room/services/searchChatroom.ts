@@ -36,7 +36,9 @@ const searchChatRooms = async (
 
     const chatRooms = await chatRoomModel
         .find(searchOption)
-        .select('name typeRoom participants updatedAt lastMessage')
+        .select('name typeRoom chatRoomImage participants admins moderators updatedAt lastMessage')
+        .populate<{ admins: IUser[] }>('admins', 'name avatar')
+        .populate<{ moderators: IUser[] }>('moderators', 'name avatar')
         .populate<{ participants: IUser[] }>('participants', 'name avatar')
         .populate<{ lastMessage: IMessage[] }>({
             path: 'lastMessage', // Populate lastMessage first
@@ -50,7 +52,6 @@ const searchChatRooms = async (
         .skip(pagination.skip)
         .limit(pagination.limit)
         .lean()
-
     const updatedChatRooms = chatRooms.map((room) => {
         if (room.typeRoom === 'OneToOne') {
             // Find the other participant (opponent)
