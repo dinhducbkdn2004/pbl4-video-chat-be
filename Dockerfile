@@ -1,5 +1,5 @@
 # Sử dụng node image chính thức từ Docker Hub
-FROM node:18
+FROM node:20
 
 # Thiết lập thư mục làm việc trong container
 WORKDIR /usr/src/app
