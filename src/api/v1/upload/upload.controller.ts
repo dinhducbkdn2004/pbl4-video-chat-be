@@ -7,10 +7,11 @@ const uploadRoute: Router = Router()
 
 uploadRoute.post('/get-presigned-url', authenticate, async (req: Request, res: Response) => {
     try {
-        const { folder } = req.body as {
+        const { folder, fileName } = req.body as {
             folder: string
+            fileName: string
         }
-        const url = getPresignedUrl(folder)
+        const url = getPresignedUrl(folder, fileName)
         responseHandler.ok(res, url, 'Lấy url thành công')
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error)
