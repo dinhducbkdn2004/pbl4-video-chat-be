@@ -1,6 +1,7 @@
 import { getIO } from '~/configs/socket.config'
-import chatRoomModel from '../../chat-room/chatRoom.model'
+import chatRoomModel, { IChatRoom } from '../../chat-room/chatRoom.model'
 import messageModel, { IMessage, MessageType } from '../message.model'
+import { IUser } from '../../user/user.model'
 
 const createMessage = async (messageData: Omit<IMessage, 'isRead'>) => {
     const { chatRoom: chatRoomId, sender, content, type, fileUrl: file } = messageData
@@ -16,22 +17,41 @@ const createMessage = async (messageData: Omit<IMessage, 'isRead'>) => {
         fileUrl: file,
         isRead: []
     })
-    console.log(message)
+
 
     chatRoom.messages.push(message._id)
     chatRoom.lastMessage = message._id
-    const updatedChatRoom = await chatRoom.save()
+    await chatRoom.save()
 
-    const newMessage = await messageModel.findById(message._id).populate('sender', 'name avatar _id')
-    if (newMessage === null) throw 'Lỗi get'
+    const newUpdatedChatRoom = await chatRoomModel.findById(chatRoom._id).populate<{ lastMessage: IMessage[] }>({
+        path: 'lastMessage', // Populate lastMessage first
+        select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
+        populate: {
+            path: 'sender', // Nested populate for sender
+            select: 'name avatar' // Select fields from the sender (user model)
+        }
+    }).populate<{ participants: IUser[] }>('participants', 'name avatar')
+
+    if (newUpdatedChatRoom!.typeRoom === 'OneToOne') {
+        // Find the other participant (opponent)
+        const opponent = newUpdatedChatRoom!.participants.find((participant) => participant._id.toString() !== sender.toString())
+        newUpdatedChatRoom!.name = opponent?.name || ''
+        newUpdatedChatRoom!.chatRoomImage = opponent?.avatar || ''
+        newUpdatedChatRoom!.isOnline = opponent?.isOnline || false
+    }
+
+
+    const newMessage = await messageModel.findById(message._id).populate('sender', 'name avatar _id')!
+
     const io = getIO()
     io.to(
-        updatedChatRoom.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
+        newUpdatedChatRoom!.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
     ).emit('new message', newMessage)
 
     io.to(
-        updatedChatRoom.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
-    ).emit('updated chatroom', updatedChatRoom)
-    return { newMessage, updatedChatRoom }
+        newUpdatedChatRoom!.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
+    ).emit('updated chatroom', newUpdatedChatRoom)
+    return { newMessage, newUpdatedChatRoom }
 }
+
 export default createMessage

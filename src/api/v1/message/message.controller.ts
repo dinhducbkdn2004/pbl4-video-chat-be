@@ -45,7 +45,7 @@ messageRoute.post(
         const { userId } = req.user
 
         const { content, type, file, chatRoomId } = req.body
-        const { newMessage, updatedChatRoom } = await messageService.createMessage({
+        const { newMessage, newUpdatedChatRoom } = await messageService.createMessage({
             content,
             fileUrl: file,
             chatRoom: new mongoose.Types.ObjectId(chatRoomId),
@@ -53,7 +53,7 @@ messageRoute.post(
             type
         })
 
-        responseHandler.ok(res, { message: newMessage, chatRoom: updatedChatRoom }, 'Tạo tin nhắn thành công')
+        responseHandler.ok(res, { message: newMessage, chatRoom: newUpdatedChatRoom }, 'Tạo tin nhắn thành công')
     }
 )
 messageRoute.get(
