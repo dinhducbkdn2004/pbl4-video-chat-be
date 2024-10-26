@@ -77,8 +77,7 @@ const UserSchema = new mongoose.Schema<IUser>(
                 },
                 otpExp: {
                     type: Date,
-                    default: Date.now(),
-                    required: true
+                    default: Date.now()
                 },
                 otpWrongCount: {
                     type: Number,
