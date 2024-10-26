@@ -77,7 +77,7 @@ chatRoomRoute.get('/:chatRoomId', authenticate, async (req: Request, res: Respon
     try {
         const { chatRoomId } = req.params
         const { userId } = req.user
-        const chatRoom = await chatRoomService.getChatRoomById(chatRoomId, userId)
+        const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
         responseHandler.ok(res, chatRoom, 'Tìm kiếm chatroom thành công!')
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error)

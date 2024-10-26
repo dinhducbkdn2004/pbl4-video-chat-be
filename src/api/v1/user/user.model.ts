@@ -14,6 +14,7 @@ export interface IUser {
     socketId: string
     chatRooms: Types.ObjectId[]
     notifications: Types.ObjectId[]
+    isCalling: boolean
     account: {
         password: string
         otp: string
@@ -62,6 +63,11 @@ const UserSchema = new mongoose.Schema<IUser>(
                 default: []
             }
         ],
+        isCalling: {
+            require: true,
+            type: Boolean,
+            default: false
+        },
         account: {
             type: {
                 password: { type: String },
