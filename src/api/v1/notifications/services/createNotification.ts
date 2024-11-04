@@ -17,9 +17,7 @@ export const createNotification = async (
 
     user.notifications.push(notification._id)
     await user.save()
-    if (user.isOnline)
-        getIO()
-            .to(user.socketId as string)
-            .emit('new notification', notification)
+    if (user.isOnline) getIO().to(user.socketId).emit('new notification', notification)
+
     return notification
 }

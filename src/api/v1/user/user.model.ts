@@ -11,7 +11,7 @@ export interface IUser {
     backgroundImage: string
     introduction: string
     isOnline: boolean
-    socketId: string
+    socketId: string[]
     chatRooms: Types.ObjectId[]
     notifications: Types.ObjectId[]
     isCalling: boolean
@@ -23,7 +23,7 @@ export interface IUser {
         isVerified: boolean
         loginType: LoginType
         otpAttempts: number
-        otpLockUntil?: Date
+        otpLockUntil: Date | null
     }
 }
 const UserSchema = new mongoose.Schema<IUser>(
@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema<IUser>(
         },
         introduction: { type: String, default: '' },
         isOnline: { type: Boolean, required: true, default: false },
-        socketId: { type: String },
+        socketId: { type: [String], default: [], required: true },
         chatRooms: [
             {
                 type: mongoose.Schema.Types.ObjectId,
@@ -97,6 +97,7 @@ const UserSchema = new mongoose.Schema<IUser>(
                     default: 0
                 },
                 otpLockUntil: {
+                    default: null,
                     type: Date
                 }
             },

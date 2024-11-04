@@ -34,7 +34,7 @@ const checkOtp = async (otp: string, email: string): Promise<{ accessToken: stri
 
     user.account.isVerified = true
     user.account.otpAttempts = 0
-    user.account.otpLockUntil = undefined
+    user.account.otpLockUntil = null
     await user.save()
 
     return { accessToken, refreshToken }

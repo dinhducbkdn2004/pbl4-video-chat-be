@@ -1,17 +1,17 @@
-import cloudinary from '../configs/cloudinary.config';
-import dotenv from 'dotenv';
-import { v4 as uuidv4 } from 'uuid';
+import cloudinary from '../configs/cloudinary.config'
+import dotenv from 'dotenv'
+import { v4 as uuidv4 } from 'uuid'
 
-dotenv.config();
+dotenv.config()
 
 export const getPresignedUrl = (folder: string, fileName: string) => {
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const uniqueFileName = `${fileName}_${uuidv4()}`; // Tạo tên file duy nhất với UUID
+    const timestamp = Math.round(new Date().getTime() / 1000)
+    const uniqueFileName = `${fileName}_${uuidv4()}` // Tạo tên file duy nhất với UUID
 
     const signature = cloudinary.utils.api_sign_request(
         { timestamp, folder, public_id: uniqueFileName },
         process.env.CLOUDINARY_API_SECRET || ''
-    );
+    )
 
     return {
         signature,
@@ -20,5 +20,5 @@ export const getPresignedUrl = (folder: string, fileName: string) => {
         apiKey: process.env.CLOUDINARY_API_KEY,
         folder,
         public_id: uniqueFileName
-    };
-};
+    }
+}

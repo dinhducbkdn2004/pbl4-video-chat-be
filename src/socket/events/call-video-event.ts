@@ -8,6 +8,8 @@ const callVideoEvents = async (socket: Socket) => {
 
     socket.on('caller:start_new_call', async ({ chatRoomId }: { chatRoomId: string }) => {
         try {
+            console.log('caller:start_new_call')
+
             const user = await userService.getUser(socket.handshake.auth._id)
             user.isCalling = true
             await user.save()
@@ -15,21 +17,33 @@ const callVideoEvents = async (socket: Socket) => {
             const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
 
             chatRoom.participants.forEach((participant) => {
-                if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
-                    if (participant.isCalling) {
-                        socket.emit('server:send_callee_response', {
-                            result: 'decline',
-                            from: participant,
-                            chatRoomId,
-                            message: `${participant.name} đang trong một cuộc gọi khác`
-                        })
-                        return
-                    }
-                    io.to(participant.socketId).emit('server:send_new_call', {
-                        chatRoom,
-                        from: socket.handshake.auth._id
+                if (participant._id.toString() === socket.handshake.auth._id.toString()) return
+
+                if (participant.isCalling) {
+                    socket.emit('server:send_callee_response', {
+                        result: 'decline',
+                        from: participant,
+                        chatRoomId,
+                        message: `${participant.name} đang trong một cuộc gọi khác`
                     })
+                    return
                 }
+
+                if (participant.isOnline === false) {
+                    socket.emit('server:send_callee_response', {
+                        result: 'decline',
+                        from: participant,
+                        chatRoomId,
+                        message: `${participant.name} đang offline`
+                    })
+                    return
+                }
+                console.log('emit to:', participant)
+
+                io.to(participant.socketId).emit('server:send_new_call', {
+                    chatRoom,
+                    from: user
+                })
             })
         } catch (error: any) {
             console.error('Error in start new call:', error)
@@ -37,18 +51,14 @@ const callVideoEvents = async (socket: Socket) => {
         }
     })
 
-    socket.on('get my infor', () => {
-        socket.emit('get my infor', socket.handshake.auth)
-    })
-
     socket.on('user:leave_call', async () => {
-        const user = await userService.getUser(socket.handshake.auth._id)
-        user.isCalling = false
-        await user.save()
+        console.log('user:leave_call')
     })
 
     socket.on('callee:accept_call', async ({ chatRoomId, peerId }: { chatRoomId: string; peerId: string }) => {
         try {
+            console.log('callee:accept_call')
+
             const user = await userService.getUser(socket.handshake.auth._id)
             user.isCalling = true
             await user.save()
@@ -71,6 +81,8 @@ const callVideoEvents = async (socket: Socket) => {
     })
 
     socket.on('callee:cancel_call', async ({ chatRoomId, message }: { chatRoomId: string; message: string }) => {
+        console.log('callee:cancel_call')
+
         const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
         chatRoom.participants.forEach((participant) => {
             if (participant._id.toString() !== socket.handshake.auth._id.toString()) {

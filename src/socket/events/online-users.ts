@@ -8,7 +8,9 @@ const onlineUsersEvent = async (socket: Socket) => {
 
     socket.emit('online friends', onlineFriends)
 
-    socket.to(onlineFriends.map((friend) => (friend.socketId ? friend.socketId : ''))).emit('new online friend', user)
+    onlineFriends.forEach((friend) => {
+        socket.to(friend.socketId).emit('new online friend', user)
+    })
 
     return onlineFriends
 }

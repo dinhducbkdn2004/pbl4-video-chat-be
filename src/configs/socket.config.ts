@@ -22,14 +22,13 @@ const initSocketIO = (httpServer: Server) => {
     })
     io.on('connection', async (socket: Socket) => {
         try {
-            const user = await authSocket(socket)
-            socket.handshake.auth = user
+            await authSocket(socket)
 
             await onlineUsersEvent(socket)
 
             await callVideoEvents(socket)
 
-            disconnectEvent(socket)
+            await disconnectEvent(socket)
         } catch (error: any) {
             console.error('Connection error:', error.message)
             socket.disconnect(true)

@@ -18,28 +18,31 @@ const createMessage = async (messageData: Omit<IMessage, 'isRead'>) => {
         isRead: []
     })
 
-
     chatRoom.messages.push(message._id)
     chatRoom.lastMessage = message._id
     await chatRoom.save()
 
-    const newUpdatedChatRoom = await chatRoomModel.findById(chatRoom._id).populate<{ lastMessage: IMessage[] }>({
-        path: 'lastMessage', // Populate lastMessage first
-        select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
-        populate: {
-            path: 'sender', // Nested populate for sender
-            select: 'name avatar' // Select fields from the sender (user model)
-        }
-    }).populate<{ participants: IUser[] }>('participants', 'name avatar')
+    const newUpdatedChatRoom = await chatRoomModel
+        .findById(chatRoom._id)
+        .populate<{ lastMessage: IMessage[] }>({
+            path: 'lastMessage', // Populate lastMessage first
+            select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
+            populate: {
+                path: 'sender', // Nested populate for sender
+                select: 'name avatar' // Select fields from the sender (user model)
+            }
+        })
+        .populate<{ participants: IUser[] }>('participants', 'name avatar')
 
     if (newUpdatedChatRoom!.typeRoom === 'OneToOne') {
         // Find the other participant (opponent)
-        const opponent = newUpdatedChatRoom!.participants.find((participant) => participant._id.toString() !== sender.toString())
+        const opponent = newUpdatedChatRoom!.participants.find(
+            (participant) => participant._id.toString() !== sender.toString()
+        )
         newUpdatedChatRoom!.name = opponent?.name || ''
         newUpdatedChatRoom!.chatRoomImage = opponent?.avatar || ''
         newUpdatedChatRoom!.isOnline = opponent?.isOnline || false
     }
-
 
     const newMessage = await messageModel.findById(message._id).populate('sender', 'name avatar _id')!
 
