@@ -12,6 +12,7 @@ export interface IChatRoom {
     admins: Types.ObjectId[]
     moderators: Types.ObjectId[]
     messages: Types.ObjectId[]
+    isBlocked: Map<string, Map<string, boolean>>
     typeRoom: TypeRoom
     privacy: Privacy
     lastMessage: Types.ObjectId
@@ -53,6 +54,11 @@ const ChatRoomSchema = new mongoose.Schema<IChatRoom>(
                 default: []
             }
         ],
+        isBlocked: {
+            type: Map, // Lưu trữ trạng thái block giữa người dùng
+            of: Map, // Sử dụng Map bên trong để block theo cặp người dùng
+            default: {}
+        },
         typeRoom: { type: String, enum: ['OneToOne', 'Group'], required: true },
         privacy: {
             type: String,

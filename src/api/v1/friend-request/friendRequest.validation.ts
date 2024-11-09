@@ -1,4 +1,4 @@
-import { body, param, query } from 'express-validator'
+import { body } from 'express-validator'
 import userService from '../user/user.service'
 import { Types } from 'mongoose'
 

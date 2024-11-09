@@ -52,14 +52,10 @@ friendRequestRoute.patch(
     async (req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestDto>, res: Response) => {
         try {
             const { userId } = req.user
+            const { requestId } = req.body
             const { status } = req.body
-            const { requestId } = req.params
 
-            const { updatedRequest, senderUser, receiverUser } = await friendRequestService.updateFriendRequest(
-                userId,
-                requestId,
-                status
-            )
+            const updatedRequest = await friendRequestService.updateFriendRequest(userId, requestId, status)
 
             responseHandler.ok(res, updatedRequest, 'Cập nhật lời mời kết bạn thành công!')
         } catch (error: any) {
