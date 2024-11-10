@@ -3,8 +3,8 @@ export interface CreateFriendRequestDto {
     friendId: string
 }
 export interface UpdateFriendRequestDto {
+    requestId: string
     status: 'ACCEPTED' | 'DECLINED'
-    friendId: string
 }
 
 export type UpdateFriendRequestParams = {
