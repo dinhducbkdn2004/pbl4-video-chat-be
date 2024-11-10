@@ -1,7 +1,8 @@
-import chatRoomModel from '../chatRoom.model'
+import chatRoomModel, { TypeRoom } from '../chatRoom.model'
 import { getPagination } from '../../../../helpers/pagination'
 import { IUser } from '../../user/user.model'
 import messageModel, { IMessage } from '../../message/message.model'
+import { validation } from '~/helpers/validation'
 
 const searchChatRooms = async (
     name?: string,
@@ -9,7 +10,8 @@ const searchChatRooms = async (
     limit: number = 10,
     privacy?: 'PUBLIC' | 'PRIVATE',
     getMy?: boolean,
-    userId?: string
+    userId?: string,
+    typeRoom?: TypeRoom
 ) => {
     const pagination = getPagination(page, limit)
 
@@ -18,11 +20,19 @@ const searchChatRooms = async (
         privacy?: 'PUBLIC' | 'PRIVATE'
         participants?: string
         $or?: any[]
+        email?: string
+        typeRoom?: TypeRoom
     }
 
     const searchOption: SearchOption = {}
+    if (typeRoom) {
+        searchOption.typeRoom = typeRoom
+    }
     if (name) {
-        searchOption.name = new RegExp(name, 'i')
+        searchOption.$or = [
+            { name: new RegExp(name, 'i') }, // Match chat room name
+            { 'participants.name': new RegExp(name, 'i') } // Match participant name
+        ]
     }
     if (privacy === 'PRIVATE') {
         searchOption.privacy = 'PRIVATE'
