@@ -34,7 +34,7 @@ const searchChatRooms = async (
     } else if (privacy === 'PUBLIC') {
         searchOption.privacy = 'PUBLIC'
     }
-    if (getMy && userId) {
+    if (getMy === true && userId) {
         // Khi `getMy` là true, lấy các phòng OneToOne và Group mà userId tham gia, bất kể privacy
         searchOption.$or = [
             { typeRoom: 'OneToOne', participants: userId },

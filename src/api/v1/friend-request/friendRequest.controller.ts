@@ -45,14 +45,14 @@ friendRequestRoute.post(
 )
 
 friendRequestRoute.patch(
-    '/update',
+    '/update/:requestId',
     authenticate,
     friendRequestValidation.updateRequest,
     validateHandler,
     async (req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestDto>, res: Response) => {
         try {
             const { userId } = req.user
-            const { requestId } = req.body
+            const { requestId } = req.params
             const { status } = req.body
 
             const updatedRequest = await friendRequestService.updateFriendRequest(userId, requestId, status)
