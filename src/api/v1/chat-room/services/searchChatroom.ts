@@ -24,20 +24,18 @@ const searchChatRooms = async (
     if (name) {
         searchOption.name = new RegExp(name, 'i')
     }
-    if (privacy) {
-        searchOption.privacy = privacy
-        if (privacy === 'PRIVATE') {
-            searchOption.participants = userId
-        }
+    if (privacy === 'PRIVATE') {
+        searchOption.privacy = 'PRIVATE'
+        searchOption.participants = userId
+    } else if (privacy === 'PUBLIC') {
+        searchOption.privacy = 'PUBLIC'
     }
     if (getMy && userId) {
+        // Khi `getMy` là true, lấy các phòng OneToOne và Group mà userId tham gia, bất kể privacy
         searchOption.$or = [
-            { privacy: 'PUBLIC' },
-            { privacy: 'PRIVATE', participants: userId },
-            { typeRoom: 'OneToOne', participants: userId }
+            { typeRoom: 'OneToOne', participants: userId },
+            { typeRoom: 'Group', participants: userId }
         ]
-    } else if (privacy === 'PRIVATE' && userId) {
-        searchOption.participants = userId
     }
 
     const chatRooms = await chatRoomModel
