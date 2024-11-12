@@ -25,14 +25,8 @@ const searchChatRooms = async (
     }
 
     const searchOption: SearchOption = {}
-    if (typeRoom) {
-        searchOption.typeRoom = typeRoom
-    }
     if (name) {
-        searchOption.$or = [
-            { name: new RegExp(name, 'i') }, // Match chat room name
-            { 'participants.name': new RegExp(name, 'i') } // Match participant name
-        ]
+        searchOption.name = new RegExp(name, 'i')
     }
     if (privacy === 'PRIVATE') {
         searchOption.privacy = 'PRIVATE'
