@@ -45,7 +45,7 @@ friendRequestRoute.post(
 )
 
 friendRequestRoute.patch(
-    '/update/:requestId',
+    '/update',
     authenticate,
     friendRequestValidation.updateRequest,
     validateHandler,
