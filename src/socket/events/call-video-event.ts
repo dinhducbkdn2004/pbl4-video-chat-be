@@ -53,6 +53,9 @@ const callVideoEvents = async (socket: Socket) => {
 
     socket.on('user:leave_call', async () => {
         console.log('user:leave_call')
+        const user = await userService.getUser(socket.handshake.auth._id)
+        user.isCalling = false
+        await user.save()
     })
 
     socket.on('callee:accept_call', async ({ chatRoomId, peerId }: { chatRoomId: string; peerId: string }) => {
