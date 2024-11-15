@@ -25,14 +25,8 @@ const searchChatRooms = async (
     }
 
     const searchOption: SearchOption = {}
-    if (typeRoom) {
-        searchOption.typeRoom = typeRoom
-    }
     if (name) {
-        searchOption.$or = [
-            { name: new RegExp(name, 'i') }, // Match chat room name
-            { 'participants.name': new RegExp(name, 'i') } // Match participant name
-        ]
+        searchOption.name = new RegExp(name, 'i')
     }
     if (privacy === 'PRIVATE') {
         searchOption.privacy = 'PRIVATE'
@@ -40,8 +34,12 @@ const searchChatRooms = async (
     } else if (privacy === 'PUBLIC') {
         searchOption.privacy = 'PUBLIC'
     }
-    if (getMy) {
-        searchOption.$or = [{ privacy: 'PUBLIC' }, { privacy: 'PRIVATE', participants: userId }]
+    if (getMy === true && userId) {
+        // Khi `getMy` là true, lấy các phòng OneToOne và Group mà userId tham gia, bất kể privacy
+        searchOption.$or = [
+            { typeRoom: 'OneToOne', participants: userId },
+            { typeRoom: 'Group', participants: userId }
+        ]
     }
 
     const chatRooms = await chatRoomModel

@@ -1,10 +1,12 @@
 import mongoose from 'mongoose'
+import { Types } from 'mongoose'
 import userModel from '~/api/v1/user/user.model'
 import friendRequestModel from '~/api/v1/friend-request/friendRequest.model'
 import { createNotification } from '../../notifications/services/createNotification'
 
 const updateFriendRequest = async (receiverId: string, requestId: string, status: 'ACCEPTED' | 'DECLINED') => {
     const request = await friendRequestModel.findById(requestId)
+
     if (!request) throw new Error('Không tìm thấy yêu cầu kết bạn')
 
     if (receiverId !== request.receiver.toString()) {
@@ -51,7 +53,6 @@ const updateFriendRequest = async (receiverId: string, requestId: string, status
             updatedRequest._id.toString()
         )
     }
-
     return { updatedRequest, senderUser, receiverUser }
 }
 
