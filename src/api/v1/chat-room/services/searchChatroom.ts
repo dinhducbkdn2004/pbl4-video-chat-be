@@ -34,20 +34,14 @@ const searchChatRooms = async (
             { 'participants.name': new RegExp(name, 'i') } // Match participant name
         ]
     }
-    if (privacy) {
-        searchOption.privacy = privacy
-        if (privacy === 'PRIVATE') {
-            searchOption.participants = userId
-        }
-    }
-    if (getMy && userId) {
-        searchOption.$or = [
-            { privacy: 'PUBLIC' },
-            { privacy: 'PRIVATE', participants: userId },
-            { typeRoom: 'OneToOne', participants: userId }
-        ]
-    } else if (privacy === 'PRIVATE' && userId) {
+    if (privacy === 'PRIVATE') {
+        searchOption.privacy = 'PRIVATE'
         searchOption.participants = userId
+    } else if (privacy === 'PUBLIC') {
+        searchOption.privacy = 'PUBLIC'
+    }
+    if (getMy) {
+        searchOption.$or = [{ privacy: 'PUBLIC' }, { privacy: 'PRIVATE', participants: userId }]
     }
 
     const chatRooms = await chatRoomModel
@@ -57,36 +51,28 @@ const searchChatRooms = async (
         .populate<{ moderators: IUser[] }>('moderators', 'name avatar')
         .populate<{ participants: IUser[] }>('participants', 'name avatar')
         .populate<{ lastMessage: IMessage[] }>({
-            path: 'lastMessage',
-            select: '_id sender content type createdAt updatedAt',
+            path: 'lastMessage', // Populate lastMessage first
+            select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
             populate: {
-                path: 'sender',
-                select: 'name avatar'
+                path: 'sender', // Nested populate for sender
+                select: 'name avatar' // Select fields from the sender (user model)
             }
         })
         .sort({ updatedAt: -1 })
         .skip(pagination.skip)
         .limit(pagination.limit)
         .lean()
+    const updatedChatRooms = chatRooms.map((room) => {
+        if (room.typeRoom === 'OneToOne') {
+            // Find the other participant (opponent)
+            const opponent = room.participants.find((participant) => participant._id.toString() !== userId)
+            room.name = opponent?.name || ''
+            room.chatRoomImage = opponent?.avatar || ''
+            room.isOnline = opponent?.isOnline || false
+        }
 
-    const updatedChatRooms = await Promise.all(
-        chatRooms.map(async (room) => {
-            if (room.typeRoom === 'OneToOne' && userId) {
-                const opponent = room.participants.find((participant) => participant._id.toString() !== userId)
-
-                if (opponent) {
-                    room.name = opponent.name || room.name
-                    room.chatRoomImage = opponent.avatar || room.chatRoomImage
-
-                    await chatRoomModel.updateOne(
-                        { _id: room._id },
-                        { $set: { name: room.name, chatRoomImage: room.chatRoomImage } }
-                    )
-                }
-            }
-            return room
-        })
-    )
+        return room
+    })
 
     return updatedChatRooms
 }

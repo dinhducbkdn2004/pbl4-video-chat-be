@@ -36,7 +36,7 @@ chatRoomRoute.get(
     authenticate,
     async (req: Request<{}, {}, {}, Partial<searchChatroomQueryParams>>, res: Response) => {
         try {
-            const { name, page = '1', limit = '10', privacy, getMy } = req.query
+            const { name, page = '1', limit = '10', privacy, getMy, typeRoom } = req.query
             const { userId } = req.user
 
             const result = await chatRoomService.searchChatRooms(
@@ -45,7 +45,8 @@ chatRoomRoute.get(
                 Number(limit),
                 privacy,
                 getMy === 'true',
-                userId
+                userId,
+                typeRoom
             )
             responseHandler.ok(res, result, 'Tìm kiếm chatroom thành công!')
         } catch (error: any) {
