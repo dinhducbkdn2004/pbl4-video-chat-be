@@ -32,28 +32,17 @@ const createMessage = async (messageData: Omit<IMessage, 'isRead'>) => {
                 select: 'name avatar' // Select fields from the sender (user model)
             }
         })
-        .populate<{ participants: IUser[] }>('participants', 'name avatar')
-
-    if (newUpdatedChatRoom!.typeRoom === 'OneToOne') {
-        // Find the other participant (opponent)
-        const opponent = newUpdatedChatRoom!.participants.find(
-            (participant) => participant._id.toString() !== sender.toString()
-        )
-        newUpdatedChatRoom!.name = opponent?.name || ''
-        newUpdatedChatRoom!.chatRoomImage = opponent?.avatar || ''
-        newUpdatedChatRoom!.isOnline = opponent?.isOnline || false
-    }
+        .populate<{ participants: IUser[] }>('participants', 'name avatar isOnline socketId')
 
     const newMessage = await messageModel.findById(message._id).populate('sender', 'name avatar _id')!
 
     const io = getIO()
-    io.to(
-        newUpdatedChatRoom!.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
-    ).emit('new message', newMessage)
+    const onlineParticipants = newUpdatedChatRoom!.participants
+        .filter((person: IUser) => person.isOnline)
+        .reduce((sockets: string[], user: IUser) => sockets.concat(user.socketId), [])
 
-    io.to(
-        newUpdatedChatRoom!.participants.filter((person: any) => person.isOnline).map((person: any) => person.socketId)
-    ).emit('updated chatroom', newUpdatedChatRoom)
+    io.to(onlineParticipants).emit('new message', newMessage)
+    io.to(onlineParticipants).emit('updated chatroom', newUpdatedChatRoom)
     return { newMessage, newUpdatedChatRoom }
 }
 
