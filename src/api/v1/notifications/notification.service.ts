@@ -1,8 +1,12 @@
 import { createNotification } from './services/createNotification'
 import { getNotifications } from './services/getNotifications'
-import { seenNotification } from './services/seenNotification'
+import { updateNotification } from './services/updateNotification'
+import { seenAllNotifications } from './services/seenAllNotifications'
+import { deleteNotification } from './services/deleteNotification'
 export const notificationService = {
     getNotifications,
     createNotification,
-    seenNotification
+    updateNotification,
+    seenAllNotifications,
+    deleteNotification
 }

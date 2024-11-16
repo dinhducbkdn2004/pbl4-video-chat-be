@@ -25,16 +25,50 @@ notificationsRoute.get(
 )
 
 notificationsRoute.patch(
-    '/seen-notification',
+    '/update-notification',
     authenticate,
     notificationValidation.updateNotification,
     validateHandler,
     async (req: Request, res: Response) => {
         try {
-            const { notificationId } = req.body
-            const result = await notificationService.seenNotification(notificationId)
+            const { notificationId, isRead } = req.body
+            const result = await notificationService.updateNotification(notificationId, isRead)
 
             responseHandler.ok(res, result, 'Update thông báo thành công')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
+    }
+)
+
+notificationsRoute.patch(
+    '/seen-notification/:userId',
+    authenticate,
+    validateHandler,
+    async (req: Request, res: Response) => {
+        try {
+            const { userId } = req.params
+
+            const result = await notificationService.seenAllNotifications(userId)
+
+            responseHandler.ok(res, result, 'Update thông báo thành công')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
+    }
+)
+
+notificationsRoute.delete(
+    '/delete-notification/:notificationId',
+    authenticate,
+    validateHandler,
+    async (req: Request, res: Response) => {
+        try {
+            const { notificationId } = req.params
+
+            const result = await notificationService.deleteNotification(notificationId)
+
+            responseHandler.ok(res, result, 'Xóa thông báo thành công')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }

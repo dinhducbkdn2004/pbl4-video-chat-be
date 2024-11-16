@@ -26,7 +26,15 @@ const searchChatRooms = async (
 
     const searchOption: SearchOption = {}
     if (name) {
-        searchOption.name = new RegExp(name, 'i')
+        searchOption.$or = [
+            { name: new RegExp(name, 'i') }, // Tìm phòng có tên khớp
+            {
+                $and: [
+                    { participants: { $elemMatch: { $regex: new RegExp(name, 'i') } } }, // Tìm participants có tên khớp
+                    { participants: { $elemMatch: { $eq: userId } } } // Kiểm tra userId trong participants
+                ]
+            }
+        ]
     }
     if (privacy === 'PRIVATE') {
         searchOption.privacy = 'PRIVATE'
@@ -40,6 +48,9 @@ const searchChatRooms = async (
             { typeRoom: 'OneToOne', participants: userId },
             { typeRoom: 'Group', participants: userId }
         ]
+    }
+    if (typeRoom) {
+        searchOption.typeRoom = typeRoom
     }
 
     const chatRooms = await chatRoomModel
@@ -60,19 +71,8 @@ const searchChatRooms = async (
         .skip(pagination.skip)
         .limit(pagination.limit)
         .lean()
-    const updatedChatRooms = chatRooms.map((room) => {
-        if (room.typeRoom === 'OneToOne') {
-            // Find the other participant (opponent)
-            const opponent = room.participants.find((participant) => participant._id.toString() !== userId)
-            room.name = opponent?.name || ''
-            room.chatRoomImage = opponent?.avatar || ''
-            room.isOnline = opponent?.isOnline || false
-        }
 
-        return room
-    })
-
-    return updatedChatRooms
+    return chatRooms
 }
 
 export default searchChatRooms
