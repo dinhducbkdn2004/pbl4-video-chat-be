@@ -2,9 +2,23 @@ import { Socket } from 'socket.io'
 import chatRoomService from '~/api/v1/chat-room/chatRoom.service'
 import { getIO } from '~/configs/socket.config'
 import userService from '../../api/v1/user/user.service'
+import { IUser } from '~/api/v1/user/user.model'
 
 const callVideoEvents = async (socket: Socket) => {
     const io = getIO()
+
+    socket.on('join-room', (data: { user: IUser; peerId: string; roomId: string }) => {
+        const { user, peerId, roomId } = data
+        socket.join(roomId)
+        console.log(`${user.name} joined room: ${roomId}`)
+        socket.to(roomId).emit('user-connected', { user, peerId })
+
+        // Notify others when user disconnects
+        socket.on('disconnect', () => {
+            console.log(`${user.name} disconnected`)
+            socket.to(roomId).emit('user-disconnected', user)
+        })
+    })
 
     socket.on('caller:start_new_call', async ({ chatRoomId }: { chatRoomId: string }) => {
         try {

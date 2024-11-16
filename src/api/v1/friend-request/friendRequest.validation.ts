@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body, param } from 'express-validator'
 import userService from '../user/user.service'
 import { Types } from 'mongoose'
 
@@ -17,7 +17,7 @@ const friendRequestValidation = {
     ],
 
     updateRequest: [
-        body('requestId')
+        param('requestId')
             .notEmpty()
             .withMessage('requestId')
             .custom(async (value: string) => {
