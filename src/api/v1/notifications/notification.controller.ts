@@ -58,4 +58,21 @@ notificationsRoute.patch(
     }
 )
 
+notificationsRoute.delete(
+    '/delete-notification/:notificationId',
+    authenticate,
+    validateHandler,
+    async (req: Request, res: Response) => {
+        try {
+            const { notificationId } = req.params
+
+            const result = await notificationService.deleteNotification(notificationId)
+
+            responseHandler.ok(res, result, 'Xóa thông báo thành công')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
+    }
+)
+
 export default notificationsRoute
