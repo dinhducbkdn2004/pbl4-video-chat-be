@@ -12,5 +12,14 @@ export const groupRequestValidation = {
         body('status')
             .isIn(['ACCEPTED', 'DECLINED', 'CANCELED'])
             .withMessage('status không hợp lệ (ACCEPTED, DECLINED hoặc CANCELED)')
+    ],
+    getAllRequestOfUser: [
+        query('status').custom(async (value) => {
+            const status = ['ACCEPTED', 'DECLINED', 'CANCELED', 'PENDING']
+            console.log(value)
+
+            if (value && !status.includes(value))
+                throw new Error('status phải là ACCEPTED,PENDING, DECLINED hoặc CANCELED')
+        })
     ]
 }

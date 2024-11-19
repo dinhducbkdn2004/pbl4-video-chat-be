@@ -4,17 +4,17 @@ import { Router } from 'express'
 
 import responseHandler from '../../../handlers/response.handler'
 import { authenticate } from '../../../middlewares/auth.middleware'
-import { getOneToOneChatRoom } from '../chat-room/services/getOneToOneChatRoom'
-import chatRoomService from '../chat-room/chatRoom.service'
-import { createRequestDto, getAllRequestDto, updateRequestDto } from './groupRequest.dto'
+
+import { createRequestDto, updateRequestDto } from './groupRequest.dto'
 import { groupRequestService } from './groupRequest.service'
 import { validateHandler } from '~/handlers/validation.handler'
 import { groupRequestValidation } from './groupRequest.validation'
+import { GroupRequestStatus } from './groupRequest.model'
 
 const groupRequestRoute: Router = Router()
 
 groupRequestRoute.get(
-    '/',
+    '/get-request-by-chat-room-id',
     authenticate,
     groupRequestValidation.getAllRequest,
     validateHandler,
@@ -64,6 +64,36 @@ groupRequestRoute.patch(
                 requestId: req.params.requestId
             })
             return responseHandler.ok(res, request, 'Cập nhật yêu cầu vào phòng thành công!')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
+    }
+)
+
+groupRequestRoute.get(
+    '/get-all-requests-of-user',
+    authenticate,
+    groupRequestValidation.getAllRequestOfUser,
+    validateHandler,
+    async (req: Request, res: Response) => {
+        try {
+            const userId: string = req.user.userId
+            const {
+                status,
+                page = 1,
+                limit = 10
+            } = req.query as {
+                status: GroupRequestStatus
+                page: string
+                limit: string
+            }
+            const requests = await groupRequestService.getAllRequestOfUser({
+                status,
+                page: +page,
+                limit: +limit,
+                userId
+            })
+            return responseHandler.ok(res, requests, 'Lấy danh sách thành công')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }

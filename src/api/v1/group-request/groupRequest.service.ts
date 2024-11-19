@@ -73,5 +73,30 @@ export const groupRequestService = {
         )
         if (!newRequest) throw 'Yêu cầu không tồn tại'
         return newRequest
+    },
+    async getAllRequestOfUser({
+        page,
+        limit,
+        userId,
+        status
+    }: {
+        page: number
+        limit: number
+        userId: string
+        status?: GroupRequestStatus
+    }) {
+        const pagination = getPagination(page, limit)
+        type queryOptions = {
+            createBy: string
+            status?: GroupRequestStatus
+        }
+        const query: queryOptions = { createBy: userId }
+        if (status) query.status = status
+
+        return groupRequestModel
+            .find(query)
+            .populate<{ createBy: IUser }>('name avatar')
+            .skip(pagination.skip)
+            .limit(pagination.limit)
     }
 }
