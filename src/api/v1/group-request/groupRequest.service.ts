@@ -11,7 +11,7 @@ export const groupRequestService = {
             .find({
                 chatRoomId
             })
-            .populate<{ createBy: IUser }>('name avatar')
+            .populate<{ createBy: IUser }>('createBy', 'name avatar')
             .skip(pagination.skip)
             .limit(pagination.limit)
     },
