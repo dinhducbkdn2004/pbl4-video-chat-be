@@ -11,7 +11,15 @@ const leaveGroup = async (chatRoomId: string, userId: string) => {
     if (!chatRoom.participants.includes(new Types.ObjectId(userId))) {
         throw new Error('Bạn không nằm trong Groupchat!')
     }
-    chatRoom.participants = chatRoom.participants.filter((participant) => !participant.equals(userId))
+
+    const isAdmin = chatRoom.admins.includes(new Types.ObjectId(userId))
+
+    if (isAdmin && chatRoom.admins.length == 1) {
+        throw new Error('Phải bổ nhiệm Admin khác cho Group trước khi rời nhóm!')
+    }
+
+    if (chatRoom.participants)
+        chatRoom.participants = chatRoom.participants.filter((participant) => !participant.equals(userId))
     await chatRoom.save()
     await notificationService.createNotification('Bạn đã rời khỏi cuộc trò chuyện', userId, 'ChatRooms', chatRoomId)
 
