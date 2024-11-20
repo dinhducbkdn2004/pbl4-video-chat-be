@@ -25,15 +25,13 @@ const searchChatRooms = async (
     }
 
     const searchOption: SearchOption = {}
+
     if (name) {
         searchOption.$or = [
-            { name: new RegExp(name, 'i') }, // Tìm phòng có tên khớp
-            {
-                $and: [
-                    { participants: { $elemMatch: { $regex: new RegExp(name, 'i') } } }, // Tìm participants có tên khớp
-                    { participants: { $elemMatch: { $eq: userId } } } // Kiểm tra userId trong participants
-                ]
-            }
+            { name: new RegExp(name, 'i') },
+            { 'participants.name': new RegExp(name, 'i') },
+            { 'admins.name': new RegExp(name, 'i') },
+            { 'moderators.name': new RegExp(name, 'i') }
         ]
     }
     if (privacy === 'PRIVATE') {
@@ -48,13 +46,13 @@ const searchChatRooms = async (
     if (typeRoom) {
         searchOption.typeRoom = typeRoom
     }
-
     const chatRooms = await chatRoomModel
         .find(searchOption)
         .select('name typeRoom chatRoomImage participants admins moderators updatedAt lastMessage')
+        .populate<{ participants: IUser[] }>('participants', 'name avatar')
         .populate<{ admins: IUser[] }>('admins', 'name avatar')
         .populate<{ moderators: IUser[] }>('moderators', 'name avatar')
-        .populate<{ participants: IUser[] }>('participants', 'name avatar')
+
         .populate<{ lastMessage: IMessage[] }>({
             path: 'lastMessage', // Populate lastMessage first
             select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
