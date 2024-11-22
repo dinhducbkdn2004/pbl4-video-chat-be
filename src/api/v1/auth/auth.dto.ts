@@ -3,6 +3,7 @@ export interface LoginBody {
     password: string
 }
 export interface ChangePasswordBody {
+    oldPassword: string
     newPassword: string
 }
 export interface RegisterBody {
@@ -20,7 +21,7 @@ export interface CheckOtpBody {
 export interface LoginByGoogleBody {
     credential: string
 }
-export interface ChangePasswordBody {
+export interface ForgotPasswordBody {
     email: string
 }
 export interface ResetPasswordBody {

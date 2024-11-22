@@ -1,23 +1,22 @@
 import { Request, Response } from 'express'
 import userModel from '../../user/user.model'
-import { hashPassword } from '../../../../helpers/hashPassword'
+import { hashPassword, comparePassword } from '../../../../helpers/hashPassword' // Thêm hàm so sánh mật khẩu
 
-const changePassword = async (newPassword: string, userId: string): Promise<string> => {
-    try {
-        const user = await userModel.findById(userId)
-        if (!user) {
-            return 'Người dùng không tồn tại!'
-        }
+const changePassword = async (oldPassword: string, newPassword: string, userId: string): Promise<void> => {
+    const user = await userModel.findById(userId)
 
-        const hashedPassword = await hashPassword(newPassword)
-
-        user.account.password = hashedPassword
-        await user.save()
-
-        return 'Mật khẩu đã được thay đổi thành công!'
-    } catch (error) {
-        return `Có lỗi xảy ra: ${error}`
+    if (!user) {
+        throw new Error('Người dùng không tồn tại!')
     }
+
+    const isPasswordValid = await comparePassword(oldPassword, user.account.password)
+    if (!isPasswordValid) {
+        throw new Error('Mật khẩu cũ không đúng!')
+    }
+
+    const hashedPassword = await hashPassword(newPassword)
+    user.account.password = hashedPassword
+    await user.save()
 }
 
 export default changePassword

@@ -95,7 +95,8 @@ userRoute.get('/get-detail/:userId', authenticate, async (req: Request, res: Res
 
 userRoute.get('/getAll', authenticate, async (req: Request, res: Response) => {
     try {
-        const user = await userService.getAllUsers()
+        const { userId } = req.user
+        const user = await userService.getAllUsers(userId)
         responseHandler.ok(res, user, ``)
     } catch (error: any) {
         responseHandler.errorOrBadRequest(res, error)

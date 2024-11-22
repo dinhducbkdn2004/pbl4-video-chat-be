@@ -6,6 +6,7 @@ import authService from './auth.service'
 import {
     ChangePasswordBody,
     CheckOtpBody,
+    ForgotPasswordBody,
     LoginBody,
     LoginByGoogleBody,
     RegisterBody,
@@ -73,9 +74,9 @@ authRoute.put(
     validateHandler,
     async (req: Request<{}, {}, ChangePasswordBody>, res: Response) => {
         try {
-            const { newPassword } = req.body
-            const { userId } = (req as any).user
-            await authService.changePassword(newPassword, userId)
+            const { oldPassword, newPassword } = req.body
+            const { userId } = req.user
+            await authService.changePassword(oldPassword, newPassword, userId)
             responseHandler.ok(res, {}, 'Change password successfully!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
@@ -87,7 +88,7 @@ authRoute.put(
     '/forgot-password',
     authInputDto.validateForgotPassword,
     validateHandler,
-    async (req: Request<{}, {}, ChangePasswordBody>, res: Response) => {
+    async (req: Request<{}, {}, ForgotPasswordBody>, res: Response) => {
         try {
             const { email } = req.body
             await authService.forgotPassword(email)
