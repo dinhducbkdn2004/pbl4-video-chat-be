@@ -51,15 +51,20 @@ authRoute.post(
     }
 )
 
-authRoute.put('/reset-token', async (req: Request<{}, {}, ResetTokenBody>, res: Response) => {
-    try {
-        const { refreshToken } = req.body
-        const newAccessToken = authService.resetToken(refreshToken)
-        responseHandler.ok(res, { accessToken: newAccessToken }, 'Get new access token successfully!')
-    } catch (error: any) {
-        responseHandler.errorOrBadRequest(res, error)
+authRoute.put(
+    '/reset-token',
+    authInputDto.validateResetJwt,
+    validateHandler,
+    async (req: Request<{}, {}, ResetTokenBody>, res: Response) => {
+        try {
+            const { refreshToken } = req.body
+            const newAccessToken = authService.resetToken(refreshToken)
+            responseHandler.ok(res, { accessToken: newAccessToken }, 'Get new access token successfully!')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
     }
-})
+)
 
 authRoute.put(
     '/change-password',

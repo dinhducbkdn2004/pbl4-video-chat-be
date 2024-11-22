@@ -71,7 +71,8 @@ const authInputDto = {
     validateCheckOtp,
     validateLoginByGoogle,
     validateLogin,
-    validateRegister
+    validateRegister,
+    validateResetJwt: [body('refreshToken').notEmpty().withMessage('Thiếu trường refreshToken')]
 }
 
 export default authInputDto

@@ -15,19 +15,6 @@ const callVideoEvents = async (socket: Socket) => {
         await user.save()
     })
 
-    socket.on('user:join-room', (data: { user: IUser; peerId: string; roomId: string }) => {
-        const { user, peerId, roomId } = data
-        console.log(`${user.name} joined room: ${roomId}`)
-        socket.join(roomId)
-
-        socket.to(roomId).emit('user-connected', data)
-
-        socket.on('disconnect', () => {
-            console.log(`${user.name} disconnected`)
-            socket.to(roomId).emit('user-disconnected', user)
-        })
-    })
-
     socket.on('caller:start_new_call', async ({ chatRoomId }: { chatRoomId: string }) => {
         try {
             console.log('caller:start_new_call')
@@ -70,6 +57,19 @@ const callVideoEvents = async (socket: Socket) => {
             console.error('Error in start new call:', error)
             socket.emit('error', { message: 'Unable to start a new call' })
         }
+    })
+
+    socket.on('user:join-room', (data: { user: IUser; peerId: string; roomId: string }) => {
+        const { user, peerId, roomId } = data
+        console.log(`${user.name} joined room: ${roomId}`)
+        socket.join(roomId)
+
+        socket.to(roomId).emit('user-connected', data)
+
+        socket.on('disconnect', () => {
+            console.log(`${user.name} disconnected`)
+            socket.to(roomId).emit('user-disconnected', user)
+        })
     })
 
     socket.on('callee:accept_call', async ({ chatRoomId, peerId }: { chatRoomId: string; peerId: string }) => {
