@@ -9,7 +9,8 @@ export const groupRequestService = {
         const pagination = getPagination(page, limit)
         return groupRequestModel
             .find({
-                chatRoomId
+                chatRoomId,
+                status: 'PENDING'
             })
             .populate<{ createBy: IUser }>('createBy', 'name avatar')
             .skip(pagination.skip)
