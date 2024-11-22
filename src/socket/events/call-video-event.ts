@@ -3,17 +3,25 @@ import chatRoomService from '~/api/v1/chat-room/chatRoom.service'
 import { getIO } from '~/configs/socket.config'
 import userService from '../../api/v1/user/user.service'
 import { IUser } from '~/api/v1/user/user.model'
+import { log } from 'console'
 
 const callVideoEvents = async (socket: Socket) => {
     const io = getIO()
 
-    socket.on('join-room', (data: { user: IUser; peerId: string; roomId: string }) => {
-        const { user, peerId, roomId } = data
-        socket.join(roomId)
-        console.log(`${user.name} joined room: ${roomId}`)
-        socket.to(roomId).emit('user-connected', { user, peerId })
+    socket.on('user:leave_call', async () => {
+        console.log('user:leave_call')
+        const user = await userService.getUser(socket.handshake.auth._id)
+        user.isCalling = false
+        await user.save()
+    })
 
-        // Notify others when user disconnects
+    socket.on('user:join-room', (data: { user: IUser; peerId: string; roomId: string }) => {
+        const { user, peerId, roomId } = data
+        console.log(`${user.name} joined room: ${roomId}`)
+        socket.join(roomId)
+
+        socket.to(roomId).emit('user-connected', data)
+
         socket.on('disconnect', () => {
             console.log(`${user.name} disconnected`)
             socket.to(roomId).emit('user-disconnected', user)
@@ -52,7 +60,6 @@ const callVideoEvents = async (socket: Socket) => {
                     })
                     return
                 }
-                console.log('emit to:', participant)
 
                 io.to(participant.socketId).emit('server:send_new_call', {
                     chatRoom,
@@ -63,13 +70,6 @@ const callVideoEvents = async (socket: Socket) => {
             console.error('Error in start new call:', error)
             socket.emit('error', { message: 'Unable to start a new call' })
         }
-    })
-
-    socket.on('user:leave_call', async () => {
-        console.log('user:leave_call')
-        const user = await userService.getUser(socket.handshake.auth._id)
-        user.isCalling = false
-        await user.save()
     })
 
     socket.on('callee:accept_call', async ({ chatRoomId, peerId }: { chatRoomId: string; peerId: string }) => {
@@ -98,19 +98,23 @@ const callVideoEvents = async (socket: Socket) => {
     })
 
     socket.on('callee:cancel_call', async ({ chatRoomId, message }: { chatRoomId: string; message: string }) => {
-        console.log('callee:cancel_call')
+        try {
+            console.log('callee:cancel_call')
 
-        const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
-        chatRoom.participants.forEach((participant) => {
-            if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
-                io.to(participant.socketId).emit('server:send_callee_response', {
-                    result: 'decline',
-                    from: socket.handshake.auth._id,
-                    chatRoomId,
-                    message
-                })
-            }
-        })
+            const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
+            chatRoom.participants.forEach((participant) => {
+                if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
+                    io.to(participant.socketId).emit('server:send_callee_response', {
+                        result: 'decline',
+                        from: socket.handshake.auth._id,
+                        chatRoomId,
+                        message
+                    })
+                }
+            })
+        } catch (error) {
+            log('callee:cancel_call', error)
+        }
     })
 }
 

@@ -3,6 +3,8 @@ import userService from '~/api/v1/user/user.service'
 
 export const disconnectEvent = async (socket: Socket) => {
     socket.on('disconnect', async () => {
+        console.log('User disconnected:', socket.handshake.auth.name)
+
         const user = await userService.getUser(socket.handshake.auth._id)
 
         const onlineFriends = await userService.getOnlineFriends(user._id.toString())
