@@ -19,12 +19,11 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
 
     const newRequest = await friendRequestModel
         .findById(request._id)
-        .populate('sender', 'name avatar _id')
-        .populate('receiver', 'name avatar _id')
+        .populate('sender', 'name avatar')
+        .populate('receiver', 'name avatar')
 
     if (!newRequest) throw 'Lỗi tạo yêu cầu kết bạn'
-    await createNotification('Bạn có một lời mời kết bạn mới!', receiverId, 'ChatRooms', newRequest._id.toString())
-
+    await createNotification('Bạn có một lời mời kết bạn mới!', receiverId, 'FriendRequests', newRequest._id.toString())
     return newRequest
 }
 

@@ -18,7 +18,8 @@ const seenMessage = async (userId: string, chatRoomId: string) => {
             chatRoom: chatRoomId,
             isRead: { $in: [userId] }
         })
-        .populate('sender', 'name avatar _id')
+        .populate('sender', 'name avatar')
+        .populate('isRead', 'name avatar')
 
     return messages
 }

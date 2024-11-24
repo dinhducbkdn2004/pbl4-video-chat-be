@@ -8,8 +8,8 @@ const getFriendRequests = async (userId: string, page: number = 1, limit: number
             $or: [{ receiver: userId }],
             status: 'PENDING'
         })
-        .populate('sender', '_id name avatar') // Populate sender details
-        .populate('receiver', '_id name avatar') // Populate receiver details
+        .populate('sender', '_id name avatar')
+        .populate('receiver', '_id name avatar')
         .skip(pagination.skip)
         .limit(pagination.limit)
         .sort({
