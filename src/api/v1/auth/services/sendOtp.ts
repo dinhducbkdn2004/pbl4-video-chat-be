@@ -5,7 +5,7 @@ import userModel from '../../user/user.model'
 
 const sendOtp = async (userId: string) => {
     const user = await userModel.findById(userId)
-    if (!user) throw 'User not found'
+    if (!user) throw 'User not found!'
 
     const otp = generateRandomNumberString(6)
 

@@ -5,11 +5,11 @@ import { Types } from 'mongoose'
 const changeDetails = async (chatRoomId: string, adminId: string, newName?: string, newImage?: string) => {
     const chatRoom = await chatRoomModel.findById(chatRoomId)
     if (!chatRoom) {
-        throw new Error('Phòng chat không tồn tại.')
+        throw new Error('Phòng chat không tồn tại!')
     }
 
     if (!chatRoom.admins.includes(new Types.ObjectId(adminId))) {
-        throw new Error('Bạn không có quyền thực hiện hành động này.')
+        throw new Error('Bạn không có quyền thực hiện hành động này!')
     }
 
     const remainingMembers = chatRoom.participants.filter((participant) => !participant.equals(adminId))

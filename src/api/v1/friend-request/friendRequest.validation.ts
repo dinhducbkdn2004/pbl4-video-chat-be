@@ -11,7 +11,7 @@ const friendRequestValidation = {
                 if (!Types.ObjectId.isValid(value)) throw 'Invalid friendId'
 
                 const user = await userService.getUser(value)
-                if (!user) throw 'Không tồi tại người dùng để kết bạn'
+                if (!user) throw 'Không tồn tại người dùng để kết bạn'
             }),
         body('caption').notEmpty().withMessage('Thiếu trường caption')
     ],

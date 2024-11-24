@@ -23,7 +23,18 @@ export const getNotifications = async (userId: string, page: number, limit: numb
                 break
             case 'FriendRequests':
                 await notification.populate<{ detail: IFriendRequest }>({
-                    path: 'detail'
+                    path: 'detail',
+                    select: 'sender receiver status caption',
+                    populate: [
+                        {
+                            path: 'sender',
+                            select: 'name avatar'
+                        },
+                        {
+                            path: 'receiver',
+                            select: 'name avatar'
+                        }
+                    ]
                 })
                 break
         }

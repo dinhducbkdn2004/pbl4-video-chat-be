@@ -14,7 +14,7 @@ const register = async ({
     name: string
 }): Promise<string> => {
     const checkUser = await userModel.findOne({ email })
-    if (checkUser) throw 'User đã tồn tại'
+    if (checkUser) throw 'User đã tồn tại!'
 
     const otp = generateRandomNumberString(6)
     await sendMail([email], 'Mã xác thực tài khoản', OtpForm(otp))

@@ -4,11 +4,11 @@ import friendRequestModel from '../friendRequest.model'
 import { createNotification } from '../../notifications/services/createNotification'
 
 const sendAddFriendRequest = async (senderId: string, receiverId: string, caption: string) => {
-    if (senderId === receiverId) throw 'Không thể kết bạn với chính mình'
+    if (senderId === receiverId) throw 'Không thể kết bạn với chính mình!'
     const receiver = await userModel.findById(receiverId).select('friends')
 
     if (receiver?.friends.includes(new mongoose.Types.ObjectId(senderId)))
-        throw 'Không thể kết bạn vì 2 người đã là bạn'
+        throw 'Không thể kết bạn vì 2 người đã là bạn!'
 
     const request = await friendRequestModel.create({
         sender: senderId,
@@ -22,8 +22,8 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
         .populate('sender', 'name avatar')
         .populate('receiver', 'name avatar')
 
-    if (!newRequest) throw 'Lỗi tạo yêu cầu kết bạn'
-    await createNotification('Bạn có một lời mời kết bạn mới!', receiverId, 'FriendRequests', newRequest._id.toString())
+    if (!newRequest) throw 'Lỗi tạo yêu cầu kết bạn!'
+    await createNotification('Bạn có một lời mời kết bạn mới', receiverId, 'FriendRequests', newRequest.id.toString())
     return newRequest
 }
 
