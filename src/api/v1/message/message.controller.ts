@@ -89,4 +89,15 @@ messageRoute.get('/getMediaDocumentLink', authenticate, async (req: Request, res
     }
 })
 
+messageRoute.patch('/seen-message', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.user
+        const { chatRoomId } = req.body
+        const seenMessage = await messageService.seenMessage(userId, chatRoomId)
+
+        responseHandler.ok(res, seenMessage, `Cập nhật thành công`)
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
 export default messageRoute

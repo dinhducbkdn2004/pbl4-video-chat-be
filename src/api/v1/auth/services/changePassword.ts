@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import userModel from '../../user/user.model'
-import { hashPassword, comparePassword } from '../../../../helpers/hashPassword' // Thêm hàm so sánh mật khẩu
+import { hashPassword, comparePassword } from '../../../../helpers/hashPassword'
 
 const changePassword = async (oldPassword: string, newPassword: string, userId: string): Promise<void> => {
     const user = await userModel.findById(userId)

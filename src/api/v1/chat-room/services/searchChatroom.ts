@@ -3,6 +3,7 @@ import { getPagination } from '../../../../helpers/pagination'
 import { IUser } from '../../user/user.model'
 import messageModel, { IMessage } from '../../message/message.model'
 import { validation } from '~/helpers/validation'
+import path from 'path'
 
 const searchChatRooms = async (
     name?: string,
@@ -54,12 +55,18 @@ const searchChatRooms = async (
         .populate<{ moderators: IUser[] }>('moderators', 'name avatar')
 
         .populate<{ lastMessage: IMessage[] }>({
-            path: 'lastMessage', // Populate lastMessage first
-            select: '_id sender content type createdAt updatedAt', // Select fields in lastMessage
-            populate: {
-                path: 'sender', // Nested populate for sender
-                select: 'name avatar' // Select fields from the sender (user model)
-            }
+            path: 'lastMessage',
+            select: '_id sender content type isRead createdAt updatedAt',
+            populate: [
+                {
+                    path: 'sender',
+                    select: 'name avatar'
+                },
+                {
+                    path: 'isRead',
+                    select: 'name avatar'
+                }
+            ]
         })
         .sort({ updatedAt: -1 })
         .skip(pagination.skip)
