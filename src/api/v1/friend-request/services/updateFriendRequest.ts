@@ -9,7 +9,7 @@ const updateFriendRequest = async (receiverId: string, requestId: string, status
 
     if (!request) throw new Error('Không tìm thấy yêu cầu kết bạn')
 
-    if (receiverId !== request.receiver.toString()) {
+    if (!request.receiver.equals(receiverId)) {
         throw new Error('Không có quyền: Bạn chỉ có thể cập nhật yêu cầu gửi tới bạn')
     }
 
@@ -24,20 +24,10 @@ const updateFriendRequest = async (receiverId: string, requestId: string, status
     const updatedRequest = await request.save()
 
     if (status === 'ACCEPTED') {
-        if (!senderUser.friends.includes(receiverUser._id)) {
-            senderUser.friends.push(receiverUser._id)
-        }
-        if (!receiverUser.friends.includes(senderUser._id)) {
-            receiverUser.friends.push(senderUser._id)
-        }
-        await senderUser.save()
-        await receiverUser.save()
-        await createNotification(
-            'Bạn đã chấp nhận lời mời kết bạn!',
-            receiverId.toString(),
-            'FriendRequests',
-            updatedRequest._id.toString()
-        )
+        await Promise.all([
+            userModel.updateOne({ _id: senderUser._id }, { $addToSet: { friends: receiverUser._id } }),
+            userModel.updateOne({ _id: receiverUser._id }, { $addToSet: { friends: senderUser._id } })
+        ])
 
         await createNotification(
             'Yêu cầu kết bạn của bạn đã được chấp nhận!',
@@ -45,15 +35,13 @@ const updateFriendRequest = async (receiverId: string, requestId: string, status
             'FriendRequests',
             updatedRequest._id.toString()
         )
-    } else if (status === 'DECLINED') {
-        await createNotification(
-            'Yêu cầu kết bạn của bạn đã bị từ chối.',
-            receiverId.toString(),
-            'FriendRequests',
-            updatedRequest._id.toString()
-        )
     }
-    return { updatedRequest, senderUser, receiverUser }
+    return {
+        requestId: updatedRequest._id,
+        status: updatedRequest.status,
+        sender: { id: senderUser._id, name: senderUser.name },
+        receiver: { id: receiverUser._id, name: receiverUser.name }
+    }
 }
 
 export default updateFriendRequest

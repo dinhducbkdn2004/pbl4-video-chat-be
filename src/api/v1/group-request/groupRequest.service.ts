@@ -19,6 +19,17 @@ export const groupRequestService = {
 
     async create({ chatRoomId, message, createBy }: { chatRoomId: string; message: string; createBy: string }) {
         const chatRoom = await chatRoomModel.findById(chatRoomId)
+
+        const existingRequest = await groupRequestModel.findOne({
+            chatRoomId: chatRoomId,
+            createBy: createBy,
+            status: 'PENDING'
+        })
+
+        if (existingRequest) {
+            throw new Error('Yêu cầu vào nhóm đã được gửi trước đó!')
+        }
+
         if (chatRoom!.participants.some((id) => id.equals(createBy))) throw 'Người dùng đã ở trong phòng chat'
         return groupRequestModel.create({
             chatRoomId,
