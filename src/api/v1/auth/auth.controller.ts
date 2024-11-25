@@ -76,8 +76,8 @@ authRoute.put(
         try {
             const { oldPassword, newPassword } = req.body
             const { userId } = req.user
-            await authService.changePassword(oldPassword, newPassword, userId)
-            responseHandler.ok(res, {}, 'Change password successfully!')
+            const changepassword = await authService.changePassword(oldPassword, newPassword, userId)
+            responseHandler.ok(res, { changepassword }, 'Change password successfully!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }
