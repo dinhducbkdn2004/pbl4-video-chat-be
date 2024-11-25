@@ -4,6 +4,7 @@ import { IUser } from '../../user/user.model'
 import messageModel, { IMessage } from '../../message/message.model'
 import { validation } from '~/helpers/validation'
 import path from 'path'
+import userModel from '../../user/user.model'
 
 const searchChatRooms = async (
     name?: string,
@@ -28,13 +29,14 @@ const searchChatRooms = async (
     const searchOption: SearchOption = {}
 
     if (name) {
-        searchOption.$or = [
-            { name: new RegExp(name, 'i') },
-            { 'participants.name': new RegExp(name, 'i') },
-            { 'admins.name': new RegExp(name, 'i') },
-            { 'moderators.name': new RegExp(name, 'i') }
-        ]
+        const users = await userModel
+            .find({ name: new RegExp(name as string, 'i') })
+            .select('_id')
+            .lean()
+        const userIds = users.map((user) => user._id)
+        searchOption.$or = [{ name: new RegExp(name, 'i') }, { participants: { $in: userIds } }]
     }
+
     if (privacy === 'PRIVATE') {
         searchOption.privacy = 'PRIVATE'
         searchOption.participants = userId
@@ -47,13 +49,13 @@ const searchChatRooms = async (
     if (typeRoom) {
         searchOption.typeRoom = typeRoom
     }
+
     const chatRooms = await chatRoomModel
         .find(searchOption)
         .select('name typeRoom chatRoomImage participants admins moderators updatedAt lastMessage')
         .populate<{ participants: IUser[] }>('participants', 'name avatar')
         .populate<{ admins: IUser[] }>('admins', 'name avatar')
         .populate<{ moderators: IUser[] }>('moderators', 'name avatar')
-
         .populate<{ lastMessage: IMessage[] }>({
             path: 'lastMessage',
             select: '_id sender content type isRead createdAt updatedAt',
