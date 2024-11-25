@@ -112,9 +112,9 @@ authRoute.put(
     async (req: Request<{}, {}, ResetPasswordBody>, res: Response) => {
         try {
             const { email, otp, newPassword, confirmPassword } = req.body
-            await authService.resetPassword(email, otp, newPassword, confirmPassword)
+            const resetPassword = await authService.resetPassword(email, otp, newPassword, confirmPassword)
 
-            responseHandler.ok(res, {}, 'Mật khẩu đã được thay đổi thành công!')
+            responseHandler.ok(res, { resetPassword }, 'Mật khẩu đã được thay đổi thành công!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }
