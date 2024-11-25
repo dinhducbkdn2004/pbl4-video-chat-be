@@ -14,6 +14,16 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
         throw new Error('Không thể kết bạn vì 2 người đã là bạn!')
     }
 
+    const existingReverseRequest = await friendRequestModel.findOne({
+        sender: receiverId,
+        receiver: senderId,
+        status: 'PENDING'
+    })
+
+    if (existingReverseRequest) {
+        throw new Error('Người nhận đã gửi yêu cầu kết bạn cho bạn, hãy xử lý yêu cầu đó trước.')
+    }
+
     const existingRequest = await friendRequestModel.findOne({
         sender: senderId,
         receiver: receiverId,
@@ -31,12 +41,10 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
         caption
     })
 
-    const newRequest = await friendRequestModel.findById(request._id)
+    if (!request) throw new Error('Lỗi tạo yêu cầu kết bạn!')
 
-    if (!newRequest) throw new Error('Lỗi tạo yêu cầu kết bạn!')
-
-    await createNotification('Bạn có một lời mời kết bạn mới', receiverId, 'FriendRequests', newRequest.id.toString())
-    return newRequest
+    await createNotification('Bạn có một lời mời kết bạn mới', receiverId, 'FriendRequests', request.id.toString())
+    return request
 }
 
 export default sendAddFriendRequest
