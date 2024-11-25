@@ -4,11 +4,25 @@ import userModel from '~/api/v1/user/user.model'
 import friendRequestModel from '~/api/v1/friend-request/friendRequest.model'
 import { createNotification } from '../../notifications/services/createNotification'
 
-const updateFriendRequest = async (receiverId: string, requestId: string, status: 'ACCEPTED' | 'DECLINED') => {
+const updateFriendRequest = async (
+    receiverId: string,
+    requestId: string,
+    status: 'ACCEPTED' | 'DECLINED',
+    action: 'UPDATE' | 'REVOKE' = 'UPDATE'
+) => {
     const request = await friendRequestModel.findById(requestId)
 
     if (!request) throw new Error('Không tìm thấy yêu cầu kết bạn')
 
+    if (action === 'REVOKE') {
+        if (!request.sender.equals(receiverId)) {
+            throw new Error('Không có quyền: Chỉ người gửi mới có thể thu hồi lời mời')
+        }
+
+        await friendRequestModel.deleteOne({ _id: requestId })
+
+        return { message: 'Lời mời kết bạn đã được thu hồi' }
+    }
     if (!request.receiver.equals(receiverId)) {
         throw new Error('Không có quyền: Bạn chỉ có thể cập nhật yêu cầu gửi tới bạn')
     }
