@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import userModel from '../../user/user.model'
 import { hashPassword, comparePassword } from '../../../../helpers/hashPassword'
 
-const changePassword = async (oldPassword: string, newPassword: string, userId: string): Promise<void> => {
+const changePassword = async (oldPassword: string, newPassword: string, userId: string) => {
     const user = await userModel.findById(userId)
 
     if (!user) {
@@ -17,6 +17,8 @@ const changePassword = async (oldPassword: string, newPassword: string, userId: 
     const hashedPassword = await hashPassword(newPassword)
     user.account.password = hashedPassword
     await user.save()
+
+    return { success: true }
 }
 
 export default changePassword
