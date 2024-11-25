@@ -5,7 +5,6 @@ export interface CreateFriendRequestDto {
 export interface UpdateFriendRequestDto {
     requestId: string
     status: 'ACCEPTED' | 'DECLINED'
-    action: 'UPDATE' | 'REVOKE'
 }
 
 export type UpdateFriendRequestParams = {

@@ -54,10 +54,26 @@ friendRequestRoute.patch(
             const { userId } = req.user
             const { requestId } = req.params
             const { status } = req.body
-            const { action } = req.body
-            const updatedRequest = await friendRequestService.updateFriendRequest(userId, requestId, status, action)
+            const updatedRequest = await friendRequestService.updateFriendRequest(userId, requestId, status)
 
             responseHandler.ok(res, updatedRequest, 'Cập nhật lời mời kết bạn thành công!')
+        } catch (error: any) {
+            responseHandler.errorOrBadRequest(res, error)
+        }
+    }
+)
+
+friendRequestRoute.patch(
+    '/revoke/:requestId',
+    authenticate,
+    validateHandler,
+    async (req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestDto>, res: Response) => {
+        try {
+            const { userId } = req.user
+            const { requestId } = req.params
+            await friendRequestService.revokeFriendRequest(userId, requestId)
+
+            responseHandler.ok(res, {}, 'Thu hồi lời mời kết bạn thành công!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }
