@@ -6,7 +6,6 @@ import { createNotification } from '../../notifications/services/createNotificat
 
 const revokeFriendRequest = async (senderId: string, requestId: string) => {
     const request = await friendRequestModel.findById(requestId)
-
     if (!request) throw new Error('Không tìm thấy yêu cầu kết bạn')
 
     if (!request.sender.equals(senderId)) {
@@ -16,8 +15,11 @@ const revokeFriendRequest = async (senderId: string, requestId: string) => {
     if (request.status === 'ACCEPTED') {
         throw new Error('Không thể thu hồi yêu cầu đã được chấp nhận hoặc từ chối')
     }
+    const receiverId = request.receiver.toString()
 
     await friendRequestModel.deleteOne({ _id: requestId })
+    await userModel.findByIdAndUpdate(receiverId, { $pull: { receivedRequests: senderId } })
+    await userModel.findByIdAndUpdate(senderId, { $pull: { sentRequests: receiverId } })
 }
 
 export default revokeFriendRequest

@@ -79,5 +79,15 @@ friendRequestRoute.patch(
         }
     }
 )
+friendRequestRoute.get('/getSentRequest', authenticate, async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.user
+
+        const data = await friendRequestService.getSentRequest(userId)
+        responseHandler.ok(res, data, 'Lấy danh sách yêu cầu kết bạn thành công!')
+    } catch (error: any) {
+        responseHandler.errorOrBadRequest(res, error)
+    }
+})
 
 export default friendRequestRoute

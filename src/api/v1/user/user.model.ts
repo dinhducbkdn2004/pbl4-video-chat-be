@@ -8,6 +8,8 @@ export interface IUser {
     email: string
     avatar: string
     friends: Types.ObjectId[]
+    sentRequests: Types.ObjectId[]
+    receivedRequests: Types.ObjectId[]
     backgroundImage: string
     introduction: string
     isOnline: boolean
@@ -36,6 +38,20 @@ const UserSchema = new mongoose.Schema<IUser>(
             default: 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'
         },
         friends: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Users',
+                default: []
+            }
+        ],
+        sentRequests: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Users',
+                default: []
+            }
+        ],
+        receivedRequests: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Users',

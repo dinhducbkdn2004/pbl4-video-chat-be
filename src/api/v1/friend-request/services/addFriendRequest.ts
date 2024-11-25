@@ -40,8 +40,16 @@ const sendAddFriendRequest = async (senderId: string, receiverId: string, captio
         status: 'PENDING',
         caption
     })
-
     if (!request) throw new Error('Lỗi tạo yêu cầu kết bạn!')
+    const [updateSender, updateReceiver] = await Promise.all([
+        userModel.findByIdAndUpdate(senderId, {
+            $addToSet: { sentRequests: receiverId }
+        }),
+        userModel.findByIdAndUpdate(receiverId, {
+            $addToSet: { receivedRequests: senderId }
+        })
+    ])
+    console.log('updateSender:', updateSender, 'updateReceiver:', updateReceiver)
 
     await createNotification('Bạn có một lời mời kết bạn mới', receiverId, 'FriendRequests', request.id.toString())
     return request
