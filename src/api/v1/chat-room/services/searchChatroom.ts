@@ -30,7 +30,10 @@ const searchChatRooms = async (
 
     if (name) {
         const users = await userModel
-            .find({ name: new RegExp(name as string, 'i') })
+            .find({
+                name: new RegExp(name as string, 'i'),
+                _id: { $ne: userId } // Loại trừ userId của bạn
+            })
             .select('_id')
             .lean()
         const userIds = users.map((user) => user._id)
