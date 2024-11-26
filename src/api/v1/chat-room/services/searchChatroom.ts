@@ -75,6 +75,16 @@ const searchChatRooms = async (
         .limit(pagination.limit)
         .lean()
 
+    const updatedChatRooms = chatRooms.map((room) => {
+        if (room.typeRoom === 'OneToOne') {
+            // Find the other participant (opponent)
+            const opponent = room.participants.find((participant) => participant._id.toString() !== userId)
+            room.name = opponent?.name || ''
+            room.chatRoomImage = opponent?.avatar || ''
+            room.isOnline = opponent?.isOnline || false
+        }
+    })
+
     return chatRooms
 }
 
