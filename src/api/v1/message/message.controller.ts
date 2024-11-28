@@ -6,8 +6,6 @@ import messageValidation from './message.validation'
 import { validateHandler } from '~/handlers/validation.handler'
 import { CreateMesssage } from './message.dto'
 import mongoose from 'mongoose'
-const mql = require('@microlink/mql')
-// const mql = async () => await import('@microlink/mql')
 
 const messageRoute: Router = Router()
 
@@ -62,16 +60,23 @@ messageRoute.get(
     messageValidation.getSeoData,
     validateHandler,
     async (req: Request<{}, {}, {}, { url: string }>, res: Response) => {
-        const { url } = req.query
-        let metadata = {}
-        try {
-            const { status, data } = await mql(url)
-            metadata = data
-        } catch (err) {
-            console.log(err)
-        }
+        // const { url } = req.query
+        // let metadata = {}
+        // try {
+        //     const { status, data } = await mql(url)
+        //     metadata = data
+        // } catch (err) {
+        //     console.log(err)
+        // }
 
-        responseHandler.ok(res, metadata, 'Lấy thông tin SEO thành công')
+        // responseHandler.ok(res, metadata, 'Lấy thông tin SEO thành công')
+        const { url } = req.query
+        try {
+            const data = await messageService.getSeoData(url)
+            responseHandler.ok(res, data, 'Lấy thông tin SEO thành công')
+        } catch (err) {
+            responseHandler.errorOrBadRequest(res, err)
+        }
     }
 )
 

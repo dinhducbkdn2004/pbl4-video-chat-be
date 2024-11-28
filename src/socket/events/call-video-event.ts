@@ -68,7 +68,7 @@ const callVideoEvents = async (socket: Socket) => {
 
         socket.on('disconnect', () => {
             console.log(`${user.name} disconnected`)
-            socket.to(roomId).emit('user-disconnected', user)
+            socket.to(roomId).emit('server:new_user_disconnect', user)
         })
     })
 

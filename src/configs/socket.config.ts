@@ -7,6 +7,7 @@ import userService from '~/api/v1/user/user.service'
 import authSocket from '~/socket/authSocket'
 import callVideoEvents from '~/socket/events/call-video-event'
 import { disconnectEvent } from '~/socket/events/disconnect'
+import { messageEvent } from '~/socket/events/message-event'
 import onlineUsersEvent from '~/socket/events/online-users'
 
 let io: SocketIOServer
@@ -23,11 +24,9 @@ const initSocketIO = (httpServer: Server) => {
     io.on('connection', async (socket: Socket) => {
         try {
             await authSocket(socket)
-
             await onlineUsersEvent(socket)
-
+            await messageEvent(socket)
             await callVideoEvents(socket)
-
             await disconnectEvent(socket)
         } catch (error: any) {
             console.error('Connection error:', error.message)
