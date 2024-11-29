@@ -3,7 +3,12 @@ import { authenticate } from '../../../middlewares/auth.middleware'
 import responseHandler from '../../../handlers/response.handler'
 import friendRequestService from './friendRequest.service'
 import { validateHandler } from '../../../handlers/validation.handler'
-import { CreateFriendRequestDto, UpdateFriendRequestDto, UpdateFriendRequestParams } from './friendRequest.dto'
+import {
+    CreateFriendRequestDto,
+    UpdateFriendRequestDto,
+    UpdateFriendRequestParams,
+    revokeFriendRequestDto
+} from './friendRequest.dto'
 import friendRequestValidation from './friendRequest.validation'
 import { getIO } from '~/configs/socket.config'
 import { createNotification } from '../notifications/services/createNotification'
@@ -64,16 +69,16 @@ friendRequestRoute.patch(
 )
 
 friendRequestRoute.patch(
-    '/revoke/:requestId',
+    '/revoke',
     authenticate,
     validateHandler,
-    async (req: Request<UpdateFriendRequestParams, {}, UpdateFriendRequestDto>, res: Response) => {
+    async (req: Request<{}, {}, revokeFriendRequestDto>, res: Response) => {
         try {
             const { userId } = req.user
-            const { requestId } = req.params
-            await friendRequestService.revokeFriendRequest(userId, requestId)
+            const { receiverId } = req.body
+            const revoke = await friendRequestService.revokeFriendRequest(userId, receiverId)
 
-            responseHandler.ok(res, {}, 'Thu hồi lời mời kết bạn thành công!')
+            responseHandler.ok(res, revoke, 'Thu hồi lời mời kết bạn thành công!')
         } catch (error: any) {
             responseHandler.errorOrBadRequest(res, error)
         }

@@ -10,3 +10,7 @@ export interface UpdateFriendRequestDto {
 export type UpdateFriendRequestParams = {
     requestId: string
 }
+export interface revokeFriendRequestDto {
+    senderId: string
+    receiverId: string
+}

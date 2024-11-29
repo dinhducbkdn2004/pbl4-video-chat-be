@@ -1,7 +1,7 @@
 import userModel from '../user.model'
 
 export const getUser = async (userId: string) => {
-    const user = await userModel.findById(userId).select('-account -notifications -chatRooms -friends') // Lấy user theo ID
+    const user = await userModel.findById(userId).select('-account -notifications -chatRooms -friends')
 
     if (!user) throw 'User not found!'
     return user
@@ -11,6 +11,8 @@ export const getAllUsers = async (userId: string) => {
     const users = await userModel
         .find({ _id: { $ne: userId } }) // Loại trừ chính mình
         .select('-account -notifications -chatRooms -friends -socketId')
+        .populate('sentRequests', 'name avatar')
+        .populate('receivedRequests', 'name avatar')
 
     const currentUser = await userModel.findById(userId).select('friends sentRequests receivedRequests')
     if (!currentUser) {
