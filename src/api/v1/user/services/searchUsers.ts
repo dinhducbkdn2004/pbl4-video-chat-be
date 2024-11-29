@@ -17,7 +17,7 @@ const searchUsers = async (name: string, page: number = 1, limit: number = 10) =
 
     const users = await userModel
         .find(searchOption)
-        .select('name email avatar')
+        .select('-socketId -notifications -account -friends -chatRooms')
         .skip(pagination.skip)
         .limit(pagination.limit)
 
