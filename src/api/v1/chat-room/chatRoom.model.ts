@@ -24,8 +24,11 @@ const ChatRoomSchema = new mongoose.Schema<IChatRoom>(
         name: { type: String, default: '' },
         chatRoomImage: {
             type: String,
-            default:
-                'https://png.pngtree.com/png-vector/20190810/ourlarge/pngtree-friends-group-users-team-blue-dotted-line-line-icon-png-image_1655482.jpg'
+            default: function () {
+                return this.typeRoom === 'Group'
+                    ? 'https://png.pngtree.com/png-vector/20190810/ourlarge/pngtree-friends-group-users-team-blue-dotted-line-line-icon-png-image_1655482.jpg'
+                    : ''
+            }
         },
         createdBy: { type: mongoose.Schema.Types.ObjectId, required: true },
         participants: [
