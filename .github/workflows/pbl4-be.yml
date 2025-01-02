@@ -43,11 +43,10 @@ jobs:
                   eval $(ssh-agent -s)
                   ssh-add /tmp/id_rsa
                   ssh -v -i /tmp/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << "EOF"
-                      echo "${{ secrets.MONGODB_URL }}" > .env
-                      echo "${{ secrets.JWT_SECRET }}" >> .env
                       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pbl4-be:${{ github.sha }}
                       docker stop pbl4-be-container || true
                       docker rm pbl4-be-container || true
+                      echo "${{ secrets.ENV_FILE }}" > .env
                       docker run -d -p 3000:3000 --env-file .env --name pbl4-be-container ${{ secrets.DOCKERHUB_USERNAME }}/pbl4-be:${{ github.sha }}
                       docker system prune -f                 
                   EOF
