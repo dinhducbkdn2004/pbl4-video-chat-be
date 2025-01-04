@@ -14,14 +14,17 @@ const userService = {
     editProfile,
     getOnlineFriends,
     getUser,
-
     getAllUsers,
     getFriendList,
     getUserProfile: async function ({ userId, authId }: { userId: string; authId: string }) {
         const user = await userModel.findById(userId).select('-account -notifications -chatRooms ').lean()
-        if (!user) throw 'User not found!'
-        const result = { ...user, isFriend: user.friends.some((friend) => friend._id.equals(authId)) }
-
+        if (!user) throw new Error('User not found!')
+        const isSentRequest = user.receivedRequests.some((sent) => sent._id.equals(authId))
+        const result = {
+            ...user,
+            isFriend: user.friends.some((friend) => friend._id.equals(authId)),
+            isSentRequest
+        }
         return result
     },
     removeFriend: async function (userId: string, friendId: string) {

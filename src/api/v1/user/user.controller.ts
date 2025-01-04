@@ -51,15 +51,16 @@ userRoute.get('/get-detail/:userId', authenticate, async (req: Request, res: Res
         const { userId } = req.params
         const { userId: userCallApiId } = req.user
         const user = await userService.getUserProfile({ userId, authId: userCallApiId })
-        const { _id, name, avatar, backgroundImage, introduction, isOnline, friends, isFriend } = user
+        const { _id, name, avatar, backgroundImage, introduction, isOnline, friends, isFriend, isSentRequest } = user
         const oneToOneRoom = await chatRoomService.getOneToOneChatRoom(userCallApiId, user._id.toString())
 
         if (oneToOneRoom !== null)
             return responseHandler.ok(
                 res,
                 {
-                    isFriend,
                     _id,
+                    isFriend,
+                    isSentRequest,
                     name,
                     avatar,
                     backgroundImage,
