@@ -34,6 +34,8 @@ const callVideoEvents = async (socket: Socket) => {
             user.isCalling = true
             await user.save()
 
+
+
             chatRoom.participants.forEach((participant) => {
                 if (participant._id.toString() === socket.handshake.auth._id.toString()) return
 
@@ -69,6 +71,7 @@ const callVideoEvents = async (socket: Socket) => {
             })
         } catch (error: any) {
             console.error('Error in start new call:', error)
+
         }
     })
 
@@ -77,7 +80,9 @@ const callVideoEvents = async (socket: Socket) => {
         console.log(`${user.name} joined room: ${roomId}`)
 
         socket.join(roomId)
+
         socket.to(roomId).emit('user-connected', data)
+
         socket.on('disconnect', () => {
             console.log(`${user.name} disconnected`)
             socket.to(roomId).emit('user:leave_call', { user })
@@ -102,6 +107,7 @@ const callVideoEvents = async (socket: Socket) => {
             const user = await userService.getUser(socket.handshake.auth._id)
             user.isCalling = true
             await user.save()
+
 
             chatRoom.participants.forEach((participant) => {
                 if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
