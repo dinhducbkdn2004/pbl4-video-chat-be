@@ -15,10 +15,15 @@ export const getIO = () => io
 const initSocketIO = (httpServer: Server) => {
     io = new SocketIOServer(httpServer, {
         cors: {
-            origin: ['http://localhost:5173', 'https://pbl4-video-chat-fe.onrender.com', 'http://172.20.10.13:5173'],
-            methods: ['GET', 'POST'],
-            allowedHeaders: ['Content-Type', 'authorization'],
-            credentials: true
+            origin: [
+                'http://localhost:5173',
+                'https://pbl4-video-chat-fe.onrender.com',
+                'http://172.20.10.13:5173',
+                'https://phuocnguyn.id.vn'
+            ], // Allow this origin to connect
+            methods: ['GET', 'POST'], // Allow specific HTTP methods
+            allowedHeaders: ['Content-Type', 'authorization'], // Allow specific headers
+            credentials: true // Allow credentials to be sent
         }
     })
     io.on('connection', async (socket: Socket) => {

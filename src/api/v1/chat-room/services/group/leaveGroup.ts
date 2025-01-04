@@ -1,11 +1,17 @@
 import chatRoomModel from '../../chatRoom.model'
 import { Types } from 'mongoose'
 import { notificationService } from '../../../notifications/notification.service'
+import userModel from '~/api/v1/user/user.model'
 
 const leaveGroup = async (chatRoomId: string, userId: string) => {
     const chatRoom = await chatRoomModel.findById(chatRoomId)
     if (!chatRoom || chatRoom.typeRoom !== 'Group') {
         throw new Error('Phòng chat không tồn tại hoặc không phải là Group!')
+    }
+
+    const user = await userModel.findById(userId)
+    if (!user) {
+        throw new Error('Người dùng không tồn tại!')
     }
 
     if (!chatRoom.participants.includes(new Types.ObjectId(userId))) {
@@ -24,7 +30,8 @@ const leaveGroup = async (chatRoomId: string, userId: string) => {
     await notificationService.createNotification('Bạn đã rời khỏi cuộc trò chuyện', userId, 'ChatRooms', chatRoomId)
 
     const remainingMembers = chatRoom.participants
-    const message = `Thành viên ${userId} đã rời khỏi nhóm.`
+
+    const message = `Thành viên ${user.name} đã rời khỏi nhóm.`
 
     for (const member of remainingMembers) {
         await notificationService.createNotification(message, member.toString(), 'ChatRooms', chatRoomId)
