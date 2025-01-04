@@ -7,8 +7,8 @@ import bodyParser from 'body-parser'
 import morgan from 'morgan'
 import routes from './route.config'
 const configApp = async (app: Express) => {
-    app.use(cors(corsOptions))
-    app.options('*', cors(corsOptions))
+    // app.use(cors(corsOptions))
+    // app.options('*', cors(corsOptions))
 
     app.use(cookieParser())
     app.use(bodyParser.json())
