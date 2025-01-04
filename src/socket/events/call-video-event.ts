@@ -9,7 +9,7 @@ const callVideoEvents = async (socket: Socket) => {
     const io = getIO()
 
     socket.on('user:leave_call', async ({ roomId }: { roomId: string }) => {
-        // console.log('user:leave_call')
+        // console.log(`${socket.handshake.auth?.name} leave call`)
         // const user = await userService.getUser(socket.handshake.auth._id)
         // user.isCalling = false
         // socket.to(roomId).emit('user:leave_call', { user })
@@ -76,7 +76,7 @@ const callVideoEvents = async (socket: Socket) => {
         socket.to(roomId).emit('user-connected', data)
 
         socket.on('disconnect', async () => {
-            console.log(`${socket.handshake.auth?.name} disconnected`)
+            console.log(`${socket.handshake.auth?.name} leave call`)
             const user = await userService.getUser(socket.handshake.auth._id)
             user.isCalling = false
             socket.to(roomId).emit('user:leave_call', { user })
