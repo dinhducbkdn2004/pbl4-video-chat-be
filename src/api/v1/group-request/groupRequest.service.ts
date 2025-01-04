@@ -1,8 +1,9 @@
 import { getPagination } from '~/helpers/pagination'
-import { IUser } from '../user/user.model'
+import userModel, { IUser } from '../user/user.model'
 import groupRequestModel, { GroupRequestStatus } from './groupRequest.model'
 import chatRoomService from '../chat-room/chatRoom.service'
 import chatRoomModel from '../chat-room/chatRoom.model'
+import { notificationService } from '../notifications/notification.service'
 
 export const groupRequestService = {
     async getRequestByChatRoomId(chatRoomId: string, page: number = 1, limit: number = 10) {
@@ -19,6 +20,9 @@ export const groupRequestService = {
 
     async create({ chatRoomId, message, createBy }: { chatRoomId: string; message: string; createBy: string }) {
         const chatRoom = await chatRoomModel.findById(chatRoomId)
+        if (!chatRoom) {
+            throw new Error('Phòng chat không tồn tại!')
+        }
 
         const existingRequest = await groupRequestModel.findOne({
             chatRoomId: chatRoomId,
@@ -30,7 +34,26 @@ export const groupRequestService = {
             throw new Error('Yêu cầu vào nhóm đã được gửi trước đó!')
         }
 
-        if (chatRoom!.participants.some((id) => id.equals(createBy))) throw 'Người dùng đã ở trong phòng chat'
+        if (chatRoom!.participants.some((id) => id.equals(createBy)))
+            throw new Error('Người dùng đã ở trong phòng chat')
+
+        const user = await userModel.findById(createBy)
+        if (!user) {
+            throw new Error('Người dùng không tồn tại!')
+        }
+        const managers = [...(chatRoom.admins || []), ...(chatRoom.moderators || [])]
+
+        await Promise.all(
+            managers.map((manager) =>
+                notificationService.createNotification(
+                    `${user.name} đã gửi yêu cầu vào nhóm ${chatRoom.name}`,
+                    manager.toString(),
+                    'ChatRooms',
+                    chatRoom._id.toString()
+                )
+            )
+        )
+
         return groupRequestModel.create({
             chatRoomId,
             message,
@@ -47,6 +70,10 @@ export const groupRequestService = {
     async update({ requestId, status, updateBy }: { requestId: string; status: GroupRequestStatus; updateBy: string }) {
         const request = await this.findById(requestId)
         const chatRoom = await chatRoomModel.findById(request.chatRoomId)
+        const user = await userModel.findById(request.createBy)
+        if (!user) throw new Error('Người dùng không tồn tại!')
+
+        if (!chatRoom) throw new Error('Phòng chat không tồn tại!')
 
         if (chatRoom!.participants.some((id) => id.equals(request.createBy))) throw 'Người dùng đã ở trong phòng chat'
 
@@ -71,8 +98,26 @@ export const groupRequestService = {
 
             if (status === 'ACCEPTED') {
                 chatRoom!.participants.push(request.createBy)
-
                 await chatRoom!.save()
+
+                await notificationService.createNotification(
+                    `Bạn đã vào nhóm ${chatRoom.name}`,
+                    request.createBy.toString(),
+                    'ChatRooms',
+                    chatRoom._id.toString()
+                )
+
+                const membersToNotify = chatRoom.participants.filter((id) => !id.equals(request.createBy))
+                await Promise.all(
+                    membersToNotify.map((memberId) =>
+                        notificationService.createNotification(
+                            `${user.name} đã vào nhóm ${chatRoom.name}`,
+                            memberId.toString(),
+                            'ChatRooms',
+                            chatRoom._id.toString()
+                        )
+                    )
+                )
             }
         }
         const newRequest = await groupRequestModel.findByIdAndUpdate(
@@ -86,6 +131,7 @@ export const groupRequestService = {
         if (!newRequest) throw 'Yêu cầu không tồn tại'
         return newRequest
     },
+
     async getAllRequestOfUser({
         page,
         limit,
