@@ -107,7 +107,7 @@ export const groupRequestService = {
 
         return groupRequestModel
             .find(query)
-            .populate<{ createBy: IUser }>('name avatar')
+            .populate<{ createBy: IUser }>('createBy', 'name avatar')
             .skip(pagination.skip)
             .limit(pagination.limit)
     }
