@@ -8,22 +8,34 @@ import { log } from 'console'
 const callVideoEvents = async (socket: Socket) => {
     const io = getIO()
 
-    socket.on('user:leave_call', async () => {
+    socket.on('user:leave_call', async ({ roomId }: { roomId: string }) => {
         console.log('user:leave_call')
         const user = await userService.getUser(socket.handshake.auth._id)
         user.isCalling = false
+        socket.to(roomId).emit('user:leave_call', { user })
         await user.save()
     })
 
     socket.on('caller:start_new_call', async ({ chatRoomId }: { chatRoomId: string }) => {
         try {
+            const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
+
+            if (!chatRoom.participants.some((paticipant) => paticipant._id.equals(socket.handshake.auth._id))) {
+                socket.emit('server:send_call_error', {
+                    result: 'declined',
+                    from: 'server',
+                    chatRoomId,
+                    message: `Bạn không có quyền tham gia cuộc gọi này`
+                })
+                return
+            }
             console.log('caller:start_new_call')
 
             const user = await userService.getUser(socket.handshake.auth._id)
             user.isCalling = true
             await user.save()
 
-            const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
+
 
             chatRoom.participants.forEach((participant) => {
                 if (participant._id.toString() === socket.handshake.auth._id.toString()) return
@@ -47,7 +59,12 @@ const callVideoEvents = async (socket: Socket) => {
                     })
                     return
                 }
-
+                // socket.emit('server:send_callee_response', {
+                //     result: 'accepted',
+                //     from: participant,
+                //     chatRoomId,
+                //     message: `${participant.name} đang tham gia cuộc gọi`
+                // })
                 io.to(participant.socketId).emit('server:send_new_call', {
                     chatRoom,
                     from: user
@@ -55,32 +72,44 @@ const callVideoEvents = async (socket: Socket) => {
             })
         } catch (error: any) {
             console.error('Error in start new call:', error)
-            socket.emit('error', { message: 'Unable to start a new call' })
+
         }
     })
 
-    socket.on('user:join-room', (data: { user: IUser; peerId: string; roomId: string }) => {
+    socket.on('user:join-room', async (data: { user: IUser; peerId: string; roomId: string }) => {
         const { user, peerId, roomId } = data
         console.log(`${user.name} joined room: ${roomId}`)
+
         socket.join(roomId)
 
         socket.to(roomId).emit('user-connected', data)
 
         socket.on('disconnect', () => {
             console.log(`${user.name} disconnected`)
-            socket.to(roomId).emit('server:new_user_disconnect', user)
+            socket.to(roomId).emit('user:leave_call', { user })
         })
     })
 
     socket.on('callee:accept_call', async ({ chatRoomId, peerId }: { chatRoomId: string; peerId: string }) => {
         try {
+            const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
+
+            if (!chatRoom.participants.some((paticipant) => paticipant._id.equals(socket.handshake.auth._id))) {
+                socket.emit('server:send_call_error', {
+                    result: 'decline',
+                    from: 'server',
+                    chatRoomId,
+                    message: `Bạn không có quyền tham gia cuộc gọi này`
+                })
+                return
+            }
             console.log('callee:accept_call')
 
             const user = await userService.getUser(socket.handshake.auth._id)
             user.isCalling = true
             await user.save()
 
-            const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
+
             chatRoom.participants.forEach((participant) => {
                 if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
                     io.to(participant.socketId).emit('server:send_callee_response', {
@@ -103,14 +132,22 @@ const callVideoEvents = async (socket: Socket) => {
 
             const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
             chatRoom.participants.forEach((participant) => {
-                if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
-                    io.to(participant.socketId).emit('server:send_callee_response', {
+                if (participant._id.equals(socket.handshake.auth._id)) return
+                if (chatRoom.typeRoom === 'OneToOne') {
+                    io.to(participant.socketId).emit('server:send_call_error', {
                         result: 'decline',
-                        from: socket.handshake.auth._id,
+                        from: 'server',
                         chatRoomId,
-                        message
+                        message: `Đối phương đã hủy cuộc gọi`
                     })
+                    return
                 }
+                io.to(participant.socketId).emit('server:send_callee_response', {
+                    result: 'decline',
+                    from: socket.handshake.auth._id,
+                    chatRoomId,
+                    message
+                })
             })
         } catch (error) {
             log('callee:cancel_call', error)

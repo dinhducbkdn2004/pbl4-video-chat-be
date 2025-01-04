@@ -9,11 +9,12 @@ export const disconnectEvent = async (socket: Socket) => {
 
         const onlineFriends = await userService.getOnlineFriends(user._id.toString())
 
-        onlineFriends.forEach((friend) => {
-            socket.to(friend.socketId).emit('disconnect friend', user)
-        })
         user.socketId = user.socketId.filter((id) => id !== socket.id)
         user.isOnline = user.socketId.length !== 0
+        if (!user.isOnline)
+            onlineFriends.forEach((friend) => {
+                socket.to(friend.socketId).emit('disconnect friend', user)
+            })
 
         await user.save()
     })

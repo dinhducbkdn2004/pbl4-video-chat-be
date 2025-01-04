@@ -9,13 +9,13 @@ const leaveGroup = async (chatRoomId: string, userId: string) => {
         throw new Error('Phòng chat không tồn tại hoặc không phải là Group!')
     }
 
-    const user = await userModel.findById(userId)
-    if (!user) {
-        throw new Error('Người dùng không tồn tại!')
-    }
-
     if (!chatRoom.participants.includes(new Types.ObjectId(userId))) {
         throw new Error('Bạn không nằm trong Groupchat!')
+    }
+    
+    const user = await userModel.findById(userId)
+    if (!user) {
+        throw new Error('User không tồn tại!')
     }
 
     const isAdmin = chatRoom.admins.includes(new Types.ObjectId(userId))
