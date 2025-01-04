@@ -12,9 +12,6 @@ const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
         console.log(origin)
         callback(null, true)
-
-
-
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
