@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema<IUser>(
         avatar: {
             type: String,
             required: true,
-            default: 'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg'
+            default: 'https://i.pinimg.com/236x/5e/e0/82/5ee082781b8c41406a2a50a0f32d6aa6.jpg'
         },
         friends: [
             {
