@@ -8,10 +8,11 @@ import { log } from 'console'
 const callVideoEvents = async (socket: Socket) => {
     const io = getIO()
 
-    socket.on('user:leave_call', async () => {
+    socket.on('user:leave_call', async ({ roomId }: { roomId: string }) => {
         console.log('user:leave_call')
         const user = await userService.getUser(socket.handshake.auth._id)
         user.isCalling = false
+        socket.to(roomId).emit('user:leave_call', { user })
         await user.save()
     })
 
