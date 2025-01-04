@@ -38,7 +38,7 @@ const addMember = async (chatRoomId: string, newMemberId: string, adminId: strin
 
     const message = `${user.name} đã được thêm vào nhóm ${chatRoom.name}.`
 
-    const remainingMembers = chatRoom.participants
+    const remainingMembers = chatRoom.participants.filter((member) => !member.equals(new Types.ObjectId(newMemberId)))
     for (const member of remainingMembers) {
         await notificationService.createNotification(message, member.toString(), 'ChatRooms', chatRoomId)
     }
