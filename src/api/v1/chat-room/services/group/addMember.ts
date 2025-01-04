@@ -10,14 +10,17 @@ const addMember = async (chatRoomId: string, newMemberId: string, adminId: strin
 
     if (chatRoom.typeRoom !== 'Group') throw new Error('Chỉ có room nhóm mới có thể thêm thành viên!')
 
-    const isAdmin = chatRoom.admins.includes(new Types.ObjectId(adminId))
-    const isModerator = chatRoom.moderators.includes(new Types.ObjectId(adminId))
+    if (chatRoom.privacy === 'PRIVATE') {
+        const isAdmin = chatRoom.admins.includes(new Types.ObjectId(adminId))
+        const isModerator = chatRoom.moderators.includes(new Types.ObjectId(adminId))
 
-    if (!isAdmin && !isModerator) throw new Error('Chỉ có admin hoặc moderator mới có quyền thêm thành viên!')
+        if (!isAdmin && !isModerator) throw new Error('Chỉ có admin hoặc moderator mới có quyền thêm thành viên!')
+    }
 
     if (chatRoom.participants.includes(new Types.ObjectId(newMemberId))) {
         throw new Error('Thành viên đã có trong phòng chat!')
     }
+
     chatRoom.participants.push(new Types.ObjectId(newMemberId))
     await chatRoom.save()
 
@@ -28,7 +31,17 @@ const addMember = async (chatRoomId: string, newMemberId: string, adminId: strin
         chatRoom._id.toString()
     )
 
-    log(`Thành viên ${newMemberId} đã được thêm vào phòng chat ${chatRoom.name}`)
+    const user = await userModel.findById(newMemberId)
+    if (!user) {
+        throw new Error('Người dùng không tồn tại!')
+    }
+
+    const message = `${user.name} đã được thêm vào nhóm ${chatRoom.name}.`
+
+    const remainingMembers = chatRoom.participants
+    for (const member of remainingMembers) {
+        await notificationService.createNotification(message, member.toString(), 'ChatRooms', chatRoomId)
+    }
 
     return chatRoom
 }
