@@ -103,16 +103,12 @@ const callVideoEvents = async (socket: Socket) => {
             user.isCalling = true
             await user.save()
 
-            chatRoom.participants.forEach((participant) => {
-                if (participant._id.toString() !== socket.handshake.auth._id.toString()) {
-                    io.to(participant.socketId).emit('server:send_callee_response', {
-                        result: 'accept',
-                        from: socket.handshake.auth._id,
-                        chatRoomId,
-                        peerId,
-                        message: `${socket.handshake.auth.name} has accepted your call`
-                    })
-                }
+            socket.to(chatRoomId).emit('server:send_callee_response', {
+                result: 'accept',
+                from: socket.handshake.auth._id,
+                chatRoomId,
+                peerId,
+                message: `${socket.handshake.auth.name} has accepted your call`
             })
         } catch (error) {
             console.log('callee:accept_call', error)
