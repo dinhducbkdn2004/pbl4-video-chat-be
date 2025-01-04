@@ -120,23 +120,21 @@ const callVideoEvents = async (socket: Socket) => {
             console.log('callee:cancel_call')
 
             const chatRoom = await chatRoomService.getChatRoomById(chatRoomId)
-            chatRoom.participants.forEach((participant) => {
-                if (participant._id.equals(socket.handshake.auth._id)) return
-                if (chatRoom.typeRoom === 'OneToOne') {
-                    io.to(participant.socketId).emit('server:send_call_error', {
-                        result: 'decline',
-                        from: 'server',
-                        chatRoomId,
-                        message: `Đối phương đã hủy cuộc gọi`
-                    })
-                    return
-                }
-                io.to(participant.socketId).emit('server:send_callee_response', {
+
+            if (chatRoom.typeRoom === 'OneToOne') {
+                io.to(chatRoomId).emit('server:send_call_error', {
                     result: 'decline',
-                    from: socket.handshake.auth._id,
+                    from: 'server',
                     chatRoomId,
-                    message
+                    message: `Đối phương đã hủy cuộc gọi`
                 })
+                return
+            }
+            io.to(chatRoomId).emit('server:send_callee_response', {
+                result: 'decline',
+                from: socket.handshake.auth._id,
+                chatRoomId,
+                message
             })
         } catch (error) {
             log('callee:cancel_call', error)
