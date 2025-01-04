@@ -28,7 +28,17 @@ const addMember = async (chatRoomId: string, newMemberId: string, adminId: strin
         chatRoom._id.toString()
     )
 
-    log(`Thành viên ${newMemberId} đã được thêm vào phòng chat ${chatRoom.name}`)
+    const user = await userModel.findById(newMemberId)
+    if (!user) {
+        throw new Error('Người dùng không tồn tại!')
+    }
+
+    const message = `${user.name} đã được thêm vào nhóm ${chatRoom.name}.`
+
+    const remainingMembers = chatRoom.participants
+    for (const member of remainingMembers) {
+        await notificationService.createNotification(message, member.toString(), 'ChatRooms', chatRoomId)
+    }
 
     return chatRoom
 }

@@ -30,7 +30,7 @@ const leaveGroup = async (chatRoomId: string, userId: string) => {
     await notificationService.createNotification('Bạn đã rời khỏi cuộc trò chuyện', userId, 'ChatRooms', chatRoomId)
 
     const remainingMembers = chatRoom.participants
-    const message = `Thành viên ${user.name} đã rời khỏi nhóm.`
+    const message = `Thành viên ${user.name} đã rời khỏi nhóm ${chatRoom.name}.`
 
     for (const member of remainingMembers) {
         await notificationService.createNotification(message, member.toString(), 'ChatRooms', chatRoomId)
