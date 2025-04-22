@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  pbl4-be:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dinhduc2004/pbl4-be:latest
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"

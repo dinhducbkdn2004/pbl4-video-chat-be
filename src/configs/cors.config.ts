@@ -3,7 +3,7 @@ import { log } from 'console'
 
 const whitelist = [
     'http://localhost:5173',
-    'https://pbl4-video-chat-fe.onrender.com',
+    'https://pbl4-video-chat.vercel.app',
     'http://192.168.64.1:5173',
     'http://172.20.10.13:5173',
     'https://phuocnguyn.id.vn'
