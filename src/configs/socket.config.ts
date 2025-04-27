@@ -18,8 +18,9 @@ const initSocketIO = (httpServer: Server) => {
             origin: [
                 'http://localhost:5173',
                 'https://pbl4-video-chat-fe.onrender.com',
-                'http://172.20.10.13:5173',
-                'https://phuocnguyn.id.vn'
+                'http://172.188.113.94:5173',
+                'http://ducbkdn.space',
+                'https://ducbkdn.space',
             ], // Allow this origin to connect
             methods: ['GET', 'POST'], // Allow specific HTTP methods
             allowedHeaders: ['Content-Type', 'authorization'], // Allow specific headers
