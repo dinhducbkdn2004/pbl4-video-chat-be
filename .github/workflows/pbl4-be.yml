@@ -18,10 +18,10 @@ jobs:
                   username: ${{ secrets.DOCKERHUB_USERNAME }}
                   password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-            - name: Build
+            - name: Build Docker Image
               run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/pbl4-be:${{ github.sha }} .
 
-            - name: Push image to docker hub
+            - name: Push image to Docker Hub
               uses: docker/build-push-action@v2
               with:
                   context: .
@@ -42,6 +42,11 @@ jobs:
 
                   eval $(ssh-agent -s)
                   ssh-add /tmp/id_rsa
+
+                  # Debugging: Verify SSH key is loaded
+                  ssh-add -L
+
+                  # Check SSH connection
                   ssh -v -i /tmp/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << "EOF"
                       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/pbl4-be:${{ github.sha }}
                       docker stop pbl4-be || true
@@ -50,5 +55,5 @@ jobs:
                       docker run -d -p 3000:3000 --env-file .env --name pbl4-be ${{ secrets.DOCKERHUB_USERNAME }}/pbl4-be:${{ github.sha }}
 
                       docker image prune -a -f
-                      docker system prune -f                 
+                      docker system prune -f
                   EOF
