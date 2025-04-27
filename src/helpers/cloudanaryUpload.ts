@@ -6,7 +6,7 @@ dotenv.config()
 
 export const getPresignedUrl = (folder: string, fileName: string) => {
     const timestamp = Math.round(new Date().getTime() / 1000)
-    const uniqueFileName = `${fileName}_${uuidv4()}` // Tạo tên file duy nhất với UUID
+    const uniqueFileName = `${fileName}_${uuidv4()}` 
 
     const signature = cloudinary.utils.api_sign_request(
         { timestamp, folder, public_id: uniqueFileName },
