@@ -21,7 +21,7 @@ const initSocketIO = (httpServer: Server) => {
                 'http://172.188.113.94:5173',
                 'http://ducbkdn.space',
                 'https://ducbkdn.space',
-            ], // Allow this origin to connect
+            ], 
             methods: ['GET', 'POST'], // Allow specific HTTP methods
             allowedHeaders: ['Content-Type', 'authorization'], // Allow specific headers
             credentials: true // Allow credentials to be sent
