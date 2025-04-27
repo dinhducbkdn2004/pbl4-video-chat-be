@@ -37,7 +37,7 @@ jobs:
 
             - name: Deploy to the VM Server
               run: |
-                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/id_rsa
+                  echo "${{ secrets.AZURE_VM_PRIVATE_KEY }}" > /tmp/id_rsa
                   chmod 600 /tmp/id_rsa
 
                   eval $(ssh-agent -s)
