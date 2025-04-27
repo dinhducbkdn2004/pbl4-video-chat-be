@@ -17,6 +17,7 @@ const connectDb = async (): Promise<void> => {
     } catch (error) {
         console.error('Error connecting to MongoDB:', error)
         
+        // More detailed error information
         if (error instanceof Error) {
             console.error('Error details:', error.message)
             if ('reason' in error) {
