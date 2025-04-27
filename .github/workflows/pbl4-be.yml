@@ -49,6 +49,7 @@ jobs:
                       echo "${{ secrets.ENV_FILE }}" > .env
                       docker run -d -p 3000:3000 --env-file .env --name pbl4-be ${{ secrets.DOCKERHUB_USERNAME }}/pbl4-be:${{ github.sha }}
 
+
                       docker image prune -a -f
                       docker system prune -f                 
                   EOF
