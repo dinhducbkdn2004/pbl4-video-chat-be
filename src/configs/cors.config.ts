@@ -4,9 +4,10 @@ import { log } from 'console'
 const whitelist = [
     'http://localhost:5173',
     'https://pbl4-video-chat.vercel.app',
-    'http://192.168.64.1:5173',
-    'http://172.20.10.13:5173',
-    'https://phuocnguyn.id.vn'
+    'http://192.168.179.69:3000',
+    'http://172.188.113.94:3000',
+    'http://ducbkdn.space',
+    'https://ducbkdn.space'
 ]
 const corsOptions: CorsOptions = {
     origin: (origin, callback) => {
