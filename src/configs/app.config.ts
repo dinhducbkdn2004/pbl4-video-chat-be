@@ -17,7 +17,7 @@ const configApp = async (app: Express) => {
     app.get('/', (_, res: Response) => {
         res.send('Hello world from the API!')
     })
-    // API routes
+    
     app.use('/api/v1', routes)
 }
 export default configApp
