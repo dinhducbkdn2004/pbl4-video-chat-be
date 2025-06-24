@@ -21,6 +21,8 @@ const initSocketIO = (httpServer: Server) => {
                 'http://172.188.113.94:5173',
                 'http://ducbkdn.space',
                 'https://ducbkdn.space',
+                'http://www.ducbkdn.space',
+                'https://www.ducbkdn.space',
             ], 
             methods: ['GET', 'POST'], // Allow specific HTTP methods
             allowedHeaders: ['Content-Type', 'authorization'], // Allow specific headers
